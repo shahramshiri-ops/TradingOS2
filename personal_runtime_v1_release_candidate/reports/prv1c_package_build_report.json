@@ -1,0 +1,48 @@
+{
+  "program": "PRV1C-01",
+  "artifact": "prv1c_package_build_report",
+  "created_at_utc": "2026-05-04T12:09:02Z",
+  "status": "staged_refresh_patch_built",
+  "base_package": "PRV1B_personal_runtime_v1_credentialed_refresh_package.zip",
+  "new_files": [
+    "config/provider_rate_limit_policy.json",
+    "scripts/run_staged_credentialed_refresh.py",
+    "scripts/run_staged_credentialed_refresh.bat",
+    "scripts/run_staged_refresh_plan_only.bat",
+    "scripts/validate_staged_refresh_outputs.py",
+    "docs/PRV1C_STAGED_REFRESH_README.md",
+    "proofs/prv1c_pre_execution_boundary_proof.json"
+  ],
+  "local_execution_required_for_provider_proof": true,
+  "expected_outputs_after_local_run": [
+    "reports/staged_refresh_plan.json",
+    "reports/staged_provider_fetch_report.json",
+    "reports/staged_cache_update_report.json",
+    "reports/staged_row_level_ledger_refresh_report.json",
+    "panel/panel_payload_after_staged_credentialed_refresh.json",
+    "panel/index_staged_credentialed_refresh.html",
+    "proofs/staged_secret_redaction_proof.json",
+    "proofs/staged_no_action_surface_proof.json",
+    "proofs/staged_refresh_boundary_proof.json",
+    "proofs/staged_refresh_local_validation_result.json",
+    "logs/last_run_status_after_staged_refresh.json",
+    "logs/runtime_heartbeat_after_staged_refresh.json"
+  ],
+  "boundary": {
+    "read_only_provider_calls_only": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_signal": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "calendar_event_out_of_v1_scope": true,
+    "second_provider_out_of_v1_scope": true,
+    "row_2_retained_unopened": true,
+    "rows_6_7_deferred_reentry": true,
+    "matrix_complete_not_matrix_open": true
+  }
+}
