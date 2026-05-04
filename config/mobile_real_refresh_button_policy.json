@@ -1,0 +1,52 @@
+{
+  "program": "PRV1I-01",
+  "artifact": "real_mobile_refresh_button_policy",
+  "architecture": "github_pages_static_panel_plus_cloudflare_worker_refresh_proxy_plus_github_actions_workflow_dispatch",
+  "github_owner_default": "shahramshiri-ops",
+  "github_repo_default": "TradingOS2",
+  "workflow_id": "prv1_daily_runtime_mobile_panel.yml",
+  "mobile_panel_origin": "https://shahramshiri-ops.github.io",
+  "worker_routes": [
+    "GET /health",
+    "POST /refresh",
+    "GET /latest-run"
+  ],
+  "secrets_required_in_cloudflare_worker": [
+    "GITHUB_ACTIONS_DISPATCH_TOKEN",
+    "REFRESH_PIN"
+  ],
+  "secret_values_forbidden_in_repo": [
+    "GitHub PAT value",
+    "REFRESH_PIN value",
+    "Twelve Data API key value",
+    ".env"
+  ],
+  "boundary": {
+    "runtime_observation_not_signal": true,
+    "candidate_not_trade_recommendation": true,
+    "outcome_observation_not_win_loss": true,
+    "lifecycle_tracking_not_execution_tracking": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "scheduler_heartbeat_not_production_readiness": true,
+    "panel_payload_not_action_surface": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "no_optimizer": true,
+    "no_validation_verdict": true,
+    "no_adaptation_decision": true,
+    "no_production_readiness_claim": true,
+    "spx_nq_out_of_v1_active_scope": true,
+    "calendar_event_out_of_v1_scope": true,
+    "second_provider_out_of_v1_scope": true,
+    "row_2_retained_unopened": true,
+    "rows_6_7_deferred_reentry": true,
+    "matrix_complete_not_matrix_open": true,
+    "github_pages_static_panel_only": true,
+    "cloudflare_worker_refresh_proxy_not_runtime_engine": true
+  }
+}

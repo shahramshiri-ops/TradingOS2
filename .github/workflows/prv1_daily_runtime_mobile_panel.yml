@@ -1,74 +1,51 @@
 name: PRV1 Daily Runtime Mobile Panel
 
 on:
+  schedule:
+    - cron: "0 * * * *"
   workflow_dispatch:
     inputs:
-      run_reason:
-        description: "Why are you running PRV1 daily runtime now?"
+      trigger_source:
+        description: "Source of manual trigger"
         required: false
-        default: "manual_mobile_refresh"
-  schedule:
-    # Hourly UTC. Keep this conservative to respect provider limits.
-    - cron: "7 * * * *"
+        default: "manual"
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: prv1-daily-runtime-pages
-  cancel-in-progress: false
+env:
+  LFB_TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+  MOBILE_REFRESH_WORKER_URL: ${{ vars.MOBILE_REFRESH_WORKER_URL }}
+  GITHUB_PAGES_URL: https://shahramshiri-ops.github.io/TradingOS2/
 
 jobs:
-  run-runtime-and-build-site:
-    name: Run PRV1 daily runtime and build mobile site
+  run-daily-runtime-and-deploy:
     runs-on: windows-latest
-    timeout-minutes: 35
-    env:
-      LFB_TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
-      PRV1_GITHUB_REPOSITORY: ${{ github.repository }}
-      PRV1_GITHUB_RUN_ID: ${{ github.run_id }}
-      PRV1_GITHUB_SERVER_URL: ${{ github.server_url }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Preflight secret presence without printing value
-        shell: pwsh
-        run: |
-          if ([string]::IsNullOrWhiteSpace($env:LFB_TWELVE_DATA_API_KEY)) {
-            throw "Required GitHub Secret LFB_TWELVE_DATA_API_KEY is missing. Add it in Settings > Secrets and variables > Actions."
-          }
-          Write-Host "LFB_TWELVE_DATA_API_KEY present: true (value not printed)"
-
-      - name: Run PRV1 daily runtime
-        shell: cmd
-        run: RUN_DAILY.bat
-
-      - name: Build mobile GitHub Pages site
-        shell: pwsh
-        run: |
-          python scripts/generate_mobile_pages_site.py --package-root . --site-dir site --repo "${{ github.repository }}" --run-id "${{ github.run_id }}"
-
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy:
-    name: Deploy mobile panel to GitHub Pages
-    needs: run-runtime-and-build-site
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run PRV1 daily runtime
+        shell: cmd
+        run: RUN_DAILY.bat
+      - name: Validate daily runtime
+        shell: cmd
+        run: python scripts\validate_daily_runtime_outputs.py .
+      - name: Generate mobile Pages site with real refresh button
+        shell: cmd
+        run: python scripts\generate_mobile_pages_site_with_real_refresh_button.py .
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
