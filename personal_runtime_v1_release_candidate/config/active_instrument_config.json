@@ -1,0 +1,85 @@
+{
+  "program": "PRV1-01",
+  "artifact": "active_instrument_config",
+  "created_at_utc": "2026-05-04T10:40:45Z",
+  "stage": "Stage 2 — V1 Runtime Package Assembly",
+  "active_instruments": [
+    {
+      "instrument": "XAUUSD",
+      "display_name": "Gold Spot / US Dollar",
+      "provider_symbol": "XAU/USD",
+      "status": "active_v1",
+      "role": "read_only_runtime_observation_context"
+    },
+    {
+      "instrument": "EURUSD",
+      "display_name": "Euro / US Dollar",
+      "provider_symbol": "EUR/USD",
+      "status": "active_v1",
+      "role": "read_only_runtime_observation_context"
+    },
+    {
+      "instrument": "USDJPY",
+      "display_name": "US Dollar / Japanese Yen",
+      "provider_symbol": "USD/JPY",
+      "status": "active_v1",
+      "role": "read_only_runtime_observation_context"
+    }
+  ],
+  "removed_from_active_v1": {
+    "SPX": "out_of_v1_scope_not_panel_blocked_noise",
+    "NQ": "out_of_v1_scope_not_panel_blocked_noise"
+  },
+  "future_scope_note_only": [
+    "SPX: out of V1 scope",
+    "NQ: out of V1 scope"
+  ],
+  "timeframes": {
+    "mtf_context_available_from_mtf01": [
+      "M5",
+      "M15",
+      "H1",
+      "D1"
+    ],
+    "rsp_cache_feed_plan_surfaces_actual": [
+      "EURUSD D1",
+      "EURUSD H1",
+      "EURUSD M15",
+      "EURUSD M5",
+      "USDJPY D1",
+      "USDJPY H1",
+      "USDJPY M15",
+      "USDJPY M5",
+      "XAUUSD D1",
+      "XAUUSD H1",
+      "XAUUSD M15"
+    ],
+    "rsp_cache_feed_plan_surface_count_actual": 11,
+    "coverage_caveat": "RSP cache/scheduler feed plan has 11 surfaces; XAUUSD M5 exists in MTF context but is not in RSP cache feed plan and is not fabricated."
+  },
+  "timezone_policy": {
+    "canonical_storage": "UTC",
+    "bar_time_anchor": "bar_open_ts_utc",
+    "hidden_timezone_conversion": "forbidden"
+  },
+  "boundary": {
+    "runtime_observation_not_signal": true,
+    "candidate_not_trade_recommendation": true,
+    "outcome_observation_not_win_loss": true,
+    "lifecycle_tracking_not_execution_tracking": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "scheduler_heartbeat_not_production_readiness": true,
+    "panel_payload_not_action_surface": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "no_optimizer": true,
+    "no_validation_verdict": true,
+    "no_adaptation_decision": true,
+    "no_production_readiness_claim": true
+  }
+}

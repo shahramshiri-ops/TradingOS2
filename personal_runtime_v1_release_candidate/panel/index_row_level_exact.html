@@ -1,0 +1,55 @@
+<!doctype html><html><head><meta charset='utf-8'><title>PRV1A Exact Row-Level Panel</title><style>
+body{font-family:Arial, sans-serif;background:#f4f6fb;margin:0;color:#071428}.wrap{max-width:1180px;margin:0 auto;padding:32px}.banner{background:#101827;color:white;border-radius:18px;padding:18px;margin:14px 0 22px;line-height:1.5}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:white;border-radius:18px;padding:18px;box-shadow:0 8px 26px rgba(20,25,40,.08)}.label{font-size:13px;color:#5d6b82}.num{font-size:32px;font-weight:800;margin-top:8px}table{width:100%;border-collapse:collapse;background:white;border-radius:18px;overflow:hidden;box-shadow:0 8px 26px rgba(20,25,40,.08)}th,td{text-align:left;border-bottom:1px solid #e5eaf3;padding:12px;font-size:13px;vertical-align:top}th{background:#edf2ff;color:#25324b}.pill{display:inline-block;border-radius:999px;background:#edf2ff;padding:6px 10px;margin:3px}.ok{color:#166534;font-weight:700}.caveat{color:#92400e;font-weight:700}.small{font-size:12px;color:#5d6b82}.section{margin:22px 0 12px}code{font-size:12px;word-break:break-all} @media(max-width:900px){.cards{grid-template-columns:1fr 1fr}.wrap{padding:18px}} @media(max-width:560px){.cards{grid-template-columns:1fr}}
+</style></head><body><div class='wrap'>
+<h1>Personal Runtime V1 — Exact Row-Level Observation Panel</h1>
+<div class='banner'>DISPLAY-ONLY PERSONAL RUNTIME OBSERVATION. Row-level candidates are observation lifecycle records only: no trading advice, no broker/order/execution path, no buy/sell/hold, no entry/stop/target, no PnL or win/loss, no optimizer, no validation/adaptation decision, and no production-readiness claim.</div>
+<div class='cards'>
+<div class='card'><div class='label'>Candidates</div><div class='num'>4</div><div class='small'>All exact SOT-02 rows.</div></div>
+<div class='card'><div class='label'>Lifecycle count</div><div class='num'>4</div><div class='small'>Lifecycle tracking, not operations tracking.</div></div>
+<div class='card'><div class='label'>Final outcomes</div><div class='num'>3</div><div class='small'>Descriptive observations only.</div></div>
+<div class='card'><div class='label'>Active tracking</div><div class='num'>1</div><div class='small'>Open observation lifecycle count.</div></div>
+</div>
+<div class='cards section'>
+<div class='card'><div class='label'>Active instruments</div><span class='pill'>USDJPY</span><span class='pill'>XAUUSD</span><p class='small'>SPX and NQ are outside active V1 scope.</p></div>
+<div class='card'><div class='label'>Source confidence</div><p><b>single-provider caveated context</b></p><p class='small'>Provider: twelve_data. Not source truth or validation.</p></div>
+<div class='card'><div class='label'>Calendar / event</div><p><b>Not in V1 scope</b></p><p class='small'>calendar_event_source_not_in_v1_scope</p></div>
+<div class='card'><div class='label'>Row quality</div><p class='ok'>4 exact rows</p><p class='small'>0 aggregate shell rows remain.</p></div>
+</div>
+<h2 class='section'>Exact Candidate / Lifecycle / Outcome Rows</h2>
+<table><thead><tr><th>Row / Candidate ID</th><th>Surface</th><th>Edge / Type</th><th>Trigger UTC</th><th>Lifecycle</th><th>Outcome observation</th><th>Quality</th></tr></thead><tbody>
+<tr>
+<td><code>USDJPY_H1_down_20260504_030000Z</code><br><span class='small'>SOT02_USDJPY_H1_Range_Breakout_downside_range_breakout_observation_candidate_2026-05-04T03:00:00Z</span></td>
+<td>USDJPY H1</td>
+<td>Range Breakout<br><span class='small'>downside_range_breakout_observation_candidate</span></td>
+<td>2026-05-04T03:00:00Z</td>
+<td>final_outcome_recorded</td>
+<td>unfavorable_observation<br><span class='small'>last_post_trigger_close_back_above_trigger_close_without_full_high_close_invalidation</span></td>
+<td><span class='ok'>exact</span><br><span class='small'>observation-only</span></td>
+</tr><tr>
+<td><code>XAUUSD_H1_down_20260504_060000Z</code><br><span class='small'>SOT02_XAUUSD_H1_Range_Breakout_downside_range_breakout_observation_candidate_2026-05-04T06:00:00Z</span></td>
+<td>XAUUSD H1</td>
+<td>Range Breakout<br><span class='small'>downside_range_breakout_observation_candidate</span></td>
+<td>2026-05-04T06:00:00Z</td>
+<td>final_outcome_recorded</td>
+<td>favorable_observation<br><span class='small'>post_trigger_low_extended_below_trigger_low_and_last_close_remains_below_trigger_close</span></td>
+<td><span class='ok'>exact</span><br><span class='small'>observation-only</span></td>
+</tr><tr>
+<td><code>XAUUSD_H1_down_20260504_070000Z</code><br><span class='small'>SOT02_XAUUSD_H1_Range_Breakout_downside_range_breakout_observation_candidate_2026-05-04T07:00:00Z</span></td>
+<td>XAUUSD H1</td>
+<td>Range Breakout<br><span class='small'>downside_range_breakout_observation_candidate</span></td>
+<td>2026-05-04T07:00:00Z</td>
+<td>active_tracking</td>
+<td>still_active_observation<br><span class='small'>no_completed_post_trigger_bars_available_yet</span></td>
+<td><span class='ok'>exact</span><br><span class='small'>observation-only</span></td>
+</tr><tr>
+<td><code>USDJPY_M5_up_20260504_070500Z</code><br><span class='small'>SOT02_USDJPY_M5_Range_Breakout_upside_range_breakout_observation_candidate_2026-05-04T07:05:00Z</span></td>
+<td>USDJPY M5</td>
+<td>Range Breakout<br><span class='small'>upside_range_breakout_observation_candidate</span></td>
+<td>2026-05-04T07:05:00Z</td>
+<td>final_outcome_recorded</td>
+<td>invalidated_observation<br><span class='small'>post_trigger_completed_bar_closed_below_trigger_bar_low</span></td>
+<td><span class='ok'>exact</span><br><span class='small'>observation-only</span></td>
+</tr>
+</tbody></table>
+<p class='small'>Outcome labels are observation categories only. Favorable is not win; invalidated is not loss.</p>
+</div></body></html>

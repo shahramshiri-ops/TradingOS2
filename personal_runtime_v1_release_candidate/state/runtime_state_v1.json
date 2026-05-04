@@ -1,0 +1,98 @@
+{
+  "program": "PRV1-01",
+  "artifact": "runtime_state_v1",
+  "created_at_utc": "2026-05-04T10:40:45Z",
+  "stage": "Stage 2 — V1 Runtime Package Assembly",
+  "state_source_preference": "RCH-01 hardened panel / current SOT-02 state",
+  "runtime_state_status": "assembled_from_current_runtime_summary_and_hardened_panel_payload_v3",
+  "active_instruments": [
+    "XAUUSD",
+    "EURUSD",
+    "USDJPY"
+  ],
+  "removed_from_active_v1": [
+    "SPX",
+    "NQ"
+  ],
+  "latest_state": {
+    "candidate_count": 4,
+    "lifecycle_count": 4,
+    "status_counts": {
+      "final_outcome_recorded": 3,
+      "active_tracking": 1
+    },
+    "outcome_counts": {
+      "unfavorable_observation": 1,
+      "favorable_observation": 1,
+      "invalidated_observation": 1,
+      "still_active_observation": 1
+    },
+    "active_tracking_count": 1,
+    "final_outcome_count": 3
+  },
+  "cache_feed_plan_summary": {
+    "surface_count": 11,
+    "refresh_status_counts": {
+      "refresh_due_or_soon": 8,
+      "stale_refresh_due": 3
+    },
+    "implementation_posture": {
+      "current": "cache-index-based refresh planning",
+      "not_yet": "full provider incremental feed replacing LSC source calls",
+      "next": "provider adapter can use this feed plan to request only due surfaces and dedupe by bar_open_ts_utc"
+    }
+  },
+  "scheduler_summary": {
+    "status": "scheduler_heartbeat_status_built",
+    "surface_groups": {
+      "daily_or_manual": [
+        "EURUSD D1",
+        "USDJPY D1",
+        "XAUUSD D1"
+      ],
+      "hourly": [
+        "EURUSD H1",
+        "USDJPY H1",
+        "XAUUSD H1"
+      ],
+      "quarter_hour": [
+        "EURUSD M15",
+        "USDJPY M15",
+        "XAUUSD M15"
+      ],
+      "five_minute": [
+        "EURUSD M5",
+        "USDJPY M5"
+      ]
+    },
+    "next_run_hints": {
+      "core_low_quota_next_run_hint_utc": "2026-05-04T08:48:59Z",
+      "sot_only_next_run_hint_utc": "2026-05-04T09:03:59Z",
+      "full_profile_manual_review_hint": "Use full profile manually or less frequently if provider quota is tight."
+    }
+  },
+  "cache_scheduler_note": "Packaged as current-state/dry-run foundation. No new live fetch or local scheduler execution performed in Stage 2.",
+  "calendar_event_status": "calendar_event_source_not_in_v1_scope",
+  "source_confidence_status": "single_provider_caveated_only_not_source_truth",
+  "caveat_banner": "DISPLAY-ONLY PERSONAL RUNTIME OBSERVATION. Not a signal, not buy/sell/hold, not entry/stop/target, not broker/order/execution, not PnL or win/loss, not optimizer, not validation verdict, not adaptation decision, not production readiness. SPX/NQ out of V1 active scope. Calendar/event and second-provider checks out of V1 scope. Row 2 retained unopened; Rows 6–7 deferred re-entry; matrix-complete ≠ matrix-open.",
+  "boundary": {
+    "runtime_observation_not_signal": true,
+    "candidate_not_trade_recommendation": true,
+    "outcome_observation_not_win_loss": true,
+    "lifecycle_tracking_not_execution_tracking": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "scheduler_heartbeat_not_production_readiness": true,
+    "panel_payload_not_action_surface": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "no_optimizer": true,
+    "no_validation_verdict": true,
+    "no_adaptation_decision": true,
+    "no_production_readiness_claim": true
+  }
+}

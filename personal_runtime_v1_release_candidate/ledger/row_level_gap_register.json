@@ -1,0 +1,60 @@
+{
+  "program": "PRV1A-01",
+  "artifact": "row_level_gap_register",
+  "created_at_utc": "2026-05-04T11:18:46Z",
+  "gaps": [
+    {
+      "gap_id": "PRV1A_GAP_001",
+      "status": "open",
+      "severity": "material_but_bounded",
+      "gap": "Current four-row exact SOT02 registry was not included in the supplied PRV1 package/artifacts.",
+      "impact": "Two rows can only be represented as aggregate shells, not exact inspectable candidate objects.",
+      "safe_default": "Do not infer instrument/timeframe/trigger/candidate_id for favorable and invalidated rows.",
+      "closure_input": "Attach/export current SOT02 registry/lifecycle state files from local runtime state directory."
+    },
+    {
+      "gap_id": "PRV1A_GAP_002",
+      "status": "open",
+      "severity": "minor",
+      "gap": "created_at_utc missing for exact rows from older SOT02 panel payload.",
+      "impact": "Exact rows have update timestamps but not original creation timestamps.",
+      "safe_default": "Leave created_at_utc null.",
+      "closure_input": "Provide current SOT02 registry candidate store with creation timestamps."
+    },
+    {
+      "gap_id": "PRV1A_GAP_003",
+      "status": "closed_by_scope",
+      "severity": "scope_boundary",
+      "gap": "SPX/NQ not represented as active rows.",
+      "impact": "None for V1 active ledger; future scope note only.",
+      "safe_default": "Keep out of active V1 scope.",
+      "closure_input": "Only re-open in future V2 scope decision."
+    }
+  ],
+  "boundary": {
+    "runtime_observation_not_signal": true,
+    "candidate_not_trade_recommendation": true,
+    "outcome_observation_not_win_loss": true,
+    "lifecycle_tracking_not_execution_tracking": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "scheduler_heartbeat_not_production_readiness": true,
+    "panel_payload_not_action_surface": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "no_optimizer": true,
+    "no_validation_verdict": true,
+    "no_adaptation_decision": true,
+    "no_production_readiness_claim": true,
+    "spx_nq_out_of_v1_active_scope": true,
+    "calendar_event_out_of_v1_scope": true,
+    "second_provider_out_of_v1_scope": true,
+    "row_2_retained_unopened": true,
+    "rows_6_7_deferred_reentry": true,
+    "matrix_complete_not_matrix_open": true
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "program": "PRV1G-01",
+  "artifact": "PRV1_final_caveat_register",
+  "created_at_utc": "2026-05-04T13:32:16Z",
+  "caveats": [
+    {
+      "id": "CAV-001",
+      "status": "active",
+      "title": "Single-provider only",
+      "detail": "Twelve Data is used as single-provider caveated context only; no source truth, failover, divergence, or source2 conflict check."
+    },
+    {
+      "id": "CAV-002",
+      "status": "active",
+      "title": "No official calendar/event layer",
+      "detail": "calendar_event_source_not_in_v1_scope; no CPI/FOMC/NFP/central-bank event blocking logic."
+    },
+    {
+      "id": "CAV-003",
+      "status": "active",
+      "title": "Observation-only candidate detection",
+      "detail": "Candidate rows are observation objects only; not signals, not trade recommendations, not entries."
+    },
+    {
+      "id": "CAV-004",
+      "status": "active",
+      "title": "One active lifecycle row remained active in latest proof",
+      "detail": "Last accepted daily proof had 4 candidates, 3 final outcomes, 1 active tracking row, and 0 new observation candidates."
+    },
+    {
+      "id": "CAV-005",
+      "status": "active",
+      "title": "Not production readiness",
+      "detail": "Local proof passed for personal use; scheduler heartbeat and local validation do not imply production readiness."
+    },
+    {
+      "id": "CAV-006",
+      "status": "active",
+      "title": "Row/matrix posture unchanged",
+      "detail": "Row 2 retained unopened; Rows 6–7 deferred re-entry; matrix-complete ≠ matrix-open."
+    }
+  ],
+  "boundary": {
+    "runtime_observation_not_signal": true,
+    "candidate_not_trade_recommendation": true,
+    "outcome_observation_not_win_loss": true,
+    "lifecycle_tracking_not_execution_tracking": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "scheduler_heartbeat_not_production_readiness": true,
+    "panel_payload_not_action_surface": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "no_optimizer": true,
+    "no_validation_verdict": true,
+    "no_adaptation_decision": true,
+    "no_production_readiness_claim": true,
+    "spx_nq_out_of_v1_active_scope": true,
+    "calendar_event_out_of_v1_scope": true,
+    "second_provider_out_of_v1_scope": true,
+    "row_2_retained_unopened": true,
+    "rows_6_7_deferred_reentry": true,
+    "matrix_complete_not_matrix_open": true
+  }
+}
