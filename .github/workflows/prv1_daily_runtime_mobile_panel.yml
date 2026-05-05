@@ -9,6 +9,10 @@ on:
         description: "Source of manual trigger"
         required: false
         default: "manual"
+      requested_at_utc:
+        description: "UTC timestamp supplied by mobile refresh worker"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -26,26 +30,33 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Run PRV1 daily runtime
         shell: cmd
         run: RUN_DAILY.bat
+
       - name: Validate daily runtime
         shell: cmd
         run: python scripts\validate_daily_runtime_outputs.py .
+
       - name: Generate mobile Pages site with real refresh button
         shell: cmd
         run: python scripts\generate_mobile_pages_site_with_real_refresh_button.py .
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
