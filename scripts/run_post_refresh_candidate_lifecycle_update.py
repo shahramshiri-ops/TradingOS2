@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PRV1D-01 — Post-Refresh Candidate / Lifecycle Update Orchestrator
+PRV1D/PRV1M — Post-Refresh Candidate / Lifecycle Update Orchestrator with Recursive Cache Reader
 
 Purpose:
   Consume staged credentialed refresh outputs and provider cache snapshots.
@@ -76,6 +76,8 @@ def write_json(path: Path, obj: Any) -> None:
 
 def safe_float(x: Any) -> Optional[float]:
     try:
+        if isinstance(x, str):
+            x = x.replace(',', '').strip()
         return float(x)
     except Exception:
         return None
@@ -110,11 +112,59 @@ def cache_file_for_surface(root: Path, surface: str) -> Path:
     return root / "data" / "provider_cache" / "twelve_data" / safe
 
 
+def looks_like_bar(x: Any) -> bool:
+    if not isinstance(x, dict):
+        return False
+    keys = {str(k).lower() for k in x.keys()}
+    has_time = any(k in keys for k in ["datetime", "time", "timestamp", "bar_open_ts_utc"])
+    has_ohlc = all(k in keys for k in ["open", "high", "low", "close"])
+    return has_time and has_ohlc
+
+
+def find_bar_list(obj: Any, depth: int = 0) -> Optional[List[Dict[str, Any]]]:
+    """Find the real OHLC bar list inside provider cache snapshots.
+
+    PRV1D originally only looked at top-level `values`/`data`. Some cache
+    snapshots store provider bars under nested envelopes such as
+    provider_payload.values, response.values, payload.data, records, candles, etc.
+    If the lifecycle updater cannot find those bars, it can incorrectly keep an
+    active row as `no_completed_post_trigger_bars_available_yet` even when H1 bars
+    clearly exist. This recursive reader fixes that without adding any provider
+    call, signal, execution, PnL, or validation authority.
+    """
+    if depth > 10:
+        return None
+    if isinstance(obj, list):
+        dicts = [x for x in obj if isinstance(x, dict)]
+        if dicts:
+            good = [x for x in dicts if looks_like_bar(x)]
+            if len(good) >= max(1, int(0.6 * len(dicts))):
+                return good
+        for item in obj:
+            found = find_bar_list(item, depth + 1)
+            if found:
+                return found
+    elif isinstance(obj, dict):
+        for key in ["values", "data", "bars", "records", "candles", "provider_values", "provider_payload", "response", "payload", "cache", "raw"]:
+            if key in obj:
+                found = find_bar_list(obj[key], depth + 1)
+                if found:
+                    return found
+        # Some adapters store bars keyed by timestamp.
+        vals = list(obj.values())
+        if vals and all(isinstance(v, dict) for v in vals):
+            good = [v for v in vals if looks_like_bar(v)]
+            if len(good) >= max(1, int(0.6 * len(vals))):
+                return good
+        for val in vals:
+            found = find_bar_list(val, depth + 1)
+            if found:
+                return found
+    return None
+
+
 def normalize_cache_values(cache_obj: Dict[str, Any], timeframe: str) -> List[Dict[str, Any]]:
-    values = cache_obj.get("values") or cache_obj.get("data") or []
-    if isinstance(values, dict):
-        # Some adapters may store by timestamp.
-        values = list(values.values())
+    values = find_bar_list(cache_obj) or []
     out = []
     for row in values:
         if not isinstance(row, dict):
@@ -134,6 +184,11 @@ def normalize_cache_values(cache_obj: Dict[str, Any], timeframe: str) -> List[Di
             "low": l,
             "close": c,
         })
+    # De-dupe by bar timestamp, keeping the latest parsed value.
+    by_key = {}
+    for r in out:
+        by_key[r["bar_open_ts_utc"]] = r
+    out = list(by_key.values())
     out.sort(key=lambda r: r["_dt"])
     for r in out:
         r.pop("_dt", None)
@@ -329,7 +384,7 @@ def main() -> int:
         if not p.exists():
             missing.append(str(p.relative_to(root)))
     if missing:
-        validation = {"program": "PRV1D-01", "artifact": "post_refresh_update_local_validation_result", "created_at_utc": now, "validation_passed": False, "missing_files": missing, "boundary_status": "failed_missing_required_files", "boundary": BOUNDARY}
+        validation = {"program": "PRV1D-01+PRV1M-RC1", "artifact": "post_refresh_update_local_validation_result", "created_at_utc": now, "validation_passed": False, "missing_files": missing, "boundary_status": "failed_missing_required_files", "boundary": BOUNDARY}
         write_json(root / "proofs" / "post_refresh_update_local_validation_result.json", validation)
         print(json.dumps(validation, indent=2))
         return 1
@@ -391,6 +446,7 @@ def main() -> int:
             existing_updates_performed += 1
             if previous_status != "final_outcome_recorded" and life["status"] == "final_outcome_recorded":
                 finalized_now += 1
+            details = result.get("classification_details", {}) or {}
             update_rows.append({
                 "sot_candidate_id": cid,
                 "surface": surface,
@@ -401,7 +457,11 @@ def main() -> int:
                 "new_outcome_reason": life["latest_outcome_reason"],
                 "is_final": life["is_final"],
                 "updated_at_utc": now,
-                "classification_source": "local_provider_cache_after_staged_refresh",
+                "classification_source": "local_provider_cache_after_staged_refresh_recursive_cache_reader",
+                "valid_cache_bar_count": len(values),
+                "post_bars_observed": details.get("post_bars_observed"),
+                "first_post_bar_open_ts_utc": (details.get("post_window") or {}).get("first_post_bar_open_ts_utc"),
+                "last_post_bar_open_ts_utc": (details.get("post_window") or {}).get("last_post_bar_open_ts_utc"),
             })
     lifecycle_store_after = dict(lifecycle_store)
     lifecycle_store_after["status"] = "lifecycle_state_store_post_refresh_updated"
@@ -420,7 +480,7 @@ def main() -> int:
     outcome_rows = [r for r in ledger_rows if r.get("lifecycle_status") == "final_outcome_recorded"]
     active_rows = [r for r in ledger_rows if r.get("lifecycle_status") == "active_tracking"]
     evidence_index = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "candidate_evidence_index_post_refresh",
         "created_at_utc": now,
         "evidence_sources": [
@@ -434,7 +494,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     detection_report = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_candidate_detection_report",
         "created_at_utc": now,
         "new_candidate_detection_performed": False,
@@ -444,7 +504,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     lifecycle_update_report = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_lifecycle_update_report",
         "created_at_utc": now,
         "mode": "existing_exact_sot02_lifecycle_update_from_staged_provider_cache",
@@ -460,7 +520,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     outcome_report = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_outcome_observation_report",
         "created_at_utc": now,
         "outcome_counts": summary["outcome_counts"],
@@ -470,7 +530,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     plan = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_update_plan",
         "created_at_utc": now,
         "preconditions": {
@@ -490,7 +550,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     panel_payload = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "panel_payload_after_post_refresh_update",
         "created_at_utc": now,
         "panel_status": "display_ready_after_post_refresh_lifecycle_update",
@@ -505,7 +565,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     secret_proof = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_secret_redaction_proof",
         "created_at_utc": now,
         "api_key_requested_or_read": False,
@@ -516,7 +576,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     no_action = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_no_action_surface_proof",
         "created_at_utc": now,
         "action_surface_absent": True,
@@ -526,7 +586,7 @@ def main() -> int:
         "boundary": BOUNDARY,
     }
     boundary_proof = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_update_boundary_proof",
         "created_at_utc": now,
         "status": "passed" if (scope_ok and all_surfaces_ok and cache_all_ok) else "passed_with_caveats",
@@ -541,7 +601,7 @@ def main() -> int:
     }
     validation_passed = bool(scope_ok and all_surfaces_ok and cache_all_ok and len(ledger_rows) == candidates_count and no_action["action_surface_absent"] and secret_proof["api_key_value_written"] is False)
     validation = {
-        "program": "PRV1D-01",
+        "program": "PRV1D-01+PRV1M-RC1",
         "artifact": "post_refresh_update_local_validation_result",
         "created_at_utc": now,
         "validation_passed": validation_passed,
@@ -566,10 +626,10 @@ def main() -> int:
     write_json(root / "reports" / "post_refresh_outcome_observation_report.json", outcome_report)
     write_json(root / "state" / "sot02_current" / "shadow_lifecycle_state_store_post_refresh.json", lifecycle_store_after)
     write_json(root / "state" / "sot02_current" / "shadow_candidate_registry_post_refresh.json", registry_out)
-    write_json(root / "ledger" / "candidate_observation_ledger_v1_post_refresh.json", {"program": "PRV1D-01", "artifact": "candidate_observation_ledger_v1_post_refresh", "created_at_utc": now, "rows": ledger_rows, "boundary": BOUNDARY})
-    write_json(root / "ledger" / "candidate_lifecycle_rows_v1_post_refresh.json", {"program": "PRV1D-01", "artifact": "candidate_lifecycle_rows_v1_post_refresh", "created_at_utc": now, "rows": ledger_rows, "boundary": BOUNDARY})
-    write_json(root / "ledger" / "outcome_observation_rows_v1_post_refresh.json", {"program": "PRV1D-01", "artifact": "outcome_observation_rows_v1_post_refresh", "created_at_utc": now, "rows": outcome_rows, "boundary": BOUNDARY})
-    write_json(root / "ledger" / "active_tracking_rows_v1_post_refresh.json", {"program": "PRV1D-01", "artifact": "active_tracking_rows_v1_post_refresh", "created_at_utc": now, "rows": active_rows, "boundary": BOUNDARY})
+    write_json(root / "ledger" / "candidate_observation_ledger_v1_post_refresh.json", {"program": "PRV1D-01+PRV1M-RC1", "artifact": "candidate_observation_ledger_v1_post_refresh", "created_at_utc": now, "rows": ledger_rows, "boundary": BOUNDARY})
+    write_json(root / "ledger" / "candidate_lifecycle_rows_v1_post_refresh.json", {"program": "PRV1D-01+PRV1M-RC1", "artifact": "candidate_lifecycle_rows_v1_post_refresh", "created_at_utc": now, "rows": ledger_rows, "boundary": BOUNDARY})
+    write_json(root / "ledger" / "outcome_observation_rows_v1_post_refresh.json", {"program": "PRV1D-01+PRV1M-RC1", "artifact": "outcome_observation_rows_v1_post_refresh", "created_at_utc": now, "rows": outcome_rows, "boundary": BOUNDARY})
+    write_json(root / "ledger" / "active_tracking_rows_v1_post_refresh.json", {"program": "PRV1D-01+PRV1M-RC1", "artifact": "active_tracking_rows_v1_post_refresh", "created_at_utc": now, "rows": active_rows, "boundary": BOUNDARY})
     write_json(root / "ledger" / "candidate_evidence_index_v1_post_refresh.json", evidence_index)
     write_json(root / "panel" / "panel_payload_after_post_refresh_update.json", panel_payload)
     write_panel(root, panel_payload)
@@ -577,8 +637,8 @@ def main() -> int:
     write_json(root / "proofs" / "post_refresh_no_action_surface_proof.json", no_action)
     write_json(root / "proofs" / "post_refresh_update_boundary_proof.json", boundary_proof)
     write_json(root / "proofs" / "post_refresh_update_local_validation_result.json", validation)
-    write_json(root / "logs" / "last_run_status_after_post_refresh_update.json", {"program": "PRV1D-01", "artifact": "last_run_status_after_post_refresh_update", "created_at_utc": now, "status": "post_refresh_update_completed" if validation_passed else "post_refresh_update_requires_review", "candidate_count": candidates_count, "lifecycle_count": lifecycle_count, "final_outcome_count": final_count, "active_tracking_count": active_count, "boundary": BOUNDARY})
-    write_json(root / "logs" / "runtime_heartbeat_after_post_refresh_update.json", {"program": "PRV1D-01", "artifact": "runtime_heartbeat_after_post_refresh_update", "created_at_utc": now, "heartbeat_status": "post_refresh_update_heartbeat_written", "not_production_readiness": True, "boundary": BOUNDARY})
+    write_json(root / "logs" / "last_run_status_after_post_refresh_update.json", {"program": "PRV1D-01+PRV1M-RC1", "artifact": "last_run_status_after_post_refresh_update", "created_at_utc": now, "status": "post_refresh_update_completed" if validation_passed else "post_refresh_update_requires_review", "candidate_count": candidates_count, "lifecycle_count": lifecycle_count, "final_outcome_count": final_count, "active_tracking_count": active_count, "boundary": BOUNDARY})
+    write_json(root / "logs" / "runtime_heartbeat_after_post_refresh_update.json", {"program": "PRV1D-01+PRV1M-RC1", "artifact": "runtime_heartbeat_after_post_refresh_update", "created_at_utc": now, "heartbeat_status": "post_refresh_update_heartbeat_written", "not_production_readiness": True, "boundary": BOUNDARY})
     print(json.dumps(validation, indent=2))
     return 0 if validation_passed else 1
 

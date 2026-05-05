@@ -1,0 +1,32 @@
+{
+  "program": "PRV1M-RC1",
+  "artifact": "active_watch_lifecycle_reclassification_patch_build_proof",
+  "status": "built",
+  "purpose": "Fix stale Active Watch reason caused by non-recursive provider cache parsing in post-refresh lifecycle update.",
+  "files": [
+    "scripts/run_post_refresh_candidate_lifecycle_update.py",
+    "scripts/validate_post_refresh_update_outputs.py",
+    "docs/PRV1M_ACTIVE_WATCH_LIFECYCLE_FIX_FA.md"
+  ],
+  "does_not_add": [
+    "broker", "order", "execution", "signal", "buy_sell_hold", "entry_stop_target", "PnL", "optimizer", "validation_verdict", "production_readiness"
+  ],
+  "boundary": {
+    "runtime_observation_not_signal": true,
+    "candidate_not_trade_recommendation": true,
+    "outcome_observation_not_win_loss": true,
+    "lifecycle_tracking_not_execution_tracking": true,
+    "cache_not_source_authority": true,
+    "single_provider_confidence_not_source_truth": true,
+    "panel_payload_not_action_surface": true,
+    "no_broker": true,
+    "no_order": true,
+    "no_execution": true,
+    "no_buy_sell_hold": true,
+    "no_entry_stop_target": true,
+    "no_pnl": true,
+    "no_optimizer": true,
+    "no_validation_verdict": true,
+    "no_production_readiness_claim": true
+  }
+}
