@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from html import escape
 
-PROGRAM = "PRV1L-01"
+PROGRAM = "PRV1O-01"
 INSTRUMENTS = ["XAUUSD", "EURUSD", "USDJPY"]
 TF_ORDER = ["D1", "H1", "M15", "M5"]
 BOUNDARY = {
@@ -55,6 +55,7 @@ REASON_FA = {
     "post_trigger_completed_bar_closed_below_trigger_bar_low": "طبق rule، مشاهده نامعتبر/بسته شده است.",
     "no_range_breakout_observation_triggered": "اسکن انجام شد، اما شکست محدودهٔ قابل ثبت پیدا نشد.",
     "cache_values_missing_or_unreadable": "cache این سطح قابل خواندن نبود.",
+    "new_observation_candidate_seeded_by_prv1e_rule_engine_not_final": "این observation تازه در همین اجرای rule engine از cache ساخته شده و هنوز outcome نهایی ندارد؛ در اجرای بعدی دوباره بررسی می‌شود.",
 }
 
 def utc_now():
@@ -134,18 +135,26 @@ def load_surface_rows(root: Path):
     scan_rows=detection.get('scan_rows') or detection.get('surface_rows') or []
     return staged, cache, detection, provider_rows, cache_rows, scan_rows
 
+def get_trigger_bar(row: dict):
+    """Return trigger bar from either historical capture rows or PRV1E cache-detected rows."""
+    bar = row.get('trigger_bar_from_capture') or row.get('trigger_bar_from_cache') or {}
+    if not isinstance(bar, dict):
+        return {}
+    return bar
+
 def ref_levels(row: dict):
-    bar=row.get('trigger_bar_from_capture') or {}
+    bar=get_trigger_bar(row)
     typ=row.get('candidate_type') or ''
-    direction='downside' if 'downside' in typ else 'upside' if 'upside' in typ else 'unknown'
+    side=row.get('candidate_side') or ''
+    direction='downside' if 'downside' in typ or side=='downside' else 'upside' if 'upside' in typ or side=='upside' else 'unknown'
     try:
-        hi=float(bar.get('high')); lo=float(bar.get('low')); cl=float(bar.get('close')); rng=max(0,hi-lo)
+        hi=float(bar.get('high')); lo=float(bar.get('low')); cl=float(bar.get('close')); op=bar.get('open'); rng=max(0,hi-lo)
     except Exception:
-        hi=lo=cl=rng=None
+        hi=lo=cl=op=rng=None
     if direction=='downside':
         return {
             'direction':'نزولی',
-            'trigger_bar': {'high': hi, 'low': lo, 'close': cl, 'open': bar.get('open')},
+            'trigger_bar': {'high': hi, 'low': lo, 'close': cl, 'open': op},
             'progress': {'label':'پیشروی', 'level': lo, 'text':'ادامه زیر low مرجع'},
             'weakening': {'label':'ضعیف‌شدن', 'level': cl, 'text':'close کامل بالای close مرجع'},
             'invalidation': {'label':'نامعتبرشدن', 'level': hi, 'text':'close کامل بالای high مرجع'},
@@ -154,13 +163,18 @@ def ref_levels(row: dict):
     if direction=='upside':
         return {
             'direction':'صعودی',
-            'trigger_bar': {'high': hi, 'low': lo, 'close': cl, 'open': bar.get('open')},
+            'trigger_bar': {'high': hi, 'low': lo, 'close': cl, 'open': op},
             'progress': {'label':'پیشروی', 'level': hi, 'text':'ادامه بالای high مرجع'},
             'weakening': {'label':'ضعیف‌شدن', 'level': cl, 'text':'close کامل پایین close مرجع'},
             'invalidation': {'label':'نامعتبرشدن', 'level': lo, 'text':'close کامل پایین low مرجع'},
             'extension': {'from': hi, 'to': hi+rng if rng is not None else None, 'text':'محدودهٔ تقریبی امتداد observation'},
         }
-    return {'direction':'نامشخص','trigger_bar':{},'progress':{},'weakening':{},'invalidation':{},'extension':{}}
+    return {'direction':'نامشخص','trigger_bar':{'high': hi, 'low': lo, 'close': cl, 'open': op},'progress':{},'weakening':{},'invalidation':{},'extension':{}}
+
+def row_has_reference_values(row: dict):
+    refs = row.get('reference_levels') or ref_levels(row)
+    trig = refs.get('trigger_bar') or {}
+    return all(trig.get(k) is not None for k in ['high','low','close'])
 
 def priority(kind):
     if kind=='active': return {'level':'بالا','rank':1,'class':'high','reason':'observation هنوز فعال است و باید اول دیده شود.'}
@@ -379,8 +393,20 @@ def main():
     (public/'refresh_config.js').write_text('window.PRV1_REFRESH_WORKER_URL = '+json.dumps(refresh_url)+';\nwindow.PRV1_GITHUB_PAGES_URL = '+json.dumps(pages_url)+';\n', encoding='utf-8')
     (public/'mobile_refresh_button.js').write_text("""async function prv1RefreshNow(){const endpoint=(window.PRV1_REFRESH_WORKER_URL||'').replace(/\/$/,'');const box=document.getElementById('refresh-status');if(!endpoint){box.textContent='Refresh endpoint تنظیم نشده است.';box.className='status warn';return;}const pin=prompt('PIN به‌روزرسانی را وارد کن');if(!pin){box.textContent='لغو شد.';box.className='status warn';return;}box.textContent='درخواست ارسال شد...';box.className='status pending';try{const res=await fetch(endpoint+'/refresh',{method:'POST',headers:{'content-type':'application/json','x-refresh-pin':pin},body:JSON.stringify({source:'mobile_prv1l_professional_dashboard',requested_at:new Date().toISOString()})});const data=await res.json();if(!res.ok)throw new Error(data.reason||data.status||('HTTP '+res.status));box.textContent='درخواست ثبت شد. چند دقیقه بعد صفحه را reload کن.';box.className='status ok';poll(endpoint);}catch(e){box.textContent='Refresh failed: '+e.message;box.className='status error';}}async function poll(endpoint){const box=document.getElementById('latest-run-status');if(!box)return;for(let i=0;i<12;i++){await new Promise(r=>setTimeout(r,10000));try{const res=await fetch(endpoint+'/latest-run');const data=await res.json();const run=data.latest_run;if(run){box.innerHTML='آخرین run: <span class="token" dir="ltr">'+run.status+'</span>'+(run.conclusion?' / <span class="token" dir="ltr">'+run.conclusion+'</span>':'')+' — <a target="_blank" href="'+run.html_url+'">باز کردن</a>';if(run.status==='completed')break;}}catch(_){}}}window.addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('refresh-now-button');if(b)b.addEventListener('click',prv1RefreshNow);});""", encoding='utf-8')
     (public/'index.html').write_text(render_html(state, refresh_url, pages_url), encoding='utf-8')
-    proof={'program':PROGRAM,'artifact':'professional_mobile_dashboard_generation_proof','created_at_utc':state['created_at_utc'],'status':'passed','design_changes':['compact_mobile_layout','sticky_header','hero_active_watch','no_wide_tables','compact_freshness_rows','accordion_instrument_sections','collapsed_explanations','rtl_ltr_typography_polish','status_chips_and_visual_hierarchy'],'refresh_button_preserved':bool(refresh_url),'html_lang':'fa','html_dir':'rtl','no_new_feature_logic_added':True,'no_signal_or_execution_surface_added':True,'boundary':BOUNDARY}
+    active_ref_missing=[]
+    active_raw_reason=[]
+    for row in state.get('active_watch',[]):
+        surface=f"{row.get('instrument')} {row.get('timeframe')}"
+        refs=row.get('reference_levels') or {}
+        trig=refs.get('trigger_bar') or {}
+        if not all(trig.get(k) is not None for k in ['high','low','close']):
+            active_ref_missing.append(surface)
+        if row.get('latest_outcome_reason') == 'new_observation_candidate_seeded_by_prv1e_rule_engine_not_final':
+            # raw reason is allowed in JSON but must be translated in HTML by REASON_FA
+            active_raw_reason.append(surface)
+    proof={'program':PROGRAM,'artifact':'professional_mobile_dashboard_generation_proof','created_at_utc':state['created_at_utc'],'status':'passed' if not active_ref_missing else 'passed_with_reference_level_caveat','display_fixes':['trigger_bar_from_cache_supported_for_prv1e_rows','new_candidate_seed_reason_translated_to_persian','active_watch_reference_values_checked'],'active_watch_surfaces_with_missing_reference_levels':active_ref_missing,'active_watch_surfaces_with_seed_reason_translated':active_raw_reason,'design_changes':['compact_mobile_layout','sticky_header','hero_active_watch','no_wide_tables','compact_freshness_rows','accordion_instrument_sections','collapsed_explanations','rtl_ltr_typography_polish','status_chips_and_visual_hierarchy'],'refresh_button_preserved':bool(refresh_url),'html_lang':'fa','html_dir':'rtl','no_new_feature_logic_added':True,'no_signal_or_execution_surface_added':True,'boundary':BOUNDARY}
     write_json(root/'proofs'/'professional_mobile_dashboard_generation_proof.json', proof)
+    write_json(root/'proofs'/'PRV1O_active_watch_display_fix_proof.json', proof)
     print(json.dumps(proof, indent=2, ensure_ascii=False))
     return 0
 

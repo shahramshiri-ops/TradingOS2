@@ -1,0 +1,20 @@
+{
+  "program": "PRV1O-01",
+  "name": "Active Watch Display Readability Fix",
+  "scope": [
+    "Translate PRV1E seeded-candidate lifecycle reason into Persian human-readable text",
+    "Read trigger reference bar from trigger_bar_from_cache as well as trigger_bar_from_capture",
+    "Render reference levels for newly detected PRV1E candidate rows",
+    "Keep panel observation-only and non-actionable"
+  ],
+  "out_of_scope": [
+    "broker", "order", "execution", "signal", "buy_sell_hold", "entry_stop_target", "pnl", "optimizer", "validation_verdict", "production_readiness"
+  ],
+  "boundary": {
+    "display_patch_only": true,
+    "does_not_change_candidate_detection_logic": true,
+    "does_not_change_lifecycle_classification_logic": true,
+    "does_not_create_trade_levels": true,
+    "reference_levels_are_observation_references_not_stop_or_target": true
+  }
+}
