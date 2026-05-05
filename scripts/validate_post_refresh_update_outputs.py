@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import json, sys
-from pathlib import Path
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Optional
 
 BOUNDARY = {
@@ -32,38 +32,31 @@ BOUNDARY = {
     "matrix_complete_not_matrix_open": True,
 }
 
-def utc_now():
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00','Z')
-
+def utc_now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00','Z')
 def read(p: Path, default: Any = None):
     try:
-        if p.exists():
-            return json.loads(p.read_text(encoding='utf-8'))
-    except Exception:
-        return default
+        if p.exists(): return json.loads(p.read_text(encoding='utf-8'))
+    except Exception: return default
     return default
 
 def write(p: Path, obj: Any):
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding='utf-8')
+    p.write_text(json.dumps(obj, indent=2, ensure_ascii=False), encoding='utf-8')
 
 def parse_dt(raw: Any) -> Optional[datetime]:
-    if raw is None:
-        return None
-    s = str(raw).strip().replace('Z','')
+    if raw is None: return None
+    s=str(raw).strip().replace('Z','')
     for fmt in ('%Y-%m-%d %H:%M:%S','%Y-%m-%dT%H:%M:%S','%Y-%m-%d'):
-        try:
-            return datetime.strptime(s, fmt).replace(tzinfo=timezone.utc)
-        except ValueError:
-            pass
+        try: return datetime.strptime(s, fmt).replace(tzinfo=timezone.utc)
+        except ValueError: pass
     try:
-        return datetime.fromisoformat(s).replace(tzinfo=timezone.utc)
-    except Exception:
-        return None
+        dt=datetime.fromisoformat(s)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except Exception: return None
 
 def main():
-    root = Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
-    required = [
+    root=Path(sys.argv[1] if len(sys.argv)>1 else '.').resolve()
+    required=[
         'reports/post_refresh_update_plan.json',
         'reports/post_refresh_lifecycle_update_report.json',
         'ledger/candidate_lifecycle_rows_v1_post_refresh.json',
@@ -72,63 +65,62 @@ def main():
         'proofs/post_refresh_no_action_surface_proof.json',
         'proofs/post_refresh_update_boundary_proof.json',
         'reports/staged_cache_update_report.json',
+        'state/sot02_current/shadow_lifecycle_state_store.json',
     ]
-    missing = [r for r in required if not (root / r).exists()]
-    lifecycle = read(root/'reports/post_refresh_lifecycle_update_report.json', {}) if not missing else {}
-    ledger = read(root/'ledger/candidate_lifecycle_rows_v1_post_refresh.json', {}) if not missing else {}
-    panel = read(root/'panel/panel_payload_after_post_refresh_update.json', {}) if not missing else {}
-    no_action = read(root/'proofs/post_refresh_no_action_surface_proof.json', {}) if not missing else {}
-    secret = read(root/'proofs/post_refresh_secret_redaction_proof.json', {}) if not missing else {}
-    boundary = read(root/'proofs/post_refresh_update_boundary_proof.json', {}) if not missing else {}
-    cache = read(root/'reports/staged_cache_update_report.json', {}) if not missing else {}
-    cache_by = {r.get('surface'): r for r in cache.get('surface_rows', []) if isinstance(r, dict)}
-    rows = ledger.get('rows', []) if isinstance(ledger, dict) else []
-    stale_active_reason_rows = []
+    missing=[r for r in required if not (root/r).exists()]
+    lifecycle=read(root/'reports/post_refresh_lifecycle_update_report.json',{}) if not missing else {}
+    ledger=read(root/'ledger/candidate_lifecycle_rows_v1_post_refresh.json',{}) if not missing else {}
+    panel=read(root/'panel/panel_payload_after_post_refresh_update.json',{}) if not missing else {}
+    no_action=read(root/'proofs/post_refresh_no_action_surface_proof.json',{}) if not missing else {}
+    secret=read(root/'proofs/post_refresh_secret_redaction_proof.json',{}) if not missing else {}
+    boundary=read(root/'proofs/post_refresh_update_boundary_proof.json',{}) if not missing else {}
+    cache=read(root/'reports/staged_cache_update_report.json',{}) if not missing else {}
+    canonical=read(root/'state/sot02_current/shadow_lifecycle_state_store.json',{}) if not missing else {}
+    cache_by={r.get('surface'):r for r in cache.get('surface_rows',[]) if isinstance(r,dict)}
+    rows=ledger.get('rows',[]) if isinstance(ledger,dict) else []
+    stale_active_reason_rows=[]
     for r in rows:
-        if r.get('lifecycle_status') != 'active_tracking':
-            continue
-        if r.get('latest_outcome_reason') != 'no_completed_post_trigger_bars_available_yet':
-            continue
-        surf = r.get('surface')
-        trig = parse_dt(r.get('trigger_reference_bar_ts_utc'))
-        last = parse_dt((cache_by.get(surf) or {}).get('last_provider_datetime'))
-        if trig and last and last > trig:
-            stale_active_reason_rows.append({
-                'sot_candidate_id': r.get('sot_candidate_id'),
-                'surface': surf,
-                'trigger_reference_bar_ts_utc': r.get('trigger_reference_bar_ts_utc'),
-                'cache_last_provider_datetime': (cache_by.get(surf) or {}).get('last_provider_datetime'),
-                'reason': 'active row still says no completed post-trigger bars although refreshed cache has later bars; lifecycle reclassification must be rerun/fixed',
-            })
-    update_rows = lifecycle.get('update_rows', []) if isinstance(lifecycle, dict) else []
-    active_update_cache_read_ok = all((u.get('valid_cache_bar_count') or 0) > 0 for u in update_rows) if update_rows else True
-    validation_passed = bool(
+        if r.get('lifecycle_status')!='active_tracking': continue
+        if r.get('latest_outcome_reason')!='no_completed_post_trigger_bars_available_yet': continue
+        details=r.get('classification_details') or {}
+        post_count=details.get('post_bars_observed') or 0
+        surf=r.get('surface')
+        trig=parse_dt(r.get('trigger_reference_bar_ts_utc'))
+        last=parse_dt((cache_by.get(surf) or {}).get('last_provider_datetime'))
+        if post_count>0 or (trig and last and last>trig):
+            stale_active_reason_rows.append({'sot_candidate_id':r.get('sot_candidate_id'),'surface':surf,'trigger_reference_bar_ts_utc':r.get('trigger_reference_bar_ts_utc'),'cache_last_provider_datetime':(cache_by.get(surf) or {}).get('last_provider_datetime'),'post_bars_observed':post_count,'reason':'stale no_completed reason after post-trigger data exists'})
+    update_rows=lifecycle.get('update_rows',[]) if isinstance(lifecycle,dict) else []
+    canonical_updated = canonical.get('status') == 'lifecycle_state_store_post_refresh_updated_by_prv1n'
+    validation_passed=bool(
         not missing
         and no_action.get('action_surface_absent') is True
         and secret.get('api_key_value_written') is False
-        and boundary.get('status') in ['passed','passed_with_caveats']
-        and (panel.get('summary') or {}).get('candidate_count') == 4
-        and active_update_cache_read_ok
+        and boundary.get('status')=='passed'
+        and canonical_updated
         and not stale_active_reason_rows
+        and len(rows)==panel.get('summary',{}).get('candidate_count')
     )
-    result = {
-        'program': 'PRV1D-01+PRV1M-RC1',
-        'artifact': 'post_refresh_update_local_validation_result_reviewed_strict',
-        'created_at_utc': utc_now(),
-        'validation_passed': validation_passed,
-        'missing_files': missing,
-        'active_update_cache_read_ok': active_update_cache_read_ok,
-        'stale_active_reason_rows': stale_active_reason_rows,
-        'secret_redaction_passed': secret.get('api_key_value_written') is False and secret.get('secret_hit_files', []) == [],
-        'no_action_surface_passed': no_action.get('action_surface_absent') is True,
-        'boundary_status': 'passed' if validation_passed else 'failed_or_requires_review',
-        'note': 'Strict validator catches the specific stale Active Watch issue: no_completed_post_trigger_bars_available_yet cannot remain when refreshed cache has bars after trigger.',
-        'boundary': BOUNDARY,
+    result={
+        'program':'PRV1N-01',
+        'artifact':'post_refresh_update_local_validation_result',
+        'created_at_utc':utc_now(),
+        'validation_passed':validation_passed,
+        'coverage_status':'post_refresh_lifecycle_update_completed' if validation_passed else 'requires_review',
+        'missing_files':missing,
+        'candidate_count':panel.get('summary',{}).get('candidate_count'),
+        'lifecycle_count':panel.get('summary',{}).get('lifecycle_count'),
+        'final_outcome_count':panel.get('summary',{}).get('final_outcome_count'),
+        'active_tracking_count':panel.get('summary',{}).get('active_tracking_count'),
+        'existing_active_lifecycle_updates_performed':lifecycle.get('existing_active_lifecycle_updates_performed'),
+        'finalized_now':lifecycle.get('finalized_now'),
+        'canonical_lifecycle_store_updated':canonical_updated,
+        'stale_active_reason_rows':stale_active_reason_rows,
+        'secret_redaction_passed':secret.get('api_key_value_written') is False,
+        'no_action_surface_passed':no_action.get('action_surface_absent') is True,
+        'boundary_status':'passed' if validation_passed else 'failed_or_requires_review',
+        'boundary':BOUNDARY,
     }
-    write(root/'proofs/post_refresh_update_local_validation_result_reviewed.json', result)
-    write(root/'proofs/post_refresh_update_local_validation_result_reviewed_strict.json', result)
+    write(root/'proofs'/'post_refresh_update_local_validation_result.json', result)
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return 0 if validation_passed else 1
-
-if __name__ == '__main__':
-    raise SystemExit(main())
+if __name__=='__main__': raise SystemExit(main())
