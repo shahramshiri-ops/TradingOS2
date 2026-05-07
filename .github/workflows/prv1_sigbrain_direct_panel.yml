@@ -1,10 +1,16 @@
-name: PRV1 SIG Brain Direct Panel Display Only
+name: PRV1 SIG Brain Direct Panel Display Only Deploy
 
 on:
   workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   build-sigbrain-panel:
@@ -71,7 +77,6 @@ jobs:
               .muted { color:#94a3b8; font-size:13px; }
               .state { font-weight:bold; color:#facc15; }
               .danger { color:#fca5a5; }
-              pre { white-space: pre-wrap; word-break: break-word; }
             </style>
           </head>
           <body>
@@ -131,3 +136,15 @@ jobs:
           git add personal_runtime_v1_latest_product/proofs/prv1_sigbrain_direct_proof.json
           git commit -m "Add PRV1 SIG Brain display-only panel" || echo "No changes to commit"
           git push
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
