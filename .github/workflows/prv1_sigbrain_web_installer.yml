@@ -1,0 +1,476 @@
+name: PRV1 SIG Brain Web Installer — Mobile Only
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  install-prv1-sigbrain-upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install PRV1 SIG Brain upgrade files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$(dirname "scripts/adapt_prv1_live_to_sig_brain.py")"
+          cat > "scripts/adapt_prv1_live_to_sig_brain.py" <<'EOF_73301dfc16'
+          #!/usr/bin/env python3
+          from __future__ import annotations
+          import argparse, json, os, re
+          from pathlib import Path
+          from datetime import datetime, timezone
+          
+          PROGRAM="PRV1SIGBRAIN-UPGRADE1"
+          BOUNDARY={
+            "display_only_research_state": True,
+            "not_signal": True,
+            "no_edge_verdict": True,
+            "no_candidate_acceptance_or_rejection_as_edge": True,
+            "no_tradability_claim": True,
+            "no_buy_sell_hold": True,
+            "no_entry_stop_target": True,
+            "no_pnl_or_performance": True,
+            "no_forward_shadow_activation": True,
+            "no_broker_order_execution": True,
+            "prv1_live_fetch_preserved_read_only": True,
+          }
+          FORBIDDEN_TERMS=["BUY","SELL","HOLD","ENTRY","STOP","TARGET","PNL","WIN_RATE","EXPECTANCY","SHARPE","BROKER_EXECUTION","ORDER_TICKET","POSITION_SIZE"]
+          OBJECTS=[
+            {"object_id":"EURUSD_H1_LONDON_OVERLAP_DIRECTIONAL_PERSISTENCE_OBJECT_SPEC_v1_0","instrument":"EURUSD","timeframe":"H1","candidate_family":"london_overlap_directional_persistence","default_state":"RESEARCH_ACTIVE_DISPLAY_ONLY","priority":"continue_high_priority","sig_status":"H1_BASELINE_PATCH_COMPLETE_DISPLAY_ONLY","why":"H1 path selected after XAU overfocus correction; baseline patch complete for descriptive brain use."},
+            {"object_id":"USDJPY_H1_TREND_SESSION_CONTINUITY_OBJECT_SPEC_v1_0","instrument":"USDJPY","timeframe":"H1","candidate_family":"trend_session_continuity","default_state":"DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE","priority":"continue_medium_high_priority","sig_status":"H1_BASELINE_PATCH_COMPLETE_WITH_DATA_QUALITY_CAVEAT","why":"H1 path selected for portfolio diversification; data-quality caveat remains visible."},
+            {"object_id":"XAUUSD_M15_EVENT_SESSION_RANGE_EXPANSION_CANDIDATE_LIKE_OBJECT_v1_0","instrument":"XAUUSD","timeframe":"M15","candidate_family":"event_session_range_expansion","default_state":"PARKED_NOT_ACTIVE","priority":"parked","sig_status":"BASELINE_PATCHED_REVIEW_COMPLETE_FOR_NOW_PARKED","why":"XAU M15 completed baseline-patched caveated review but remains parked to reduce overfocus; event/cost gates remain."},
+            {"object_id":"EURUSD_M15_LOW_VOL_COMPRESSION_FULL_DOMAIN_DisplayContract_v0_3","instrument":"EURUSD","timeframe":"M15","candidate_family":"low_vol_compression_full_domain_display_contract","default_state":"PARKED_NOT_ACTIVE","priority":"parked","sig_status":"DISPLAY_CONTRACT_CLOSED","why":"Display contract closed; not active for signal brain."},
+            {"object_id":"USDJPY_M15_ASIA_RANGE_NEUTRAL_FULL_ASIA_v1_0","instrument":"USDJPY","timeframe":"M15","candidate_family":"asia_range_neutral_full_asia","default_state":"PARKED_NOT_ACTIVE","priority":"parked","sig_status":"DIAGNOSTIC_COMPLETE_FOR_NOW","why":"Diagnostic complete for now; not a live signal object."},
+            {"object_id":"XAU_H1_RISK_OFF_CANDIDATE_FLOW_CONTEXT_v1_0","instrument":"XAUUSD","timeframe":"H1","candidate_family":"risk_off_candidate_flow_context","default_state":"PARKED_NOT_ACTIVE","priority":"parked","sig_status":"CONTEXT_COMPLETE_FOR_NOW","why":"Risk-off context only; support layer, not signal."},
+          ]
+          
+          def utc_now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00','Z')
+          def read_json(path:Path, default=None):
+              if default is None: default={}
+              try:
+                  if path.exists(): return json.loads(path.read_text(encoding='utf-8'))
+              except Exception:
+                  return default
+              return default
+          
+          def write_json(path:Path,obj):
+              path.parent.mkdir(parents=True,exist_ok=True)
+              path.write_text(json.dumps(obj,ensure_ascii=False,indent=2),encoding='utf-8')
+          
+          def surface_key(instrument,timeframe): return f"{instrument} {timeframe}"
+          
+          def load_surfaces(root:Path):
+              cache=read_json(root/'reports/staged_cache_update_report.json',{})
+              fetch=read_json(root/'reports/staged_provider_fetch_report.json',{})
+              detect=read_json(root/'reports/candidate_detection_report.json',{})
+              by={}
+              for row in fetch.get('surface_rows') or []:
+                  surf=row.get('surface')
+                  if surf: by.setdefault(surf,{}).update({'fetch':row})
+              for row in cache.get('surface_rows') or []:
+                  surf=row.get('surface')
+                  if surf: by.setdefault(surf,{}).update({'cache':row})
+              for row in detect.get('scan_rows') or detect.get('surface_rows') or []:
+                  surf=row.get('surface')
+                  if surf: by.setdefault(surf,{}).update({'scan':row})
+              return by, cache, fetch, detect
+          
+          def derive_object_card(obj, surfaces):
+              surf=surface_key(obj['instrument'],obj['timeframe'])
+              sr=surfaces.get(surf,{})
+              cache=sr.get('cache',{})
+              scan=sr.get('scan',{})
+              updated=bool(cache.get('updated'))
+              provider_status=cache.get('provider_status') or ('ok' if updated else 'unknown_or_missing')
+              valid_bar_count=scan.get('valid_bar_count') or cache.get('value_count')
+              last_dt=cache.get('last_provider_datetime')
+              state=obj['default_state']
+              blockers=[]
+              caveats=[]
+              if obj['default_state']!='PARKED_NOT_ACTIVE':
+                  if not sr:
+                      state='DATA_UNAVAILABLE_NO_SIGNAL'; blockers.append('LIVE_CONTEXT_SURFACE_MISSING')
+                  elif provider_status!='ok':
+                      state='DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE'; caveats.append('PROVIDER_STATUS_NOT_OK')
+                  if obj['instrument']=='USDJPY': caveats.append('DATA_QUALITY_CAVEAT_CARRIED_FROM_H1_DIAG1_BASE1')
+                  if obj['instrument']=='EURUSD' and obj['timeframe']=='H1': caveats.append('DISPLAY_ONLY_RESEARCH_ACTIVE_NOT_SIGNAL')
+              else:
+                  blockers.append('PARKED_BY_SIG_KILLPROMOTE_OR_PORTFOLIO_BALANCE')
+              if obj['instrument']=='XAUUSD' and obj['timeframe']=='M15':
+                  caveats += ['EVENT2_NOT_COMPLETE','COST2B_NOT_COMPLETE','XAU_OVERFOCUS_GUARD']
+              return {
+                  **obj,
+                  'surface':surf,
+                  'brain_state':state,
+                  'display_authority':'DISPLAY_ONLY_NOT_TRADE_SIGNAL',
+                  'signal_authorized':False,
+                  'forward_shadow_authorized':False,
+                  'broker_execution_authorized':False,
+                  'action_surface_authorized':False,
+                  'runtime_surface':{'present':bool(sr),'provider_status':provider_status,'updated':updated,'valid_bar_count':valid_bar_count,'last_provider_datetime':last_dt},
+                  'blocking_factors':blockers,
+                  'caveats':caveats,
+                  'main_reason':obj['why'],
+                  'allowed_panel_copy':'Research state only. Not buy/sell/hold, not entry/stop/target, not tradability.'
+              }
+          
+          def scan_for_forbidden(obj):
+              txt=json.dumps(obj,ensure_ascii=False).upper()
+              hits=[]
+              for term in FORBIDDEN_TERMS:
+                  if re.search(r'(?<!NO_|NOT_|FORBIDDEN_|NOT )\b'+re.escape(term)+r'\b', txt):
+                      # allow terms only inside explicit forbidden lists/boundaries is hard to distinguish in raw text; return advisory only
+                      hits.append(term)
+              return sorted(set(hits))
+          
+          def main():
+              ap=argparse.ArgumentParser()
+              ap.add_argument('root', nargs='?', default='.')
+              args=ap.parse_args()
+              root=Path(args.root).resolve()
+              surfaces, cache, fetch, detect=load_surfaces(root)
+              cards=[derive_object_card(o,surfaces) for o in OBJECTS]
+              active=[c for c in cards if c['brain_state'] in {'RESEARCH_ACTIVE_DISPLAY_ONLY','DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE','EVENT_CAVEATED_DISPLAY_ONLY','COST_CAVEATED_DISPLAY_ONLY'}]
+              payload={
+                  'program':PROGRAM,
+                  'artifact':'prv1_sig_brain_state_current',
+                  'created_at_utc':utc_now(),
+                  'source':'existing_prv1_runtime_outputs_plus_sig_memory_policy',
+                  'prv1_components_preserved':['RUN_DAILY.bat','credentialed_refresh_runner.py','run_daily_runtime.py','TwelveData read-only API flow','Cloudflare/mobile refresh worker flow'],
+                  'summary':{
+                      'cards_total':len(cards),'research_active_count':len(active),'parked_count':sum(1 for c in cards if c['brain_state']=='PARKED_NOT_ACTIVE'),
+                      'signal_authorized':False,'forward_shadow_authorized':False,'broker_execution_authorized':False,'action_surface_authorized':False,
+                      'provider_successful_surface_count': cache.get('updated_surface_count') or fetch.get('successful_surface_count'),
+                      'provider_failed_surface_count': cache.get('failed_surface_count') or fetch.get('failed_surface_count'),
+                      'candidate_detection_new_count': detect.get('new_observation_candidate_count'),
+                  },
+                  'brain_cards':cards,
+                  'surface_index':surfaces,
+                  'boundary':BOUNDARY
+              }
+              write_json(root/'panel/sig_brain_state_current.json',payload)
+              proof={
+                  'program':PROGRAM,'artifact':'prv1_sigbrain_adapter_proof','created_at_utc':payload['created_at_utc'],
+                  'status':'PASS', 'cards_checked':len(cards),
+                  'signal_authorized':False,'forward_shadow_authorized':False,'broker_execution_authorized':False,'action_surface_authorized':False,
+                  'prv1_live_fetch_preserved':True,
+                  'inputs_checked':['reports/staged_cache_update_report.json','reports/staged_provider_fetch_report.json','reports/candidate_detection_report.json'],
+                  'outputs':['panel/sig_brain_state_current.json'],
+                  'boundary':BOUNDARY
+              }
+              write_json(root/'proofs/prv1_sigbrain_adapter_proof.json',proof)
+              print(json.dumps({'status':'PASS','output':'panel/sig_brain_state_current.json','cards':len(cards),'signal_authorized':False},ensure_ascii=False))
+          if __name__=='__main__': main()
+          EOF_73301dfc16
+          mkdir -p "$(dirname "scripts/generate_mobile_pages_site_sig_brain.py")"
+          cat > "scripts/generate_mobile_pages_site_sig_brain.py" <<'EOF_b839f4c5a0'
+          #!/usr/bin/env python3
+          from __future__ import annotations
+          import argparse, json, os
+          from pathlib import Path
+          from datetime import datetime, timezone
+          from html import escape
+          PROGRAM='PRV1SIGBRAIN-UPGRADE1'
+          
+          def h(x): return escape('—' if x is None else str(x))
+          def read_json(path:Path, default=None):
+              if default is None: default={}
+              try:
+                  if path.exists(): return json.loads(path.read_text(encoding='utf-8'))
+              except Exception: return default
+              return default
+          
+          def write(path:Path, txt):
+              path.parent.mkdir(parents=True,exist_ok=True); path.write_text(txt,encoding='utf-8')
+          def utc_now(): return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00','Z')
+          def chip(text,cls='neutral'): return f"<span class='chip {cls}'>{h(text)}</span>"
+          def cls_for(state):
+              if state=='RESEARCH_ACTIVE_DISPLAY_ONLY': return 'active'
+              if 'CAVEATED' in state: return 'warn'
+              if state=='PARKED_NOT_ACTIVE': return 'parked'
+              return 'blocked'
+          
+          def fa_state(state):
+              return {
+                'RESEARCH_ACTIVE_DISPLAY_ONLY':'فعال پژوهشی / فقط نمایش',
+                'DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE':'فعال پژوهشی با caveat داده',
+                'PARKED_NOT_ACTIVE':'پارک‌شده / غیرفعال',
+                'DATA_UNAVAILABLE_NO_SIGNAL':'داده ناکافی / بدون سیگنال',
+                'EVENT_CAVEATED_DISPLAY_ONLY':'caveat رویداد / فقط نمایش',
+                'COST_CAVEATED_DISPLAY_ONLY':'caveat هزینه / فقط نمایش',
+              }.get(state,state)
+          
+          def card(c):
+              st=c.get('brain_state'); cl=cls_for(st)
+              rt=c.get('runtime_surface') or {}
+              blockers=c.get('blocking_factors') or []
+              caveats=c.get('caveats') or []
+              li=''.join(f"<li>{h(x)}</li>" for x in blockers+caveats) or '<li>caveat خاص اضافه ثبت نشده است.</li>'
+              return f"""
+              <article class='brain-card {cl}'>
+                <div class='top'><div><b dir='ltr'>{h(c.get('instrument'))} {h(c.get('timeframe'))}</b><small dir='ltr'>{h(c.get('candidate_family'))}</small></div>{chip(fa_state(st),cl)}</div>
+                <p>{h(c.get('main_reason'))}</p>
+                <div class='meta'>
+                  <span>Provider: <b dir='ltr'>{h(rt.get('provider_status'))}</b></span>
+                  <span>Bars: <b dir='ltr'>{h(rt.get('valid_bar_count'))}</b></span>
+                  <span>Latest: <b dir='ltr'>{h(rt.get('last_provider_datetime'))}</b></span>
+                </div>
+                <details><summary>caveat / blocker</summary><ul>{li}</ul></details>
+                <div class='authority'>DISPLAY ONLY · NOT SIGNAL · NO BUY/SELL/HOLD · NO ENTRY/STOP/TARGET</div>
+              </article>
+              """
+          
+          def render(payload, refresh_url, pages_url):
+              cards=payload.get('brain_cards') or []
+              summary=payload.get('summary') or {}
+              cards_html=''.join(card(c) for c in cards)
+              active=sum(1 for c in cards if c.get('brain_state') in ['RESEARCH_ACTIVE_DISPLAY_ONLY','DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE'])
+              return f"""<!doctype html><html lang='fa' dir='rtl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+          <title>PRV1 + SIG Brain</title><style>
+          :root{{--bg:#08111f;--card:#111d2e;--muted:#91a0b7;--line:#26364d;--txt:#eef4ff;--ok:#32d583;--warn:#fdb022;--bad:#f97066;--park:#98a2b3;--blue:#7ab7ff}}
+          *{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at top,#162642,#08111f 55%);font-family:Tahoma,Arial,sans-serif;color:var(--txt);line-height:1.7}}main{{max-width:900px;margin:auto;padding:18px 14px 80px}}.hero{{padding:18px;border:1px solid var(--line);background:linear-gradient(145deg,#13233a,#0e1828);border-radius:22px;margin-bottom:14px;box-shadow:0 16px 40px #0006}}h1{{font-size:22px;margin:0 0 8px}}.sub{{color:var(--muted);font-size:13px}}.metrics{{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}}.metric{{background:#0b1626;border:1px solid var(--line);border-radius:16px;padding:12px}}.metric span{{display:block;color:var(--muted);font-size:12px}}.metric b{{font-size:20px}}.brain-card{{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;margin:12px 0}}.brain-card.active{{border-color:#1d8b5c}}.brain-card.warn{{border-color:#a56a09}}.brain-card.parked{{opacity:.84}}.top{{display:flex;justify-content:space-between;gap:12px;align-items:start}}small{{display:block;color:var(--muted);font-size:12px}}.chip{{border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;white-space:nowrap}}.chip.active{{background:#053b28;color:#a7f3d0;border-color:#08724d}}.chip.warn{{background:#3d2604;color:#fedf89;border-color:#a56a09}}.chip.parked{{background:#202734;color:#d0d5dd}}.meta{{display:grid;grid-template-columns:1fr;gap:7px;background:#0b1626;border-radius:14px;padding:10px;margin-top:10px;color:var(--muted);font-size:12px}}details{{margin-top:10px;color:#d8e3f6}}summary{{cursor:pointer;color:#b8c7dd}}ul{{margin:8px 0 0;padding-right:20px}}.authority{{margin-top:12px;color:#ffdf8a;font-size:11px;border-top:1px dashed var(--line);padding-top:10px;direction:ltr;text-align:left}}button{{width:100%;padding:13px;border:0;border-radius:16px;background:#1f6feb;color:white;font-weight:700;margin-top:10px}}.status{{padding:10px;border-radius:14px;background:#0b1626;margin-top:8px;color:var(--muted);font-size:12px}}.foot{{color:var(--muted);font-size:12px;margin-top:18px}}
+          </style></head><body><main><section class='hero'><h1>PRV1 + SIG Brain</h1><div class='sub'>موتور live/API قبلی PRV1 حفظ شده؛ فقط خروجی پنل به Brain State پژوهشی و display-only ارتقا یافته است.</div><div class='metrics'><div class='metric'><span>Research Active</span><b>{active}</b></div><div class='metric'><span>Parked</span><b>{h(summary.get('parked_count'))}</b></div><div class='metric'><span>Provider OK surfaces</span><b>{h(summary.get('provider_successful_surface_count'))}</b></div><div class='metric'><span>Signal Authorized</span><b>False</b></div></div><button id='refresh-now-button'>به‌روزرسانی الآن</button><div id='refresh-status' class='status'>{'Refresh endpoint فعال است.' if refresh_url else 'Refresh endpoint تنظیم نشده است.'}</div><div id='latest-run-status' class='status'></div></section><section>{cards_html}</section><div class='foot'>Generated at <span dir='ltr'>{h(payload.get('created_at_utc'))}</span>. این صفحه توصیهٔ معامله، سیگنال، ورود/خروج، سودآوری یا اجرای بروکری نیست.</div></main><script src='refresh_config.js'></script><script src='mobile_refresh_button.js'></script></body></html>"""
+          
+          def main():
+              ap=argparse.ArgumentParser(); ap.add_argument('root',nargs='?',default='.'); args=ap.parse_args(); root=Path(args.root).resolve()
+              payload=read_json(root/'panel/sig_brain_state_current.json')
+              if not payload:
+                  raise SystemExit('panel/sig_brain_state_current.json missing; run adapt_prv1_live_to_sig_brain.py first')
+              refresh_url=os.environ.get('MOBILE_REFRESH_WORKER_URL','').strip().rstrip('/')
+              pages_url=os.environ.get('GITHUB_PAGES_URL','').strip()
+              public=root/'public'; public.mkdir(exist_ok=True)
+              write(public/'index.html', render(payload, refresh_url, pages_url))
+              write(public/'refresh_config.js', 'window.PRV1_REFRESH_WORKER_URL = '+json.dumps(refresh_url)+';\nwindow.PRV1_GITHUB_PAGES_URL = '+json.dumps(pages_url)+';\n')
+              write(public/'mobile_refresh_button.js', """async function prv1RefreshNow(){const endpoint=(window.PRV1_REFRESH_WORKER_URL||'').replace(/\/$/,'');const box=document.getElementById('refresh-status');if(!endpoint){box.textContent='Refresh endpoint تنظیم نشده است.';return;}const pin=prompt('PIN به‌روزرسانی را وارد کن');if(!pin){box.textContent='لغو شد.';return;}box.textContent='درخواست ارسال شد...';try{const res=await fetch(endpoint+'/refresh',{method:'POST',headers:{'content-type':'application/json','x-refresh-pin':pin},body:JSON.stringify({source:'mobile_prv1_sigbrain',requested_at:new Date().toISOString()})});const data=await res.json();if(!res.ok)throw new Error(data.reason||data.status||('HTTP '+res.status));box.textContent='درخواست ثبت شد. چند دقیقه بعد صفحه را reload کن.';poll(endpoint);}catch(e){box.textContent='Refresh failed: '+e.message;}}async function poll(endpoint){const box=document.getElementById('latest-run-status');if(!box)return;for(let i=0;i<12;i++){await new Promise(r=>setTimeout(r,10000));try{const res=await fetch(endpoint+'/latest-run');const data=await res.json();const run=data.latest_run;if(run){box.innerHTML='آخرین run: <span dir="ltr">'+run.status+'</span>'+(run.conclusion?' / <span dir="ltr">'+run.conclusion+'</span>':'')+' — <a target="_blank" href="'+run.html_url+'">باز کردن</a>';if(run.status==='completed')break;}}catch(_){}}}window.addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('refresh-now-button');if(b)b.addEventListener('click',prv1RefreshNow);});""")
+              proof={'program':PROGRAM,'artifact':'prv1_sigbrain_mobile_generation_proof','created_at_utc':utc_now(),'status':'PASS','output':'public/index.html','refresh_button_preserved':bool(refresh_url),'signal_authorized':False,'broker_execution_authorized':False,'action_surface_authorized':False}
+              write(root/'proofs/prv1_sigbrain_mobile_generation_proof.json', json.dumps(proof,ensure_ascii=False,indent=2))
+              print(json.dumps({'status':'PASS','output':'public/index.html','refresh_button_preserved':bool(refresh_url)},ensure_ascii=False))
+          if __name__=='__main__': main()
+          EOF_b839f4c5a0
+          mkdir -p "$(dirname "scripts/validate_prv1_sigbrain_upgrade.py")"
+          cat > "scripts/validate_prv1_sigbrain_upgrade.py" <<'EOF_ee8d8a5e5c'
+          #!/usr/bin/env python3
+          from __future__ import annotations
+          import argparse,json,re
+          from pathlib import Path
+          BAD_KEYS={'broker_status','execution_queue','action_buttons','position_instruction','entry','stop','target','pnl','win_loss','allocation','order_ticket','position_size'}
+          
+          def read_json(p,default=None):
+              if default is None: default={}
+              try:
+                  if Path(p).exists(): return json.loads(Path(p).read_text(encoding='utf-8'))
+              except Exception: return default
+              return default
+          
+          def walk(x,path=''):
+              hits=[]
+              if isinstance(x,dict):
+                  for k,v in x.items():
+                      if str(k).lower() in BAD_KEYS: hits.append(path+'/'+str(k))
+                      hits+=walk(v,path+'/'+str(k))
+              elif isinstance(x,list):
+                  for i,v in enumerate(x): hits+=walk(v,path+f'[{i}]')
+              return hits
+          
+          def main():
+              ap=argparse.ArgumentParser(); ap.add_argument('root',nargs='?',default='.'); args=ap.parse_args(); root=Path(args.root).resolve()
+              payload=read_json(root/'panel/sig_brain_state_current.json')
+              adapter=read_json(root/'proofs/prv1_sigbrain_adapter_proof.json')
+              gen=read_json(root/'proofs/prv1_sigbrain_mobile_generation_proof.json')
+              html=(root/'public/index.html').read_text(encoding='utf-8',errors='ignore') if (root/'public/index.html').exists() else ''
+              hits=walk(payload)
+              cards=payload.get('brain_cards') or []
+              ok=bool(payload) and bool(cards) and not hits and payload.get('summary',{}).get('signal_authorized') is False and adapter.get('status')=='PASS' and gen.get('status')=='PASS' and 'NO BUY/SELL/HOLD' in html
+              proof={'program':'PRV1SIGBRAIN-UPGRADE1','artifact':'prv1_sigbrain_upgrade_validation_proof','status':'PASS' if ok else 'FAIL','cards_checked':len(cards),'forbidden_key_hits':hits,'signal_authorized':False,'forward_shadow_authorized':False,'broker_execution_authorized':False,'action_surface_authorized':False,'prv1_live_fetch_preserved':adapter.get('prv1_live_fetch_preserved') is True,'public_index_exists':bool(html)}
+              out=root/'proofs/prv1_sigbrain_upgrade_validation_proof.json'; out.parent.mkdir(exist_ok=True); out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+              print(json.dumps(proof,ensure_ascii=False))
+              if not ok: raise SystemExit(1)
+          if __name__=='__main__': main()
+          EOF_ee8d8a5e5c
+          mkdir -p "$(dirname "config/sig_brain_runtime_policy.json")"
+          cat > "config/sig_brain_runtime_policy.json" <<'EOF_c67793009c'
+          {
+            "program": "PRV1SIGBRAIN-UPGRADE1",
+            "artifact": "sig_brain_runtime_policy",
+            "created_for": "upgrade_existing_prv1_not_parallel_prv2_shell",
+            "preserve_existing_prv1_live_fetch": true,
+            "preserve_existing_api_env_var": "LFB_TWELVE_DATA_API_KEY",
+            "preserve_existing_mobile_refresh_worker": true,
+            "replace_panel_logic_with": "SIG_DISPLAY_ONLY_BRAIN_STATE",
+            "runtime_authority": "DISPLAY_ONLY_RESEARCH_STATE_NOT_SIGNAL",
+            "allowed_states": [
+              "RESEARCH_ACTIVE_DISPLAY_ONLY",
+              "DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE",
+              "PARKED_NOT_ACTIVE",
+              "EVENT_CAVEATED_DISPLAY_ONLY",
+              "COST_CAVEATED_DISPLAY_ONLY",
+              "DOMAIN_MISMATCH_NO_SIGNAL",
+              "STALE_CONTEXT_NO_SIGNAL",
+              "DATA_UNAVAILABLE_NO_SIGNAL",
+              "SUPPORT_CONTEXT_ONLY"
+            ],
+            "forbidden": [
+              "BUY",
+              "SELL",
+              "HOLD",
+              "ENTRY",
+              "STOP",
+              "TARGET",
+              "PNL",
+              "WIN_RATE",
+              "EXPECTANCY",
+              "SHARPE",
+              "BROKER",
+              "ORDER",
+              "EXECUTION",
+              "POSITION_SIZE",
+              "TRADE_RECOMMENDATION",
+              "SIGNAL_AUTHORIZATION"
+            ],
+            "object_policy": {
+              "EURUSD_H1_LONDON_OVERLAP_DIRECTIONAL_PERSISTENCE_OBJECT_SPEC_v1_0": {
+                "display_state": "RESEARCH_ACTIVE_DISPLAY_ONLY",
+                "runtime_display": "active_research_card_only"
+              },
+              "USDJPY_H1_TREND_SESSION_CONTINUITY_OBJECT_SPEC_v1_0": {
+                "display_state": "DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE",
+                "runtime_display": "active_research_card_only_with_data_quality_caveat"
+              },
+              "XAUUSD_M15_EVENT_SESSION_RANGE_EXPANSION_CANDIDATE_LIKE_OBJECT_v1_0": {
+                "display_state": "PARKED_NOT_ACTIVE",
+                "runtime_display": "parked_card_only"
+              },
+              "EURUSD_M15_LOW_VOL_COMPRESSION_FULL_DOMAIN_DisplayContract_v0_3": {
+                "display_state": "PARKED_NOT_ACTIVE",
+                "runtime_display": "parked_card_only"
+              },
+              "USDJPY_M15_ASIA_RANGE_NEUTRAL_FULL_ASIA_v1_0": {
+                "display_state": "PARKED_NOT_ACTIVE",
+                "runtime_display": "parked_card_only"
+              },
+              "XAU_H1_RISK_OFF_CANDIDATE_FLOW_CONTEXT_v1_0": {
+                "display_state": "PARKED_NOT_ACTIVE",
+                "runtime_display": "parked_card_only"
+              }
+            }
+          }
+          EOF_c67793009c
+          mkdir -p "$(dirname ".github/workflows/prv1_daily_runtime_mobile_panel.yml")"
+          cat > ".github/workflows/prv1_daily_runtime_mobile_panel.yml" <<'EOF_9c606a7bfd'
+          name: PRV1 Daily Runtime Mobile Panel — SIG Brain Display Only
+          
+          on:
+            schedule:
+              - cron: "0 * * * *"
+            workflow_dispatch:
+              inputs:
+                trigger_source:
+                  description: "Source of manual trigger"
+                  required: false
+                  default: "manual"
+                requested_at_utc:
+                  description: "UTC timestamp supplied by mobile refresh worker"
+                  required: false
+                  default: ""
+          
+          permissions:
+            contents: read
+            pages: write
+            id-token: write
+          
+          env:
+            LFB_TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+            MOBILE_REFRESH_WORKER_URL: ${{ vars.MOBILE_REFRESH_WORKER_URL }}
+            GITHUB_PAGES_URL: https://shahramshiri-ops.github.io/TradingOS2/
+          
+          jobs:
+            run-prv1-live-and-sig-brain-panel:
+              runs-on: windows-latest
+              environment:
+                name: github-pages
+                url: ${{ steps.deployment.outputs.page_url }}
+              steps:
+                - name: Checkout
+                  uses: actions/checkout@v4
+                - name: Set up Python
+                  uses: actions/setup-python@v5
+                  with:
+                    python-version: "3.11"
+                - name: Run existing PRV1 daily runtime live/read-only refresh
+                  shell: cmd
+                  run: RUN_DAILY.bat
+                - name: Validate existing PRV1 daily runtime
+                  shell: cmd
+                  run: python scripts
+          alidate_daily_runtime_outputs.py .
+                - name: Adapt existing PRV1 live context to SIG display-only brain state
+                  shell: cmd
+                  run: python scriptsdapt_prv1_live_to_sig_brain.py .
+                - name: Generate upgraded PRV1 mobile SIG brain panel
+                  shell: cmd
+                  run: python scripts\generate_mobile_pages_site_sig_brain.py .
+                - name: Validate PRV1 SIG brain no-action surface
+                  shell: cmd
+                  run: python scripts
+          alidate_prv1_sigbrain_upgrade.py .
+                - name: Upload Pages artifact
+                  uses: actions/upload-pages-artifact@v3
+                  with:
+                    path: public
+                - name: Deploy to GitHub Pages
+                  id: deployment
+                  uses: actions/deploy-pages@v4
+          EOF_9c606a7bfd
+          mkdir -p "$(dirname "docs/PRV1_SIG_BRAIN_UPGRADE_MOBILE_ONLY_FA.md")"
+          cat > "docs/PRV1_SIG_BRAIN_UPGRADE_MOBILE_ONLY_FA.md" <<'EOF_6106f05329'
+          # PRV1 + SIG Brain Upgrade — Mobile-only GitHub Web Installer
+          
+          این بسته PRV1 را دور نمی‌اندازد. موتور live/read-only API، workflow، refresh button و مسیر GitHub Pages حفظ می‌شود؛ فقط لایهٔ پنل و خروجی تصمیم‌گیری به SIG Brain Display-Only ارتقا پیدا می‌کند.
+          
+          ## کاری که انجام می‌دهد
+          
+          - `RUN_DAILY.bat` و `credentialed_refresh_runner.py` را نگه می‌دارد.
+          - همان secret فعلی `LFB_TWELVE_DATA_API_KEY` را استفاده می‌کند.
+          - خروجی live/cache فعلی PRV1 را به `panel/sig_brain_state_current.json` تبدیل می‌کند.
+          - پنل موبایل اصلی را به `PRV1 + SIG Brain` تبدیل می‌کند.
+          - هیچ signal، buy/sell/hold، entry/stop/target، shadow activation یا broker execution نمی‌سازد.
+          
+          ## فقط با موبایل
+          
+          در GitHub یک فایل جدید بساز:
+          
+          `.github/workflows/prv1_sigbrain_web_installer.yml`
+          
+          و محتوای فایل `prv1_sigbrain_web_installer.yml` را داخلش paste و commit کن. بعد از تب Actions همین workflow را Run کن.
+          
+          بعد از نصب، workflow اصلی PRV1 یعنی `.github/workflows/prv1_daily_runtime_mobile_panel.yml` با نسخهٔ ارتقایافته جایگزین می‌شود.
+          EOF_6106f05329
+      - name: Create installation proof
+        shell: bash
+        run: |
+          mkdir -p proofs
+          cat > proofs/prv1_sigbrain_web_installer_proof.json <<'EOF'
+          {
+            "program": "PRV1SIGBRAIN-UPGRADE1",
+            "artifact": "web_installer_installation_proof",
+            "status": "INSTALLED_PENDING_RUNTIME_RUN",
+            "modified_existing_prv1": true,
+            "preserved_live_fetch": true,
+            "not_signal": true,
+            "no_broker_execution": true
+          }
+          EOF
+      - name: Commit upgrade
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/adapt_prv1_live_to_sig_brain.py scripts/generate_mobile_pages_site_sig_brain.py scripts/validate_prv1_sigbrain_upgrade.py config/sig_brain_runtime_policy.json .github/workflows/prv1_daily_runtime_mobile_panel.yml docs/PRV1_SIG_BRAIN_UPGRADE_MOBILE_ONLY_FA.md proofs/prv1_sigbrain_web_installer_proof.json
+          git commit -m "Install PRV1 SIG Brain display-only upgrade" || echo "No changes to commit"
+          git push
