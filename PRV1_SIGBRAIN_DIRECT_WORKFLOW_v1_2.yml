@@ -1,0 +1,249 @@
+name: PRV1 SIG Brain Direct Panel - Display Only
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+env:
+  LFB_TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+  TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+
+jobs:
+  build-display-only-panel:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Try existing PRV1 live read-only refresh if present
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $candidates = @(
+            "RUN_DAILY.bat",
+            "personal_runtime_v1_latest_product\RUN_DAILY.bat"
+          )
+          $ran = $false
+          foreach ($candidate in $candidates) {
+            if (Test-Path $candidate) {
+              Write-Host "Running existing PRV1 read-only refresh: $candidate"
+              cmd /c $candidate
+              $ran = $true
+              break
+            }
+          }
+          if (-not $ran) {
+            Write-Host "No PRV1 RUN_DAILY.bat found. Continuing with repository/sample context only."
+          }
+
+      - name: Create SIG Brain display-only adapter and panel
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path scripts | Out-Null
+          New-Item -ItemType Directory -Force -Path personal_runtime_v1_latest_product\panel\sigbrain | Out-Null
+          New-Item -ItemType Directory -Force -Path personal_runtime_v1_latest_product\payloads | Out-Null
+          New-Item -ItemType Directory -Force -Path personal_runtime_v1_latest_product\proofs | Out-Null
+
+          Set-Content -Path scripts\create_prv1_sigbrain_display_only_panel.py -Encoding UTF8 -Value @'
+          import json
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          OBJECTS = [
+              {"instrument":"EURUSD","timeframe":"H1","candidate_family":"EURUSD_H1_LONDON_OVERLAP_DIRECTIONAL_PERSISTENCE_OBJECT_SPEC_v1_0","brain_state":"RESEARCH_ACTIVE_DISPLAY_ONLY","priority":"high","authority":"DISPLAY_ONLY_NOT_TRADE_SIGNAL"},
+              {"instrument":"USDJPY","timeframe":"H1","candidate_family":"USDJPY_H1_TREND_SESSION_CONTINUITY_OBJECT_SPEC_v1_0","brain_state":"DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE","priority":"medium_high","authority":"DISPLAY_ONLY_NOT_TRADE_SIGNAL"},
+              {"instrument":"XAUUSD","timeframe":"M15","candidate_family":"XAUUSD_M15_EVENT_SESSION_RANGE_EXPANSION_CANDIDATE_LIKE_OBJECT_v1_0","brain_state":"PARKED_NOT_ACTIVE","priority":"parked","authority":"DISPLAY_ONLY_NOT_TRADE_SIGNAL"},
+              {"instrument":"EURUSD","timeframe":"M15","candidate_family":"EURUSD_M15_LOW_VOL_COMPRESSION_FULL_DOMAIN_DisplayContract_v0_3","brain_state":"PARKED_NOT_ACTIVE","priority":"parked","authority":"DISPLAY_ONLY_NOT_TRADE_SIGNAL"},
+              {"instrument":"USDJPY","timeframe":"M15","candidate_family":"USDJPY_M15_ASIA_RANGE_NEUTRAL_FULL_ASIA_v1_0","brain_state":"PARKED_NOT_ACTIVE","priority":"parked","authority":"DISPLAY_ONLY_NOT_TRADE_SIGNAL"},
+              {"instrument":"XAUUSD","timeframe":"H1","candidate_family":"XAU_H1_RISK_OFF_CANDIDATE_FLOW_CONTEXT_v1_0","brain_state":"PARKED_NOT_ACTIVE","priority":"parked","authority":"DISPLAY_ONLY_NOT_TRADE_SIGNAL"}
+          ]
+
+          CANDIDATE_CONTEXT_FILES = [
+              "personal_runtime_v1_latest_product/outputs/latest_live_context.json",
+              "personal_runtime_v1_latest_product/outputs/prv1_latest_context.json",
+              "personal_runtime_v1_latest_product/outputs/panel_payload.json",
+              "personal_runtime_v1_latest_product/reports/staged_cache_update_report.json",
+              "personal_runtime_v1_latest_product/reports/staged_provider_fetch_report.json",
+              "outputs/latest_live_context.json",
+              "outputs/panel_payload.json",
+              "reports/staged_cache_update_report.json",
+              "reports/staged_provider_fetch_report.json"
+          ]
+
+          def utc_now():
+              return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+          def read_json(path):
+              p = Path(path)
+              if not p.exists():
+                  return None
+              try:
+                  return json.loads(p.read_text(encoding="utf-8"))
+              except Exception:
+                  return None
+
+          def detect_context():
+              for path in CANDIDATE_CONTEXT_FILES:
+                  data = read_json(path)
+                  if data is not None:
+                      return {"status":"FOUND_REPOSITORY_CONTEXT", "source_path":path, "summary_type":type(data).__name__}
+              return {"status":"NO_LIVE_CONTEXT_FOUND_SAMPLE_DISPLAY_ONLY", "source_path":None, "summary_type":None}
+
+          context = detect_context()
+          generated_at = utc_now()
+
+          cards = []
+          for obj in OBJECTS:
+              blockers = []
+              if obj["brain_state"] == "DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE":
+                  blockers.append("DATA_QUALITY_CAVEAT")
+              if obj["brain_state"] == "PARKED_NOT_ACTIVE":
+                  blockers.append("PARKED_FOR_PORTFOLIO_BALANCE_OR_CONTEXT_ONLY")
+              cards.append({
+                  "instrument": obj["instrument"],
+                  "timeframe": obj["timeframe"],
+                  "candidate_family": obj["candidate_family"],
+                  "brain_state": obj["brain_state"],
+                  "priority": obj["priority"],
+                  "display_authority": obj["authority"],
+                  "direction_bias": "NONE_AUTHORIZED",
+                  "signal_authorized": False,
+                  "forward_shadow_authorized": False,
+                  "broker_execution_authorized": False,
+                  "action_surface_authorized": False,
+                  "blocking_factors": blockers,
+                  "reason": "SIG Brain display-only research state. Not a trade signal."
+              })
+
+          payload = {
+              "schema_id": "PRV1_SIGBRAIN_DISPLAY_ONLY_PAYLOAD_v1_2",
+              "generated_at_utc": generated_at,
+              "context_detection": context,
+              "global_authority": {
+                  "signal_authorized": False,
+                  "buy_sell_hold_authorized": False,
+                  "entry_stop_target_authorized": False,
+                  "forward_shadow_authorized": False,
+                  "broker_execution_authorized": False,
+                  "tradability_claim_authorized": False
+              },
+              "cards": cards,
+              "boundary": [
+                  "DISPLAY_ONLY_RESEARCH_STATE",
+                  "NOT_SIGNAL",
+                  "NO_BUY_SELL_HOLD",
+                  "NO_ENTRY_STOP_TARGET",
+                  "NO_EDGE_VERDICT",
+                  "NO_TRADABILITY_CLAIM",
+                  "NO_SHADOW_ACTIVATION",
+                  "NO_BROKER_EXECUTION"
+              ]
+          }
+
+          proof = {
+              "proof_id": "PRV1_SIGBRAIN_DIRECT_PROOF_v1_2",
+              "generated_at_utc": generated_at,
+              "status": "PASS",
+              "cards_checked": len(cards),
+              "signal_authorized": any(c["signal_authorized"] for c in cards),
+              "forward_shadow_authorized": any(c["forward_shadow_authorized"] for c in cards),
+              "broker_execution_authorized": any(c["broker_execution_authorized"] for c in cards),
+              "action_surface_authorized": any(c["action_surface_authorized"] for c in cards),
+              "context_detection": context,
+              "forbidden_claims_present": False
+          }
+
+          if proof["signal_authorized"] or proof["forward_shadow_authorized"] or proof["broker_execution_authorized"] or proof["action_surface_authorized"]:
+              raise SystemExit("Forbidden action surface detected")
+
+          payload_path = Path("personal_runtime_v1_latest_product/payloads/sig_brain_state_current.json")
+          proof_path = Path("personal_runtime_v1_latest_product/proofs/prv1_sigbrain_direct_proof.json")
+          panel_path = Path("personal_runtime_v1_latest_product/panel/sigbrain/index.html")
+          payload_path.parent.mkdir(parents=True, exist_ok=True)
+          proof_path.parent.mkdir(parents=True, exist_ok=True)
+          panel_path.parent.mkdir(parents=True, exist_ok=True)
+          payload_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+          proof_path.write_text(json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8")
+
+          rows = []
+          for c in cards:
+              blockers = ", ".join(c["blocking_factors"]) if c["blocking_factors"] else "None"
+              rows.append(f"""
+              <section class=\"card\">
+                <div class=\"top\"><strong>{c['instrument']} {c['timeframe']}</strong><span>{c['brain_state']}</span></div>
+                <p class=\"family\">{c['candidate_family']}</p>
+                <p><b>Authority:</b> {c['display_authority']}</p>
+                <p><b>Direction:</b> {c['direction_bias']}</p>
+                <p><b>Blockers:</b> {blockers}</p>
+                <p class=\"reason\">{c['reason']}</p>
+              </section>
+              """)
+
+          html = f"""<!doctype html>
+          <html lang=\"en\">
+          <head>
+            <meta charset=\"utf-8\" />
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+            <title>PRV1 + SIG Brain</title>
+            <style>
+              body {{ margin:0; font-family: system-ui, -apple-system, Segoe UI, sans-serif; background:#0b1020; color:#eef2ff; }}
+              header {{ padding:22px 16px; background:linear-gradient(135deg,#172554,#0f172a); position:sticky; top:0; }}
+              h1 {{ margin:0 0 6px; font-size:22px; }}
+              .sub {{ opacity:.82; font-size:13px; line-height:1.45; }}
+              main {{ padding:14px; max-width:900px; margin:auto; }}
+              .banner {{ border:1px solid #334155; background:#111827; border-radius:16px; padding:14px; margin-bottom:14px; }}
+              .card {{ background:#111827; border:1px solid #263244; border-radius:18px; padding:15px; margin:12px 0; box-shadow:0 10px 22px rgba(0,0,0,.20); }}
+              .top {{ display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }}
+              .top strong {{ font-size:18px; }}
+              .top span {{ font-size:11px; padding:5px 8px; border-radius:999px; background:#1e293b; color:#cbd5e1; text-align:right; }}
+              .family {{ color:#bfdbfe; word-break:break-word; }}
+              p {{ line-height:1.45; }}
+              .reason {{ color:#cbd5e1; }}
+              a {{ color:#93c5fd; }}
+            </style>
+          </head>
+          <body>
+            <header>
+              <h1>PRV1 + SIG Brain</h1>
+              <div class=\"sub\">Display-only research state panel. Generated: {generated_at}. Context: {context['status']}.</div>
+            </header>
+            <main>
+              <div class=\"banner\">
+                <b>Boundary:</b> NOT_SIGNAL · NO_BUY_SELL_HOLD · NO_ENTRY_STOP_TARGET · NO_EDGE_VERDICT · NO_TRADABILITY_CLAIM · NO_SHADOW_ACTIVATION · NO_BROKER_EXECUTION
+                <br/><br/>
+                <a href=\"../../payloads/sig_brain_state_current.json\">Open payload JSON</a> · <a href=\"../../proofs/prv1_sigbrain_direct_proof.json\">Open proof JSON</a>
+              </div>
+              {''.join(rows)}
+            </main>
+          </body>
+          </html>"""
+          panel_path.write_text(html, encoding="utf-8")
+          print(json.dumps(proof, indent=2))
+          '@
+
+          python scripts\create_prv1_sigbrain_display_only_panel.py
+
+      - name: Commit generated SIG Brain display-only files
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add personal_runtime_v1_latest_product/panel/sigbrain/index.html personal_runtime_v1_latest_product/payloads/sig_brain_state_current.json personal_runtime_v1_latest_product/proofs/prv1_sigbrain_direct_proof.json scripts/create_prv1_sigbrain_display_only_panel.py
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "No generated changes to commit."
+          } else {
+            git commit -m "Add PRV1 SIG Brain display-only panel"
+            git push
+          }
