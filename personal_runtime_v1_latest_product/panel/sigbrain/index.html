@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRV1 + SIG Brain</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#0f172a; color:#e5e7eb; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 18px; }
+    .hero { padding: 18px; border-radius: 18px; background:#111827; border:1px solid #334155; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#1e293b; color:#93c5fd; font-size:12px; margin-bottom:10px; }
+    .card { margin-top:14px; padding:14px; border-radius:16px; background:#020617; border:1px solid #334155; }
+    .muted { color:#94a3b8; font-size:13px; }
+    .state { font-weight:bold; color:#facc15; }
+    .danger { color:#fca5a5; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="badge">DISPLAY ONLY / NOT SIGNAL</div>
+      <h1>PRV1 + SIG Brain</h1>
+      <p class="muted">Mobile research-state panel. No buy/sell/hold, no broker execution, no shadow activation.</p>
+    </div>
+    <div id="cards"></div>
+    <div class="card">
+      <div class="danger">Forbidden interpretation:</div>
+      <p class="muted">This panel is not a trading signal, not validation, not profitability evidence, and not broker-realistic guidance.</p>
+    </div>
+  </div>
+  <script>
+    async function main() {
+      const res = await fetch('../../payloads/sig_brain_state_current.json?ts=' + Date.now());
+      const data = await res.json();
+      const root = document.getElementById('cards');
+      root.innerHTML = data.cards.map(c => `
+        <div class="card">
+          <h2>${c.instrument} — ${c.timeframe}</h2>
+          <p>Brain State: <span class="state">${c.brain_state}</span></p>
+          <p class="muted">Candidate Family: ${c.candidate_family}</p>
+          <p class="muted">Authority: ${c.display_authority}</p>
+        </div>
+      `).join('');
+    }
+    main().catch(err => {
+      document.getElementById('cards').innerHTML = '<div class="card danger">Failed to load payload.</div>';
+    });
+  </script>
+</body>
+</html>
