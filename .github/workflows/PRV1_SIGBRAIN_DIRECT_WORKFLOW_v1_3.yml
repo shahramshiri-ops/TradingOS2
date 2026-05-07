@@ -1,0 +1,156 @@
+name: PRV1 SIG Brain Direct Panel - Display Only Repair3
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+env:
+  LFB_TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+  TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+
+jobs:
+  build-display-only-panel:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Try existing PRV1 live read-only refresh if present
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $candidates = @(
+            "RUN_DAILY.bat",
+            "personal_runtime_v1_latest_product\RUN_DAILY.bat"
+          )
+          $ran = $false
+          foreach ($candidate in $candidates) {
+            if (Test-Path $candidate) {
+              Write-Host "Running existing PRV1 read-only refresh: $candidate"
+              cmd /c $candidate
+              $ran = $true
+              break
+            }
+          }
+          if (-not $ran) {
+            Write-Host "No PRV1 RUN_DAILY.bat found. Continuing with static display-only brain payload."
+          }
+
+      - name: Create PRV1 SIG Brain display-only files
+        shell: pwsh
+        run: |
+          $root = "personal_runtime_v1_latest_product"
+          New-Item -ItemType Directory -Force -Path "$root\panel\sigbrain" | Out-Null
+          New-Item -ItemType Directory -Force -Path "$root\payloads" | Out-Null
+          New-Item -ItemType Directory -Force -Path "$root\proofs" | Out-Null
+          $now = (Get-Date).ToUniversalTime().ToString("o")
+          $cards = @(
+            [ordered]@{ instrument="EURUSD"; timeframe="H1"; brain_state="RESEARCH_ACTIVE_DISPLAY_ONLY"; candidate_family="EURUSD_H1_LONDON_OVERLAP_DIRECTIONAL_PERSISTENCE_OBJECT_SPEC_v1_0"; display_authority="DISPLAY_ONLY_NOT_TRADE_SIGNAL"; signal_authorized=$false; action_surface_authorized=$false; reason="H1 research path active after spec, diagnostic, and baseline patch; not validation and not signal." },
+            [ordered]@{ instrument="USDJPY"; timeframe="H1"; brain_state="DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE"; candidate_family="USDJPY_H1_TREND_SESSION_CONTINUITY_OBJECT_SPEC_v1_0"; display_authority="DISPLAY_ONLY_NOT_TRADE_SIGNAL"; signal_authorized=$false; action_surface_authorized=$false; reason="H1 research path active with stronger data-quality caveat; not validation and not signal." },
+            [ordered]@{ instrument="XAUUSD"; timeframe="M15"; brain_state="PARKED_NOT_ACTIVE"; candidate_family="XAUUSD_M15_EVENT_SESSION_RANGE_EXPANSION_CANDIDATE_LIKE_OBJECT_v1_0"; display_authority="DISPLAY_ONLY_NOT_TRADE_SIGNAL"; signal_authorized=$false; action_surface_authorized=$false; reason="Baseline-patched review complete-for-now; parked for portfolio balance." },
+            [ordered]@{ instrument="EURUSD"; timeframe="M15"; brain_state="PARKED_NOT_ACTIVE"; candidate_family="EURUSD_M15_LOW_VOL_COMPRESSION_FULL_DOMAIN_DisplayContract_v0_3"; display_authority="DISPLAY_ONLY_NOT_TRADE_SIGNAL"; signal_authorized=$false; action_surface_authorized=$false; reason="Display contract closed; parked unless a new bounded question is defined." },
+            [ordered]@{ instrument="USDJPY"; timeframe="M15"; brain_state="PARKED_NOT_ACTIVE"; candidate_family="USDJPY_M15_ASIA_RANGE_NEUTRAL_FULL_ASIA_v1_0"; display_authority="DISPLAY_ONLY_NOT_TRADE_SIGNAL"; signal_authorized=$false; action_surface_authorized=$false; reason="Diagnostic complete-for-now; parked for portfolio balance." },
+            [ordered]@{ instrument="XAUUSD"; timeframe="H1"; brain_state="PARKED_NOT_ACTIVE"; candidate_family="XAU_H1_RISK_OFF_CANDIDATE_FLOW_CONTEXT_v1_0"; display_authority="DISPLAY_ONLY_NOT_TRADE_SIGNAL"; signal_authorized=$false; action_surface_authorized=$false; reason="Risk-off candidate-flow context complete-for-now; not a signal." }
+          )
+          $payload = [ordered]@{
+            generated_at_utc = $now
+            product = "PRV1 + SIG Brain Display-Only Panel"
+            display_authority = "DISPLAY_ONLY_NOT_TRADE_SIGNAL"
+            signal_authorized = $false
+            broker_execution_authorized = $false
+            forward_shadow_authorized = $false
+            action_surface_authorized = $false
+            forbidden_interpretations = @("buy", "sell", "hold", "entry", "stop", "target", "PnL", "profitability", "tradability", "broker_execution")
+            cards = $cards
+          }
+          $payload | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 -Path "$root\payloads\sig_brain_state_current.json"
+          $proof = [ordered]@{
+            status = "PASS"
+            generated_at_utc = $now
+            cards_checked = $cards.Count
+            signal_authorized = $false
+            forward_shadow_authorized = $false
+            broker_execution_authorized = $false
+            action_surface_authorized = $false
+            note = "Display-only PRV1 SIG Brain panel files created by repair3 workflow."
+          }
+          $proof | ConvertTo-Json -Depth 6 | Set-Content -Encoding UTF8 -Path "$root\proofs\prv1_sigbrain_direct_proof.json"
+          $html = @(
+            '<!doctype html>',
+            '<html lang="en">',
+            '<head>',
+            '<meta charset="utf-8">',
+            '<meta name="viewport" content="width=device-width, initial-scale=1">',
+            '<title>PRV1 + SIG Brain</title>',
+            '<style>',
+            'body{margin:0;font-family:Arial,sans-serif;background:#0f172a;color:#e5e7eb}',
+            '.wrap{max-width:900px;margin:0 auto;padding:18px}',
+            '.header{padding:18px;border:1px solid #334155;border-radius:18px;background:#111827;margin-bottom:14px}',
+            '.title{font-size:24px;font-weight:800;margin:0 0 6px}',
+            '.sub{color:#94a3b8;font-size:14px;line-height:1.5}',
+            '.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}',
+            '.card{border:1px solid #334155;border-radius:16px;background:#020617;padding:14px}',
+            '.pair{font-size:18px;font-weight:800}',
+            '.state{display:inline-block;margin-top:8px;padding:6px 9px;border-radius:999px;background:#1e293b;color:#bfdbfe;font-size:12px;font-weight:700}',
+            '.reason{margin-top:10px;color:#cbd5e1;font-size:13px;line-height:1.45}',
+            '.guard{margin-top:10px;color:#fecaca;font-size:12px}',
+            'a{color:#93c5fd}',
+            '</style>',
+            '</head>',
+            '<body>',
+            '<div class="wrap">',
+            '<div class="header">',
+            '<p class="title">PRV1 + SIG Brain</p>',
+            '<div class="sub">Display-only research intelligence. Not a trading signal. No buy/sell/hold, no entry/stop/target, no broker execution.</div>',
+            '<div class="sub" id="stamp">Loading payload...</div>',
+            '</div>',
+            '<div class="grid" id="cards"></div>',
+            '</div>',
+            '<script>',
+            'async function main(){',
+            ' const r=await fetch("../../payloads/sig_brain_state_current.json?ts="+Date.now());',
+            ' const p=await r.json();',
+            ' document.getElementById("stamp").textContent="Updated: "+p.generated_at_utc+" | Authority: "+p.display_authority;',
+            ' document.getElementById("cards").innerHTML=p.cards.map(c=>`<div class="card"><div class="pair">${c.instrument} ${c.timeframe}</div><div class="state">${c.brain_state}</div><div class="reason">${c.reason}</div><div class="guard">${c.display_authority}</div></div>`).join("");',
+            '}',
+            'main().catch(e=>{document.getElementById("stamp").textContent="Payload load failed: "+e});',
+            '</script>',
+            '</body>',
+            '</html>'
+          )
+          Set-Content -Encoding UTF8 -Path "$root\panel\sigbrain\index.html" -Value $html
+
+      - name: Validate no-action surface
+        shell: pwsh
+        run: |
+          $root = "personal_runtime_v1_latest_product"
+          $payload = Get-Content "$root\payloads\sig_brain_state_current.json" -Raw | ConvertFrom-Json
+          if ($payload.signal_authorized -ne $false) { throw "signal_authorized must be false" }
+          if ($payload.broker_execution_authorized -ne $false) { throw "broker_execution_authorized must be false" }
+          if ($payload.forward_shadow_authorized -ne $false) { throw "forward_shadow_authorized must be false" }
+          if ($payload.action_surface_authorized -ne $false) { throw "action_surface_authorized must be false" }
+          foreach ($card in $payload.cards) {
+            if ($card.signal_authorized -ne $false) { throw "card signal_authorized must be false" }
+            if ($card.action_surface_authorized -ne $false) { throw "card action_surface_authorized must be false" }
+          }
+          Write-Host "PASS: no-action surface validation completed."
+
+      - name: Commit generated PRV1 SIG Brain files
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add personal_runtime_v1_latest_product/panel/sigbrain/index.html personal_runtime_v1_latest_product/payloads/sig_brain_state_current.json personal_runtime_v1_latest_product/proofs/prv1_sigbrain_direct_proof.json
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "No changes to commit."
+          } else {
+            git commit -m "Add PRV1 SIG Brain display-only panel"
+            git push
+          }
