@@ -21,6 +21,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Run PRV1 refresh chain
         shell: bash
         run: |
@@ -33,7 +36,7 @@ jobs:
             local START_TIME
             START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-            gh workflow run "$WF" --ref main
+            gh workflow run "$WF" --repo "$GITHUB_REPOSITORY" --ref main
 
             echo "Waiting for workflow run to appear..."
             sleep 12
@@ -42,6 +45,7 @@ jobs:
 
             for i in {1..30}; do
               RUN_ID=$(gh run list \
+                --repo "$GITHUB_REPOSITORY" \
                 --workflow "$WF" \
                 --branch main \
                 --event workflow_dispatch \
@@ -63,7 +67,7 @@ jobs:
             fi
 
             echo "Watching run id: $RUN_ID"
-            gh run watch "$RUN_ID" --exit-status
+            gh run watch "$RUN_ID" --repo "$GITHUB_REPOSITORY" --exit-status
           }
 
           run_and_wait "prv1_live_feed1_twelvedata_timestamp.yml"
