@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRV1 + SIG Brain Status</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .hero,
+    .card {
+      border: 1px solid #334155;
+      border-radius: 22px;
+      background: #111827;
+      padding: 18px;
+      margin: 12px 0;
+    }
+
+    .card {
+      background: #020617;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #1e293b;
+      color: #93c5fd;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.08;
+      margin: 10px 0 10px;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin: 0 0 10px;
+    }
+
+    .muted {
+      color: #94a3b8;
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .kv {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .label {
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      overflow-wrap: anywhere;
+      font-weight: 700;
+    }
+
+    .ok {
+      color: #86efac;
+    }
+
+    .warn {
+      color: #facc15;
+    }
+
+    .bad {
+      color: #fca5a5;
+    }
+
+    a.button {
+      display: block;
+      text-decoration: none;
+      color: #e5e7eb;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 10px;
+      font-weight: 700;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #94a3b8;
+      overflow-wrap: anywhere;
+    }
+
+    @media (min-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <span class="badge">RUNTIME STATUS / DISPLAY ONLY</span>
+      <h1>PRV1 + SIG Brain Status</h1>
+      <p class="muted">
+        وضعیت سلامت runtime، payload، freshness، journal و proofها.
+        این صفحه سیگنال معاملاتی نیست.
+      </p>
+      <p class="muted" id="meta">Loading status...</p>
+    </section>
+
+    <main id="content"></main>
+
+    <section class="card">
+      <h2>Links</h2>
+      <a class="button" href="../sigbrain/?v=status">Open Main Panel</a>
+      <a class="button" href="../sigbrain-journal/?v=status">Open Journal</a>
+      <a class="button" href="../sigbrain-home/?v=status">Open Hub</a>
+      <a class="button" href="../../status/prv1_runtime_status_current.json?v=status">Open Status JSON</a>
+    </section>
+
+    <section class="card">
+      <h2>Boundary</h2>
+      <p class="bad">
+        Not signal. No buy/sell/hold. No entry/stop/target.
+        No broker execution. No forward shadow activation.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    function cls(status) {
+      if (status === "OK" || status === "PASS" || status === "FRESH") return "ok";
+      if (status === "WARN") return "warn";
+      return "bad";
+    }
+
+    function kv(label, value, cssClass = "") {
+      return `
+        <div class="kv">
+          <div class="label">${label}</div>
+          <div class="value ${cssClass}">${value ?? "n/a"}</div>
+        </div>
+      `;
+    }
+
+    async function main() {
+      const res = await fetch('../../status/prv1_runtime_status_current.json?ts=' + Date.now());
+      const data = await res.json();
+
+      document.getElementById('meta').textContent =
+        'Updated: ' + data.updated_at_utc +
+        ' | Official refresh: ' + data.official_refresh_route;
+
+      const payload = data.payload || {};
+      const journal = data.journal || {};
+      const proofs = data.proofs || {};
+      const freshness = payload.freshness_counts || {};
+      const states = payload.state_counts || {};
+
+      const content = document.getElementById('content');
+
+      content.innerHTML = `
+        <section class="card">
+          <h2>Overall</h2>
+          <div class="grid">
+            ${kv("Overall status", data.overall_status, cls(data.overall_status))}
+            ${kv("Card count", payload.card_count)}
+            ${kv("Evidence files", payload.evidence_file_count)}
+            ${kv("Journal snapshots", journal.retained_snapshot_count)}
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Freshness</h2>
+          <div class="grid">
+            ${Object.entries(freshness).map(([k,v]) => kv(k, v, cls(k))).join("") || kv("Freshness", "none")}
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Brain states</h2>
+          <div class="grid">
+            ${Object.entries(states).map(([k,v]) => kv(k, v)).join("") || kv("States", "none")}
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Proofs</h2>
+          <div class="grid">
+            ${Object.entries(proofs).map(([k,v]) => kv(k, v, cls(v))).join("")}
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Warnings</h2>
+          <p class="small">${(data.warnings || []).join(", ") || "none"}</p>
+          <p class="small">${(data.missing_files || []).join(", ") || ""}</p>
+        </section>
+      `;
+    }
+
+    main().catch(err => {
+      document.getElementById('meta').textContent = 'Failed to load status.';
+      document.getElementById('content').innerHTML =
+        '<section class="card"><p class="bad">Status JSON could not be loaded.</p></section>';
+    });
+  </script>
+</body>
+</html>
