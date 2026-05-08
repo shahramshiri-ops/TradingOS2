@@ -1,0 +1,418 @@
+name: PRV1 DATASTATE1 Live Market State
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: prv1-datastate1-pages
+  cancel-in-progress: true
+
+jobs:
+  build-live-market-state:
+    runs-on: ubuntu-latest
+
+    env:
+      TD_API_KEY_PRIMARY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
+      TD_API_KEY_ALT: ${{ secrets.TWELVE_DATA_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build live market state from Twelve Data bars
+        shell: bash
+        run: |
+          mkdir -p datastate reports proofs payloads panel/sigbrain-data
+          mkdir -p personal_runtime_v1_latest_product/datastate
+          mkdir -p personal_runtime_v1_latest_product/reports
+          mkdir -p personal_runtime_v1_latest_product/proofs
+          mkdir -p personal_runtime_v1_latest_product/payloads
+
+          python - <<'PY'
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          API_KEY = os.environ.get("TD_API_KEY_PRIMARY") or os.environ.get("TD_API_KEY_ALT") or ""
+
+          ROOT_PAYLOAD = Path("payloads/sig_brain_state_current.json")
+          PERSONAL_PAYLOAD = Path("personal_runtime_v1_latest_product/payloads/sig_brain_state_current.json")
+
+          ROOT_DATASTATE = Path("datastate/prv1_datastate1_current.json")
+          PERSONAL_DATASTATE = Path("personal_runtime_v1_latest_product/datastate/prv1_datastate1_current.json")
+
+          ROOT_REPORT = Path("reports/prv1_datastate1_report.json")
+          PERSONAL_REPORT = Path("personal_runtime_v1_latest_product/reports/prv1_datastate1_report.json")
+
+          ROOT_PROOF = Path("proofs/prv1_datastate1_proof.json")
+          PERSONAL_PROOF = Path("personal_runtime_v1_latest_product/proofs/prv1_datastate1_proof.json")
+
+          SURFACES = [
+              {
+                  "instrument": "EURUSD",
+                  "timeframe": "H1",
+                  "surface": "EURUSD_H1",
+                  "symbol": "EUR/USD",
+                  "interval": "1h",
+                  "candidate_family": "london_overlap_directional_persistence",
+                  "lifecycle": "RESEARCH_ACTIVE"
+              },
+              {
+                  "instrument": "USDJPY",
+                  "timeframe": "H1",
+                  "surface": "USDJPY_H1",
+                  "symbol": "USD/JPY",
+                  "interval": "1h",
+                  "candidate_family": "trend_session_continuity",
+                  "lifecycle": "RESEARCH_ACTIVE_WITH_DATA_QUALITY_CAVEAT"
+              },
+              {
+                  "instrument": "XAUUSD",
+                  "timeframe": "M15",
+                  "surface": "XAUUSD_M15",
+                  "symbol": "XAU/USD",
+                  "interval": "15min",
+                  "candidate_family": "event_session_range_expansion",
+                  "lifecycle": "PARKED_FOR_PORTFOLIO_BALANCE"
+              },
+              {
+                  "instrument": "EURUSD",
+                  "timeframe": "M15",
+                  "surface": "EURUSD_M15",
+                  "symbol": "EUR/USD",
+                  "interval": "15min",
+                  "candidate_family": "low_vol_compression_full_domain_display_contract",
+                  "lifecycle": "PARKED_DISPLAY_CONTRACT_CLOSED"
+              },
+              {
+                  "instrument": "USDJPY",
+                  "timeframe": "M15",
+                  "surface": "USDJPY_M15",
+                  "symbol": "USD/JPY",
+                  "interval": "15min",
+                  "candidate_family": "asia_range_neutral_full_asia",
+                  "lifecycle": "PARKED_DIAGNOSTIC_COMPLETE_FOR_NOW"
+              },
+              {
+                  "instrument": "XAUUSD",
+                  "timeframe": "H1",
+                  "surface": "XAUUSD_H1",
+                  "symbol": "XAU/USD",
+                  "interval": "1h",
+                  "candidate_family": "risk_off_candidate_flow_context",
+                  "lifecycle": "SUPPORT_CONTEXT_ONLY"
+              }
+          ]
+
+          def now_utc():
+              return datetime.now(timezone.utc).replace(microsecond=0)
+
+          def iso(dt):
+              if dt is None:
+                  return None
+              return dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+          def read_json(path, default=None):
+              if default is None:
+                  default = {}
+              try:
+                  p = Path(path)
+                  if p.exists():
+                      return json.loads(p.read_text(encoding="utf-8"))
+              except Exception:
+                  return default
+              return default
+
+          def write_json(path, data):
+              Path(path).write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+          def parse_dt(value):
+              if value is None:
+                  return None
+              text = str(value).strip().replace(" ", "T")
+              if text.endswith("Z"):
+                  text = text[:-1] + "+00:00"
+              try:
+                  dt = datetime.fromisoformat(text)
+                  if dt.tzinfo is None:
+                      dt = dt.replace(tzinfo=timezone.utc)
+                  return dt.astimezone(timezone.utc)
+              except Exception:
+                  return None
+
+          def to_float(x):
+              try:
+                  return float(x)
+              except Exception:
+                  return None
+
+          def session_bucket_utc(dt):
+              if dt is None:
+                  return "UNKNOWN_SESSION"
+              h = dt.hour
+
+              if 0 <= h < 7:
+                  return "ASIA"
+              if 7 <= h < 12:
+                  return "LONDON"
+              if 12 <= h < 16:
+                  return "LONDON_NY_OVERLAP"
+              if 16 <= h < 21:
+                  return "NEW_YORK"
+              return "ROLLOVER_OR_THIN_LIQUIDITY"
+
+          def fetch_bars(surface):
+              if not API_KEY:
+                  return {
+                      "fetch_status": "BLOCKED_MISSING_TWELVE_DATA_API_KEY",
+                      "bars": [],
+                      "provider_error_message": "missing secret LFB_TWELVE_DATA_API_KEY or TWELVE_DATA_API_KEY"
+                  }
+
+              params = {
+                  "symbol": surface["symbol"],
+                  "interval": surface["interval"],
+                  "outputsize": "48",
+                  "timezone": "UTC",
+                  "apikey": API_KEY
+              }
+
+              url = "https://api.twelvedata.com/time_series?" + urllib.parse.urlencode(params)
+
+              try:
+                  req = urllib.request.Request(
+                      url,
+                      headers={"User-Agent": "PRV1-SIG-Brain-ReadOnly/1.0"}
+                  )
+
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      raw = resp.read().decode("utf-8")
+
+                  data = json.loads(raw)
+
+                  if isinstance(data, dict) and data.get("status") == "error":
+                      return {
+                          "fetch_status": "PROVIDER_ERROR",
+                          "bars": [],
+                          "provider_error_message": data.get("message") or data.get("code")
+                      }
+
+                  values = data.get("values") if isinstance(data, dict) else None
+
+                  if not values:
+                      return {
+                          "fetch_status": "NO_VALUES_RETURNED",
+                          "bars": [],
+                          "provider_error_message": None
+                      }
+
+                  bars = []
+
+                  for row in values:
+                      dt = parse_dt(row.get("datetime") or row.get("timestamp"))
+
+                      o = to_float(row.get("open"))
+                      h = to_float(row.get("high"))
+                      l = to_float(row.get("low"))
+                      c = to_float(row.get("close"))
+
+                      if dt is None or o is None or h is None or l is None or c is None:
+                          continue
+
+                      bars.append({
+                          "datetime_utc": iso(dt),
+                          "dt_obj": dt,
+                          "open": o,
+                          "high": h,
+                          "low": l,
+                          "close": c,
+                          "range": h - l
+                      })
+
+                  bars.sort(key=lambda x: x["dt_obj"])
+
+                  for b in bars:
+                      b.pop("dt_obj", None)
+
+                  return {
+                      "fetch_status": "OK",
+                      "bars": bars,
+                      "provider_error_message": None
+                  }
+
+              except Exception as exc:
+                  return {
+                      "fetch_status": "FETCH_EXCEPTION",
+                      "bars": [],
+                      "provider_error_message": str(exc)[:300]
+                  }
+
+          def avg(nums):
+              nums = [x for x in nums if x is not None]
+              if not nums:
+                  return None
+              return sum(nums) / len(nums)
+
+          def pct_change(a, b):
+              if a is None or b is None or b == 0:
+                  return None
+              return (a - b) / b * 100.0
+
+          def round_or_none(x, n=6):
+              if x is None:
+                  return None
+              return round(x, n)
+
+          def direction_from_change(pct, flat_threshold=0.03):
+              if pct is None:
+                  return "UNKNOWN"
+              if pct > flat_threshold:
+                  return "UP"
+              if pct < -flat_threshold:
+                  return "DOWN"
+              return "FLAT"
+
+          def range_regime(latest_range, avg_range_12):
+              if latest_range is None or avg_range_12 is None or avg_range_12 <= 0:
+                  return "UNKNOWN_RANGE_REGIME"
+
+              ratio = latest_range / avg_range_12
+
+              if ratio < 0.65:
+                  return "COMPRESSED"
+              if ratio > 1.50:
+                  return "EXPANDED"
+              return "NORMAL"
+
+          def candidate_context(surface, market_state):
+              lifecycle = surface["lifecycle"]
+              session = market_state.get("session_bucket_utc")
+              direction = market_state.get("momentum_direction_3bar")
+              rr = market_state.get("range_regime")
+
+              if lifecycle.startswith("PARKED"):
+                  return {
+                      "candidate_context_status": "PARKED_CONTEXT_ONLY",
+                      "candidate_context_reason": "research_path_is_parked_or_complete_for_now"
+                  }
+
+              if lifecycle == "SUPPORT_CONTEXT_ONLY":
+                  return {
+                      "candidate_context_status": "SUPPORT_CONTEXT_ONLY",
+                      "candidate_context_reason": "context_layer_cannot_create_signal"
+                  }
+
+              if surface["surface"] == "EURUSD_H1":
+                  if session in {"LONDON", "LONDON_NY_OVERLAP"} and direction in {"UP", "DOWN"}:
+                      return {
+                          "candidate_context_status": "CONTEXT_PRESENT_DISPLAY_ONLY",
+                          "candidate_context_reason": "eurusd_h1_active_session_and_directional_recent_momentum"
+                      }
+                  if session not in {"LONDON", "LONDON_NY_OVERLAP"}:
+                      return {
+                          "candidate_context_status": "SESSION_OUT_OF_FOCUS_DISPLAY_ONLY",
+                          "candidate_context_reason": "eurusd_h1_family_prefers_london_or_overlap_context"
+                      }
+                  return {
+                      "candidate_context_status": "CONTEXT_WEAK_OR_FLAT_DISPLAY_ONLY",
+                      "candidate_context_reason": "eurusd_h1_recent_momentum_not_directional_enough"
+                  }
+
+              if surface["surface"] == "USDJPY_H1":
+                  if direction in {"UP", "DOWN"} and rr != "EXPANDED":
+                      return {
+                          "candidate_context_status": "CONTEXT_PRESENT_WITH_DATA_QUALITY_CAVEAT",
+                          "candidate_context_reason": "usdjpy_h1_directional_recent_momentum_but_data_quality_caveat_remains"
+                      }
+                  return {
+                      "candidate_context_status": "CONTEXT_WEAK_OR_CAVEATED_DISPLAY_ONLY",
+                      "candidate_context_reason": "usdjpy_h1_context_not_strong_enough_or_range_expanded"
+                  }
+
+              return {
+                  "candidate_context_status": "CONTEXT_RECORDED_DISPLAY_ONLY",
+                  "candidate_context_reason": "generic_market_state_recorded_without_signal_authority"
+              }
+
+          def build_market_state(surface, bars):
+              if not bars:
+                  return {
+                      "market_state_status": "UNAVAILABLE",
+                      "bar_count": 0,
+                      "candidate_context_status": "NOT_CHECKED",
+                      "candidate_context_reason": "no_bars_available"
+                  }
+
+              latest = bars[-1]
+              closes = [b["close"] for b in bars]
+              ranges = [b["range"] for b in bars]
+
+              latest_close = latest["close"]
+              prev_close = closes[-2] if len(closes) >= 2 else None
+              close_3 = closes[-4] if len(closes) >= 4 else None
+              close_6 = closes[-7] if len(closes) >= 7 else None
+
+              change_1_pct = pct_change(latest_close, prev_close)
+              change_3_pct = pct_change(latest_close, close_3)
+              change_6_pct = pct_change(latest_close, close_6)
+
+              latest_range = latest["range"]
+              avg_range_6 = avg(ranges[-6:])
+              avg_range_12 = avg(ranges[-12:])
+
+              latest_dt = parse_dt(latest["datetime_utc"])
+
+              state = {
+                  "market_state_status": "OK",
+                  "instrument": surface["instrument"],
+                  "timeframe": surface["timeframe"],
+                  "surface": surface["surface"],
+                  "provider_symbol": surface["symbol"],
+                  "provider_interval": surface["interval"],
+                  "bar_count": len(bars),
+                  "latest_bar_time_utc": latest["datetime_utc"],
+                  "latest_open": round_or_none(latest["open"]),
+                  "latest_high": round_or_none(latest["high"]),
+                  "latest_low": round_or_none(latest["low"]),
+                  "latest_close": round_or_none(latest_close),
+                  "latest_range": round_or_none(latest_range),
+                  "avg_range_6": round_or_none(avg_range_6),
+                  "avg_range_12": round_or_none(avg_range_12),
+                  "range_regime": range_regime(latest_range, avg_range_12),
+                  "change_1bar_pct": round_or_none(change_1_pct),
+                  "change_3bar_pct": round_or_none(change_3_pct),
+                  "change_6bar_pct": round_or_none(change_6_pct),
+                  "momentum_direction_1bar": direction_from_change(change_1_pct),
+                  "momentum_direction_3bar": direction_from_change(change_3_pct),
+                  "momentum_direction_6bar": direction_from_change(change_6_pct),
+                  "session_bucket_utc": session_bucket_utc(latest_dt),
+                  "display_authority": "MARKET_STATE_DISPLAY_ONLY_NOT_SIGNAL"
+              }
+
+              state.update(candidate_context(surface, state))
+              return state
+
+          payload = read_json(ROOT_PAYLOAD, read_json(PERSONAL_PAYLOAD, {
+              "program": "SIG_BRAIN_RUNTIME1_DYNAMIC_DISPLAY_ONLY",
+              "created_at_utc": iso(now_utc()),
+              "authority": "DISPLAY_ONLY_NOT_SIGNAL",
+              "signal_authorized": False,
+              "broker_execution_authorized": False,
+              "forward_shadow_authorized": False,
+              "action_surface_authorized": False,
+              "cards": []
+          }))
+
+          all_results = []
+          market_states = {}
+
+          for surface in SURFACES:
+              fetched =
