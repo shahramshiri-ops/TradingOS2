@@ -1,0 +1,392 @@
+name: PRV1 CONDITION1 Candidate Condition
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: prv1-condition1-pages
+  cancel-in-progress: true
+
+jobs:
+  build-condition-state:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build candidate condition state from DATASTATE1
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+
+            function mkdirp(p) {
+              fs.mkdirSync(p, { recursive: true });
+            }
+
+            function writeJson(path, obj) {
+              const dir = path.split("/").slice(0, -1).join("/");
+              if (dir) mkdirp(dir);
+              fs.writeFileSync(path, JSON.stringify(obj, null, 2), "utf8");
+            }
+
+            function readJson(path, fallback) {
+              try {
+                if (fs.existsSync(path)) {
+                  return JSON.parse(fs.readFileSync(path, "utf8"));
+                }
+              } catch (e) {}
+              return fallback;
+            }
+
+            function nowUtc() {
+              return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+            }
+
+            const datastate = readJson("datastate/prv1_datastate1_current.json", {
+              program: "MISSING_DATASTATE",
+              created_at_utc: "UNKNOWN",
+              market_states: {}
+            });
+
+            const states = datastate.market_states || {};
+
+            const statusFa = {
+              DATA_UNAVAILABLE: "داده در دسترس نیست",
+              SESSION_BLOCKED_BUT_DIRECTIONAL_PRECONTEXT: "حرکت اولیه هست، اما نشست مناسب نیست",
+              CONTEXT_PRESENT_DISPLAY_ONLY: "زمینهٔ پژوهشی حاضر است",
+              CONTEXT_PRESENT_WITH_CAVEAT: "زمینهٔ پژوهشی هست، اما با احتیاط",
+              WEAK_CONTEXT_FLAT_MOMENTUM: "زمینه ضعیف است؛ مومنتوم تخت است",
+              PARKED_CONTEXT_ONLY: "مسیر پارک‌شده؛ فقط مشاهده",
+              PARKED_BUT_COMPRESSION_OBSERVED: "مسیر پارک‌شده؛ فشردگی مشاهده شد",
+              SUPPORT_CONTEXT_ONLY: "فقط لایهٔ کمکی / زمینه‌ای",
+              GENERIC_CONTEXT_RECORDED: "زمینه ثبت شد؛ بدون اختیار سیگنال"
+            };
+
+            const sessionFa = {
+              ASIA: "آسیا",
+              LONDON: "لندن",
+              LONDON_NY_OVERLAP: "هم‌پوشانی لندن/نیویورک",
+              NEW_YORK: "نیویورک",
+              ROLLOVER_OR_THIN_LIQUIDITY: "رول‌اور / نقدشوندگی کم",
+              UNKNOWN_SESSION: "نشست نامشخص"
+            };
+
+            const momentumFa = {
+              UP: "رو به بالا",
+              DOWN: "رو به پایین",
+              FLAT: "تخت / کم‌جهت",
+              UNKNOWN: "نامشخص"
+            };
+
+            const rangeFa = {
+              COMPRESSED: "فشرده",
+              NORMAL: "عادی",
+              EXPANDED: "بازشده / پرنوسان",
+              UNKNOWN_RANGE_REGIME: "نامشخص"
+            };
+
+            function isDirectional(ms) {
+              return ms.momentum_direction_3bar === "UP" || ms.momentum_direction_3bar === "DOWN";
+            }
+
+            function isLondonFocus(ms) {
+              return ms.session_bucket_utc === "LONDON" || ms.session_bucket_utc === "LONDON_NY_OVERLAP";
+            }
+
+            function buildCondition(ms) {
+              if (!ms || ms.market_state_status !== "OK") {
+                return {
+                  condition_status: "DATA_UNAVAILABLE",
+                  condition_reason_fa: "دادهٔ کافی برای ساخت وضعیت شرط وجود ندارد.",
+                  next_observation_need: "اول باید DATASTATE1 با دادهٔ معتبر ساخته شود."
+                };
+              }
+
+              const surface = ms.surface;
+              const lifecycle = ms.lifecycle || "";
+              const directional = isDirectional(ms);
+              const londonFocus = isLondonFocus(ms);
+
+              if (lifecycle.startsWith("PARKED")) {
+                if (surface === "EURUSD_M15" && ms.range_regime === "COMPRESSED") {
+                  return {
+                    condition_status: "PARKED_BUT_COMPRESSION_OBSERVED",
+                    condition_reason_fa: "این مسیر فعلاً پارک‌شده است، اما در EURUSD M15 فشردگی رنج دیده می‌شود. این مشاهده ارزش پژوهشی دارد، ولی فعال‌سازی مجاز نیست.",
+                    next_observation_need: "ثبت در ژورنال به‌عنوان مشاهدهٔ فشردگیِ مسیر پارک‌شده؛ بدون تبدیل به سیگنال."
+                  };
+                }
+
+                return {
+                  condition_status: "PARKED_CONTEXT_ONLY",
+                  condition_reason_fa: "این مسیر طبق تصمیم portfolio فعلاً پارک‌شده یا complete-for-now است. داده فقط برای مشاهده ثبت می‌شود.",
+                  next_observation_need: "عدم فعال‌سازی؛ فقط ادامهٔ مشاهده در صورت نیاز پژوهشی."
+                };
+              }
+
+              if (lifecycle === "SUPPORT_CONTEXT_ONLY") {
+                return {
+                  condition_status: "SUPPORT_CONTEXT_ONLY",
+                  condition_reason_fa: "این سطح فقط لایهٔ کمکی یا زمینه‌ای است و به‌تنهایی نمی‌تواند candidate یا سیگنال بسازد.",
+                  next_observation_need: "استفاده فقط به‌عنوان context برای تحلیل‌های بعدی."
+                };
+              }
+
+              if (surface === "EURUSD_H1") {
+                if (!londonFocus && directional) {
+                  return {
+                    condition_status: "SESSION_BLOCKED_BUT_DIRECTIONAL_PRECONTEXT",
+                    condition_reason_fa: "در EURUSD H1 مومنتوم سه‌کندلی جهت‌دار است، اما آخرین کندل هنوز در نشست هدف خانوادهٔ لندن/هم‌پوشانی نیست.",
+                    next_observation_need: "در شروع لندن یا هم‌پوشانی لندن/نیویورک دوباره بررسی شود."
+                  };
+                }
+
+                if (londonFocus && directional) {
+                  return {
+                    condition_status: "CONTEXT_PRESENT_DISPLAY_ONLY",
+                    condition_reason_fa: "نشست مناسب است و مومنتوم سه‌کندلی جهت‌دار دیده می‌شود. این فقط زمینهٔ پژوهشی است و سیگنال نیست.",
+                    next_observation_need: "در مرحلهٔ بعد باید شرط دقیق candidate، event/cost caveat و blockerها بررسی شوند."
+                  };
+                }
+
+                return {
+                  condition_status: "WEAK_CONTEXT_FLAT_MOMENTUM",
+                  condition_reason_fa: "نشست یا مومنتوم برای خانوادهٔ EURUSD H1 به اندازهٔ کافی قوی نیست.",
+                  next_observation_need: "منتظر مومنتوم جهت‌دارتر یا ورود به نشست هدف بمان."
+                };
+              }
+
+              if (surface === "USDJPY_H1") {
+                if (directional && ms.range_regime !== "EXPANDED") {
+                  return {
+                    condition_status: "CONTEXT_PRESENT_WITH_CAVEAT",
+                    condition_reason_fa: "در USDJPY H1 مومنتوم جهت‌دار دیده می‌شود و رنج بیش‌ازحد باز نشده، اما caveat کیفیت داده و زمینهٔ پژوهشی باقی است.",
+                    next_observation_need: "ادامهٔ مشاهده؛ بدون سیگنال. در مرحلهٔ بعد شرط استمرار روند بررسی شود."
+                  };
+                }
+
+                return {
+                  condition_status: "WEAK_CONTEXT_FLAT_MOMENTUM",
+                  condition_reason_fa: "در USDJPY H1 مومنتوم سه‌کندلی تخت یا ضعیف است؛ زمینهٔ trend/session continuity فعلاً قوی نیست.",
+                  next_observation_need: "منتظر مومنتوم جهت‌دارتر یا تغییر regime بمان."
+                };
+              }
+
+              return {
+                condition_status: "GENERIC_CONTEXT_RECORDED",
+                condition_reason_fa: "وضعیت بازار ثبت شده، اما برای این سطح شرط candidate فعال تعریف نشده است.",
+                next_observation_need: "فقط مشاهده و ثبت؛ بدون اختیار سیگنال."
+              };
+            }
+
+            const conditionStates = {};
+
+            for (const [surface, ms] of Object.entries(states)) {
+              const c = buildCondition(ms);
+              conditionStates[surface] = {
+                instrument: ms.instrument,
+                timeframe: ms.timeframe,
+                surface: ms.surface,
+                candidate_family: ms.candidate_family,
+                lifecycle: ms.lifecycle,
+                latest_close: ms.latest_close,
+                latest_bar_time_utc: ms.latest_bar_time_utc,
+                session_bucket_utc: ms.session_bucket_utc,
+                session_bucket_fa: sessionFa[ms.session_bucket_utc] || ms.session_bucket_utc || "نامشخص",
+                momentum_direction_3bar: ms.momentum_direction_3bar,
+                momentum_direction_3bar_fa: momentumFa[ms.momentum_direction_3bar] || ms.momentum_direction_3bar || "نامشخص",
+                change_3bar_pct: ms.change_3bar_pct,
+                range_regime: ms.range_regime,
+                range_regime_fa: rangeFa[ms.range_regime] || ms.range_regime || "نامشخص",
+                candidate_context_status: ms.candidate_context_status,
+                condition_status: c.condition_status,
+                condition_status_fa: statusFa[c.condition_status] || c.condition_status,
+                condition_reason_fa: c.condition_reason_fa,
+                next_observation_need: c.next_observation_need,
+                signal_authorized: false,
+                broker_execution_authorized: false,
+                forward_shadow_authorized: false,
+                action_surface_authorized: false,
+                display_authority: "CONDITION_DISPLAY_ONLY_NOT_SIGNAL"
+              };
+            }
+
+            const condition = {
+              program: "PRV1_CONDITION1_CANDIDATE_CONDITION_DETECTOR",
+              created_at_utc: nowUtc(),
+              source_datastate_created_at_utc: datastate.created_at_utc,
+              authority: "CONDITION_DISPLAY_ONLY_NOT_SIGNAL",
+              surface_count: Object.keys(conditionStates).length,
+              condition_states: conditionStates,
+              label_language: "fa",
+              forbidden_interpretation: [
+                "not_signal",
+                "not_buy_sell_hold",
+                "not_entry_stop_target",
+                "not_broker_execution",
+                "not_forward_shadow_activation",
+                "not_tradability_claim"
+              ]
+            };
+
+            const counts = {};
+            for (const c of Object.values(conditionStates)) {
+              counts[c.condition_status] = (counts[c.condition_status] || 0) + 1;
+            }
+
+            const proof = {
+              status: "PASS",
+              program: "PRV1_CONDITION1_CANDIDATE_CONDITION_DETECTOR",
+              created_at_utc: nowUtc(),
+              surfaces_checked: Object.keys(conditionStates).length,
+              condition_counts: counts,
+              label_language: "fa",
+              signal_authorized: false,
+              broker_execution_authorized: false,
+              forward_shadow_authorized: false,
+              action_surface_authorized: false
+            };
+
+            writeJson("conditions/prv1_condition1_current.json", condition);
+            writeJson("personal_runtime_v1_latest_product/conditions/prv1_condition1_current.json", condition);
+            writeJson("proofs/prv1_condition1_proof.json", proof);
+            writeJson("personal_runtime_v1_latest_product/proofs/prv1_condition1_proof.json", proof);
+
+      - name: Build Persian condition panel
+        shell: bash
+        run: |
+          mkdir -p panel/sigbrain-condition
+
+          cat > panel/sigbrain-condition/index.html <<'HTML'
+          <!doctype html>
+          <html lang="fa" dir="rtl">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>PRV1 + SIG Brain Condition</title>
+            <style>
+              body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#0f172a;color:#e5e7eb}
+              .wrap{max-width:820px;margin:0 auto;padding:16px}
+              .hero,.card{border:1px solid #334155;border-radius:22px;background:#111827;padding:18px;margin:12px 0}
+              .card{background:#020617}
+              .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#1e293b;color:#93c5fd;font-size:12px;margin-bottom:12px}
+              h1{font-size:34px;line-height:1.15;margin:10px 0}
+              h2{font-size:26px;margin:0 0 10px}
+              .muted{color:#94a3b8;line-height:1.7}
+              .grid{display:grid;grid-template-columns:1fr;gap:10px}
+              .kv{background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:12px}
+              .label{color:#94a3b8;font-size:12px;text-transform:none;letter-spacing:0;margin-bottom:6px}
+              .value{overflow-wrap:anywhere;font-weight:700;line-height:1.55}
+              .ok{color:#86efac}.warn{color:#facc15}.bad{color:#fca5a5}
+              .reason{font-size:15px;color:#cbd5e1;line-height:1.8;margin-top:8px}
+              @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
+            </style>
+          </head>
+          <body>
+            <div class="wrap">
+              <section class="hero">
+                <span class="badge">تشخیص شرط / فقط نمایشی / بدون سیگنال</span>
+                <h1>وضعیت شرط‌های مغز SIG</h1>
+                <p class="muted">این صفحه وضعیت پژوهشی شرط‌ها را از روی market-state نشان می‌دهد. خرید/فروش/نگهداری، حد ورود، حد ضرر، تارگت یا اجرای بروکر نیست.</p>
+                <p class="muted" id="meta">در حال بارگذاری...</p>
+              </section>
+              <main id="content"></main>
+            </div>
+
+            <script>
+              function cls(status){
+                if(status === "CONTEXT_PRESENT_DISPLAY_ONLY" || status === "CONTEXT_PRESENT_WITH_CAVEAT") return "ok";
+                if(status && (status.includes("BLOCKED") || status.includes("WEAK") || status.includes("PARKED") || status.includes("SUPPORT"))) return "warn";
+                if(status && status.includes("UNAVAILABLE")) return "bad";
+                return "";
+              }
+
+              function kv(label,value,klass){
+                return `<div class="kv"><div class="label">${label}</div><div class="value ${klass || ""}">${value ?? "—"}</div></div>`;
+              }
+
+              async function main(){
+                const res = await fetch("../../conditions/prv1_condition1_current.json?ts=" + Date.now());
+                const data = await res.json();
+
+                document.getElementById("meta").textContent =
+                  "آخرین به‌روزرسانی: " + data.created_at_utc + " | تعداد سطح‌ها: " + data.surface_count;
+
+                const states = Object.values(data.condition_states || {});
+                const content = document.getElementById("content");
+
+                if(!states.length){
+                  content.innerHTML = '<section class="card"><h2>داده‌ای موجود نیست</h2><p class="muted">ابتدا DATASTATE1 را اجرا کن.</p></section>';
+                  return;
+                }
+
+                content.innerHTML = states.map(s => `
+                  <section class="card">
+                    <h2>${s.instrument} — ${s.timeframe}</h2>
+                    <p class="muted">${s.candidate_family || ""}</p>
+
+                    <div class="grid">
+                      ${kv("وضعیت شرط", s.condition_status_fa, cls(s.condition_status))}
+                      ${kv("آخرین قیمت", s.latest_close)}
+                      ${kv("زمان آخرین کندل", s.latest_bar_time_utc)}
+                      ${kv("نشست", s.session_bucket_fa)}
+                      ${kv("مومنتوم ۳ کندلی", s.momentum_direction_3bar_fa)}
+                      ${kv("تغییر ۳ کندلی ٪", s.change_3bar_pct)}
+                      ${kv("رژیم رنج", s.range_regime_fa)}
+                      ${kv("اختیار خروجی", "فقط نمایشی / بدون سیگنال", "warn")}
+                    </div>
+
+                    <div class="reason">
+                      <strong>دلیل:</strong>
+                      ${s.condition_reason_fa}
+                    </div>
+
+                    <div class="reason">
+                      <strong>نیاز مشاهده‌ای بعدی:</strong>
+                      ${s.next_observation_need}
+                    </div>
+                  </section>
+                `).join("");
+              }
+
+              main().catch(() => {
+                document.getElementById("meta").textContent = "خطا در بارگذاری condition JSON";
+                document.getElementById("content").innerHTML =
+                  '<section class="card"><p class="bad">فایل conditions/prv1_condition1_current.json بارگذاری نشد.</p></section>';
+              });
+            </script>
+          </body>
+          </html>
+          HTML
+
+      - name: Commit CONDITION1 outputs
+        shell: bash
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add conditions/prv1_condition1_current.json
+          git add personal_runtime_v1_latest_product/conditions/prv1_condition1_current.json
+          git add proofs/prv1_condition1_proof.json
+          git add personal_runtime_v1_latest_product/proofs/prv1_condition1_proof.json
+          git add panel/sigbrain-condition/index.html
+
+          git commit -m "Add PRV1 CONDITION1 Persian candidate condition panel" || echo "No changes to commit"
+          git push
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
