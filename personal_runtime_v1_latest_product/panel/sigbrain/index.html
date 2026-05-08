@@ -3,365 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PRV1 + SIG Brain</title>
+  <title>PRV1 + SIG Brain Runtime</title>
   <style>
-    :root {
-      --bg:#0f172a;
-      --panel:#111827;
-      --card:#020617;
-      --border:#334155;
-      --text:#e5e7eb;
-      --muted:#94a3b8;
-      --blue:#93c5fd;
-      --yellow:#facc15;
-      --green:#86efac;
-      --red:#fca5a5;
-      --chip:#1e293b;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .wrap {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    .hero,
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      background: var(--panel);
-      box-shadow: 0 10px 30px rgba(0,0,0,.18);
-    }
-
-    .hero {
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-
-    .badge,
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border-radius: 999px;
-      background: var(--chip);
-      color: var(--blue);
-      border: 1px solid rgba(147,197,253,.18);
-      padding: 6px 10px;
-      font-size: 12px;
-      line-height: 1.2;
-      max-width: 100%;
-      overflow-wrap: anywhere;
-    }
-
-    h1 {
-      font-size: 34px;
-      line-height: 1.08;
-      margin: 18px 0 10px;
-      letter-spacing: -.04em;
-    }
-
-    h2 {
-      font-size: 28px;
-      margin: 0 0 12px;
-      letter-spacing: -.03em;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .small {
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .card {
-      background: var(--card);
-      padding: 16px;
-      margin: 12px 0;
-      overflow: hidden;
-    }
-
-    .state {
-      display: block;
-      color: var(--yellow);
-      font-weight: 800;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      font-size: 18px;
-      line-height: 1.25;
-    }
-
-    .kv {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 3px;
-    }
-
-    .value {
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      line-height: 1.35;
-    }
-
-    .ok {
-      color: var(--green);
-      font-weight: 700;
-    }
-
-    .warn {
-      color: var(--yellow);
-      font-weight: 700;
-    }
-
-    .bad {
-      color: var(--red);
-      font-weight: 700;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    details {
-      margin-top: 10px;
-      border-top: 1px solid rgba(51,65,85,.65);
-      padding-top: 10px;
-    }
-
-    summary {
-      cursor: pointer;
-      color: var(--blue);
-      font-weight: 700;
-      list-style: none;
-    }
-
-    summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .footer {
-      margin: 14px 0 30px;
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(252,165,165,.35);
-      color: var(--red);
-      background: rgba(127,29,29,.12);
-    }
-
-    .meta {
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--muted);
-      overflow-wrap: anywhere;
-    }
-
-    .short-reason {
-      margin: 10px 0 12px;
-      color: #cbd5e1;
-      line-height: 1.45;
-    }
-
-    .refresh {
-      margin-top: 12px;
-      width: 100%;
-      border: 1px solid var(--border);
-      background: #1e293b;
-      color: var(--text);
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-weight: 700;
-    }
-
-    @media (min-width:700px) {
-      .kv {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      h1 {
-        font-size: 42px;
-      }
-    }
+    body { margin:0; font-family: Arial, sans-serif; background:#0f172a; color:#e5e7eb; }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 18px; }
+    .hero { padding: 18px; border-radius: 18px; background:#111827; border:1px solid #334155; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#1e293b; color:#93c5fd; font-size:12px; margin-bottom:10px; }
+    .card { margin-top:14px; padding:14px; border-radius:16px; background:#020617; border:1px solid #334155; overflow:hidden; }
+    .muted { color:#94a3b8; font-size:13px; }
+    .state { font-weight:bold; color:#facc15; overflow-wrap:anywhere; }
+    .danger { color:#fca5a5; }
+    .ok { color:#86efac; }
+    .grid { display:grid; grid-template-columns: 1fr; gap:8px; }
+    .small { font-size:12px; }
+    code { color:#c4b5fd; overflow-wrap:anywhere; }
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <section class="hero">
-      <span class="badge">DYNAMIC DISPLAY ONLY / NOT SIGNAL</span>
-      <h1>PRV1 + SIG Brain</h1>
-      <p class="muted">
-        Mobile signal-intelligence runtime. Research-state only.
-        No buy/sell/hold, no broker execution, no shadow activation.
-      </p>
-      <div class="meta" id="meta">Loading dynamic payload...</div>
-      <button class="refresh" onclick="location.reload()">Refresh panel</button>
-    </section>
+    <div class="hero">
+      <div class="badge">DYNAMIC DISPLAY ONLY / NOT SIGNAL</div>
+      <h1>PRV1 + SIG Brain Runtime</h1>
+      <p class="muted">Reads existing PRV1 live/cache/report evidence when available. No buy/sell/hold, no broker execution, no shadow activation.</p>
+      <p class="muted" id="meta"></p>
+    </div>
 
-    <main id="cards"></main>
+    <div id="cards"></div>
 
-    <section class="footer">
-      <strong>Forbidden interpretation:</strong>
-      <div class="small">
-        This panel is not a trading signal, not validation,
-        not profitability evidence, and not broker-realistic guidance.
-      </div>
-    </section>
+    <div class="card">
+      <div class="danger">Forbidden interpretation:</div>
+      <p class="muted">This panel is not a trading signal, not validation, not profitability evidence, and not broker-realistic guidance.</p>
+    </div>
   </div>
 
   <script>
-    const stateLabels = {
-      "RESEARCH_ACTIVE_DISPLAY_ONLY": "Research active",
-      "DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE": "Research active — data caveat",
-      "PARKED_NOT_ACTIVE": "Parked",
-      "SUPPORT_CONTEXT_ONLY": "Support context only",
-      "DATA_UNAVAILABLE_NO_SIGNAL": "No signal — data unavailable",
-      "STALE_CONTEXT_NO_SIGNAL": "No signal — stale context",
-      "EVENT_CAVEATED_DISPLAY_ONLY": "Event caveat",
-      "COST_CAVEATED_DISPLAY_ONLY": "Cost caveat"
-    };
-
-    function compactState(s) {
-      return stateLabels[s] || s || "Unknown";
-    }
-
-    function stateClass(s) {
-      if (!s) return "warn";
-      if (s.includes("UNAVAILABLE") || s.includes("STALE")) return "bad";
-      if (s.includes("ACTIVE")) return "warn";
-      if (s.includes("PARKED")) return "bad";
-      return "warn";
-    }
-
-    function shortReason(c) {
-      const s = c.brain_state || "";
-
-      if (s === "RESEARCH_ACTIVE_DISPLAY_ONLY") {
-        return "This object is active for research display, but it is not authorized as a trading signal.";
-      }
-
-      if (s === "DATA_QUALITY_CAVEATED_RESEARCH_ACTIVE") {
-        return "This object is active for research display, but data-quality caveats remain visible.";
-      }
-
-      if (s === "PARKED_NOT_ACTIVE") {
-        return "This path is parked or complete-for-now and is not active for runtime signal use.";
-      }
-
-      if (s === "DATA_UNAVAILABLE_NO_SIGNAL") {
-        return "Runtime did not find enough PRV1 evidence for this surface, so no signal state is allowed.";
-      }
-
-      if (s === "SUPPORT_CONTEXT_ONLY") {
-        return "This layer supports context only and cannot create a signal by itself.";
-      }
-
-      return "Display-only research state. No action is authorized.";
-    }
-
-    function chips(items) {
-      if (!items || !items.length) {
-        return '<span class="chip">none listed</span>';
-      }
-
-      return items.slice(0, 12).map(x => `<span class="chip">${x}</span>`).join("");
-    }
-
-    function card(c) {
-      const cls = stateClass(c.brain_state);
-
-      return `
-        <article class="card">
-          <h2>${c.instrument} — ${c.timeframe}</h2>
-
-          <div class="label">Brain state</div>
-          <span class="state ${cls}">${compactState(c.brain_state)}</span>
-
-          <div class="short-reason">${shortReason(c)}</div>
-
-          <div class="kv">
-            <div>
-              <div class="label">Candidate family</div>
-              <div class="value">${c.candidate_family || "n/a"}</div>
-            </div>
-
-            <div>
-              <div class="label">Surface evidence</div>
-              <div class="value">
-                <span class="${c.surface_evidence_available ? 'ok' : 'bad'}">
-                  ${c.surface_evidence_available ? 'available' : 'not found'}
-                </span>
-                <div class="small muted">${c.surface_evidence_reason || ""}</div>
-              </div>
-            </div>
-
-            <div>
-              <div class="label">Freshness</div>
-              <div class="value">${c.freshness_status || "unknown"}</div>
-            </div>
-
-            <div>
-              <div class="label">Authority</div>
-              <div class="value">${c.display_authority || "DISPLAY_ONLY_NOT_TRADE_SIGNAL"}</div>
-            </div>
-          </div>
-
-          <details>
-            <summary>Show blockers and caveats</summary>
-
-            <div class="label" style="margin-top:10px;">Blockers</div>
-            <div class="chips">${chips(c.blockers)}</div>
-
-            <div class="label" style="margin-top:10px;">Caveats</div>
-            <div class="chips">${chips(c.caveats)}</div>
-
-            <div class="label" style="margin-top:10px;">SIG object</div>
-            <div class="small muted">${c.sig_object_id || "n/a"}</div>
-          </details>
-        </article>
-      `;
-    }
-
     async function main() {
-      const url = '../../payloads/sig_brain_state_current.json?ts=' + Date.now();
-      const res = await fetch(url);
+      const res = await fetch('../../payloads/sig_brain_state_current.json?ts=' + Date.now());
       const data = await res.json();
 
       document.getElementById('meta').textContent =
-        'Updated: ' + (data.created_at_utc || 'unknown') +
-        ' | Evidence files: ' + ((data.prv1_evidence_files || []).length);
+        'Updated: ' + data.created_at_utc +
+        ' | Evidence files: ' + (data.prv1_evidence_files || []).length;
 
       const root = document.getElementById('cards');
-      root.innerHTML = (data.cards || []).map(card).join('');
+
+      root.innerHTML = data.cards.map(c => `
+        <div class="card">
+          <h2>${c.instrument} — ${c.timeframe}</h2>
+          <div class="grid">
+            <div>Brain State:<br><span class="state">${c.brain_state}</span></div>
+            <div class="muted">Candidate Family: ${c.candidate_family}</div>
+            <div class="muted">Surface Evidence:
+              <span class="${c.surface_evidence_available ? 'ok' : 'danger'}">${c.surface_evidence_available}</span>
+              — ${c.surface_evidence_reason}
+            </div>
+            <div class="muted">Freshness: ${c.freshness_status}</div>
+            <div class="muted">Authority: ${c.display_authority}</div>
+            <div class="muted small">Blockers: ${(c.blockers || []).join(', ') || 'none listed'}</div>
+            <div class="muted small">Caveats: ${(c.caveats || []).join(', ')}</div>
+          </div>
+        </div>
+      `).join('');
     }
 
     main().catch(err => {
-      document.getElementById('meta').textContent = 'Failed to load payload.';
       document.getElementById('cards').innerHTML =
-        '<article class="card"><span class="state bad">Payload load failed</span><p class="muted">The runtime payload could not be loaded. Check GitHub Actions and the payload path.</p></article>';
+        '<div class="card danger">Failed to load dynamic SIG Brain payload.</div>';
     });
   </script>
 </body>
