@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PRV1 + SIG Brain Condition</title>
+  <style>
+    body{margin:0;font-family:Arial,Tahoma,sans-serif;background:#0f172a;color:#e5e7eb}
+    .wrap{max-width:820px;margin:0 auto;padding:16px}
+    .hero,.card{border:1px solid #334155;border-radius:22px;background:#111827;padding:18px;margin:12px 0}
+    .card{background:#020617}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#1e293b;color:#93c5fd;font-size:12px;margin-bottom:12px}
+    h1{font-size:34px;line-height:1.15;margin:10px 0}
+    h2{font-size:26px;margin:0 0 10px}
+    .muted{color:#94a3b8;line-height:1.7}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    .kv{background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:12px}
+    .label{color:#94a3b8;font-size:12px;text-transform:none;letter-spacing:0;margin-bottom:6px}
+    .value{overflow-wrap:anywhere;font-weight:700;line-height:1.55}
+    .ok{color:#86efac}.warn{color:#facc15}.bad{color:#fca5a5}
+    .reason{font-size:15px;color:#cbd5e1;line-height:1.8;margin-top:8px}
+    @media (min-width:700px){.grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <span class="badge">تشخیص شرط / فقط نمایشی / بدون سیگنال</span>
+      <h1>وضعیت شرط‌های مغز SIG</h1>
+      <p class="muted">این صفحه وضعیت پژوهشی شرط‌ها را از روی market-state نشان می‌دهد. خرید/فروش/نگهداری، حد ورود، حد ضرر، تارگت یا اجرای بروکر نیست.</p>
+      <p class="muted" id="meta">در حال بارگذاری...</p>
+    </section>
+    <main id="content"></main>
+  </div>
+
+  <script>
+    function cls(status){
+      if(status === "CONTEXT_PRESENT_DISPLAY_ONLY" || status === "CONTEXT_PRESENT_WITH_CAVEAT") return "ok";
+      if(status && (status.includes("BLOCKED") || status.includes("WEAK") || status.includes("PARKED") || status.includes("SUPPORT"))) return "warn";
+      if(status && status.includes("UNAVAILABLE")) return "bad";
+      return "";
+    }
+
+    function kv(label,value,klass){
+      return `<div class="kv"><div class="label">${label}</div><div class="value ${klass || ""}">${value ?? "—"}</div></div>`;
+    }
+
+    async function main(){
+      const res = await fetch("../../conditions/prv1_condition1_current.json?ts=" + Date.now());
+      const data = await res.json();
+
+      document.getElementById("meta").textContent =
+        "آخرین به‌روزرسانی: " + data.created_at_utc + " | تعداد سطح‌ها: " + data.surface_count;
+
+      const states = Object.values(data.condition_states || {});
+      const content = document.getElementById("content");
+
+      if(!states.length){
+        content.innerHTML = '<section class="card"><h2>داده‌ای موجود نیست</h2><p class="muted">ابتدا DATASTATE1 را اجرا کن.</p></section>';
+        return;
+      }
+
+      content.innerHTML = states.map(s => `
+        <section class="card">
+          <h2>${s.instrument} — ${s.timeframe}</h2>
+          <p class="muted">${s.candidate_family || ""}</p>
+
+          <div class="grid">
+            ${kv("وضعیت شرط", s.condition_status_fa, cls(s.condition_status))}
+            ${kv("آخرین قیمت", s.latest_close)}
+            ${kv("زمان آخرین کندل", s.latest_bar_time_utc)}
+            ${kv("نشست", s.session_bucket_fa)}
+            ${kv("مومنتوم ۳ کندلی", s.momentum_direction_3bar_fa)}
+            ${kv("تغییر ۳ کندلی ٪", s.change_3bar_pct)}
+            ${kv("رژیم رنج", s.range_regime_fa)}
+            ${kv("اختیار خروجی", "فقط نمایشی / بدون سیگنال", "warn")}
+          </div>
+
+          <div class="reason">
+            <strong>دلیل:</strong>
+            ${s.condition_reason_fa}
+          </div>
+
+          <div class="reason">
+            <strong>نیاز مشاهده‌ای بعدی:</strong>
+            ${s.next_observation_need}
+          </div>
+        </section>
+      `).join("");
+    }
+
+    main().catch(() => {
+      document.getElementById("meta").textContent = "خطا در بارگذاری condition JSON";
+      document.getElementById("content").innerHTML =
+        '<section class="card"><p class="bad">فایل conditions/prv1_condition1_current.json بارگذاری نشد.</p></section>';
+    });
+  </script>
+</body>
+</html>
