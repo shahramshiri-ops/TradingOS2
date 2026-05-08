@@ -1,0 +1,428 @@
+name: PRV1 CONDITION1 Candidate Condition Detector
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: prv1-condition1-pages
+  cancel-in-progress: true
+
+jobs:
+  build-condition-state:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build condition state from DATASTATE1
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+
+            function mkdirp(p) {
+              fs.mkdirSync(p, { recursive: true });
+            }
+
+            function writeJson(path, obj) {
+              const dir = path.split("/").slice(0, -1).join("/");
+              if (dir) mkdirp(dir);
+              fs.writeFileSync(path, JSON.stringify(obj, null, 2), "utf8");
+            }
+
+            function readJson(path, fallback) {
+              try {
+                if (fs.existsSync(path)) {
+                  return JSON.parse(fs.readFileSync(path, "utf8"));
+                }
+              } catch (e) {}
+              return fallback;
+            }
+
+            function nowUtc() {
+              return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+            }
+
+            function parseDateUtc(t) {
+              if (!t) return null;
+              let s = String(t).trim().replace(" ", "T");
+              if (!/[zZ]|[+-]\d\d:?\d\d$/.test(s)) s += "Z";
+              const d = new Date(s);
+              return Number.isNaN(d.getTime()) ? null : d;
+            }
+
+            function sessionFa(session) {
+              const m = {
+                ASIA: "آسیا",
+                LONDON: "لندن",
+                LONDON_NY_OVERLAP: "همپوشانی لندن و نیویورک",
+                NEW_YORK: "نیویورک",
+                ROLLOVER_OR_THIN_LIQUIDITY: "رولوور / نقدشوندگی کم",
+                UNKNOWN_SESSION: "سشن نامشخص"
+              };
+              return m[session] || "سشن نامشخص";
+            }
+
+            function momentumFa(mom) {
+              const m = {
+                UP: "صعودی",
+                DOWN: "نزولی",
+                FLAT: "خنثی",
+                UNKNOWN: "نامشخص"
+              };
+              return m[mom] || "نامشخص";
+            }
+
+            function rangeFa(regime) {
+              const m = {
+                COMPRESSED: "فشرده",
+                NORMAL: "عادی",
+                EXPANDED: "گسترش‌یافته",
+                UNKNOWN_RANGE_REGIME: "نامشخص"
+              };
+              return m[regime] || "نامشخص";
+            }
+
+            function isDirectional(mom) {
+              return mom === "UP" || mom === "DOWN";
+            }
+
+            function absNum(x) {
+              const n = Number(x);
+              return Number.isFinite(n) ? Math.abs(n) : 0;
+            }
+
+            function directionStrength(change3) {
+              const a = absNum(change3);
+              if (a >= 0.12) return ["قوی", 35];
+              if (a >= 0.06) return ["متوسط", 25];
+              if (a >= 0.03) return ["ضعیف اما قابل مشاهده", 15];
+              return ["خیلی ضعیف / خنثی", 0];
+            }
+
+            function sessionScore(surface, session, latestTime) {
+              if (surface === "EURUSD_H1") {
+                if (session === "LONDON_NY_OVERLAP") return [35, "در سشن هدف اصلی"];
+                if (session === "LONDON") return [30, "در سشن هدف"];
+                if (session === "ASIA") {
+                  const d = parseDateUtc(latestTime);
+                  const h = d ? d.getUTCHours() : null;
+                  if (h !== null && h >= 5 && h < 7) {
+                    return [18, "پیش‌لندن / نزدیک به سشن هدف"];
+                  }
+                  return [5, "خارج از سشن هدف"];
+                }
+                return [8, "سشن فرعی"];
+              }
+
+              if (surface === "USDJPY_H1") {
+                if (session === "ASIA") return [22, "در سشن قابل توجه برای USDJPY"];
+                if (session === "LONDON" || session === "LONDON_NY_OVERLAP") return [24, "در سشن فعال بازار"];
+                return [10, "سشن فرعی"];
+              }
+
+              return [10, "سشن فقط برای زمینه ثبت شده"];
+            }
+
+            function clamp(x, lo, hi) {
+              return Math.max(lo, Math.min(hi, x));
+            }
+
+            function baseConditionForMarketState(s) {
+              const surface = s.surface;
+              const lifecycle = s.lifecycle || "";
+              const session = s.session_bucket_utc || "UNKNOWN_SESSION";
+              const momentum = s.momentum_direction_3bar || "UNKNOWN";
+              const range = s.range_regime || "UNKNOWN_RANGE_REGIME";
+              const change3 = Number(s.change_3bar_pct);
+              const latestTime = s.latest_bar_time_utc;
+
+              if (s.market_state_status !== "OK" || s.fetch_status !== "OK") {
+                return {
+                  condition_code: "DATA_UNAVAILABLE",
+                  condition_label_fa: "دادهٔ کافی برای تحلیل موجود نیست",
+                  condition_detail_fa: "دادهٔ زنده یا کندل‌های کافی برای این سطح در دسترس نیست؛ بنابراین هیچ برداشت پژوهشی فعال ساخته نمی‌شود.",
+                  next_observation_need_fa: "ابتدا اتصال داده و تعداد کندل‌ها باید پایدار شود.",
+                  readiness_score_display_only: 0,
+                  readiness_level_fa: "مسدود",
+                  observation_posture_fa: "عدم مشاهده",
+                  no_signal_reason_fa: "دادهٔ کافی وجود ندارد."
+                };
+              }
+
+              if (lifecycle.startsWith("PARKED")) {
+                if (surface === "EURUSD_M15" && range === "COMPRESSED") {
+                  return {
+                    condition_code: "PARKED_BUT_COMPRESSION_OBSERVED",
+                    condition_label_fa: "فشردگی دیده شده، اما مسیر فعلاً پارک است",
+                    condition_detail_fa: "در EURUSD M15 فشردگی دامنه دیده می‌شود، ولی این مسیر طبق تصمیم پژوهشی فعلاً فعال نیست و نباید به سیگنال تبدیل شود.",
+                    next_observation_need_fa: "فقط به‌عنوان مشاهدهٔ زمینه‌ای ذخیره شود؛ فعال‌سازی نیاز به تصمیم پژوهشی جداگانه دارد.",
+                    readiness_score_display_only: 0,
+                    readiness_level_fa: "پارک‌شده",
+                    observation_posture_fa: "ثبت زمینه، بدون فعال‌سازی",
+                    no_signal_reason_fa: "مسیر پژوهشی پارک شده است."
+                  };
+                }
+
+                return {
+                  condition_code: "PARKED_CONTEXT_ONLY",
+                  condition_label_fa: "مسیر پژوهشی فعلاً پارک است",
+                  condition_detail_fa: "این سطح در حال حاضر فقط برای مشاهدهٔ زمینه نگهداری می‌شود و نباید وارد چرخهٔ کاندیدای فعال شود.",
+                  next_observation_need_fa: "فعلاً فقط ثبت شود؛ ادامه نیازمند تصمیم portfolio جدید است.",
+                  readiness_score_display_only: 0,
+                  readiness_level_fa: "پارک‌شده",
+                  observation_posture_fa: "فقط زمینه",
+                  no_signal_reason_fa: "lifecycle اجازهٔ فعال‌سازی نمی‌دهد."
+                };
+              }
+
+              if (lifecycle === "SUPPORT_CONTEXT_ONLY") {
+                const label = isDirectional(momentum)
+                  ? "زمینهٔ حمایتی جهت‌دار دیده می‌شود"
+                  : "زمینهٔ حمایتی فعلاً خنثی است";
+
+                return {
+                  condition_code: "SUPPORT_CONTEXT_ONLY",
+                  condition_label_fa: label,
+                  condition_detail_fa: "این سطح فقط به‌عنوان لایهٔ حمایتی و زمینه‌ای استفاده می‌شود. حتی اگر حرکت جهت‌دار دیده شود، خودش منبع سیگنال نیست.",
+                  next_observation_need_fa: "در کنار سطح‌های فعال‌تر بررسی شود، نه به‌تنهایی.",
+                  readiness_score_display_only: isDirectional(momentum) ? 35 : 15,
+                  readiness_level_fa: "زمینه‌ای",
+                  observation_posture_fa: "حمایتی",
+                  no_signal_reason_fa: "این object از نوع support context است."
+                };
+              }
+
+              if (surface === "EURUSD_H1") {
+                const [momText, momScore] = directionStrength(change3);
+                const [sessScore, sessText] = sessionScore(surface, session, latestTime);
+                const directional = isDirectional(momentum);
+                const rangePenalty = range === "EXPANDED" ? -15 : range === "COMPRESSED" ? 5 : 10;
+                const score = clamp(sessScore + momScore + rangePenalty, 0, 100);
+
+                if (!directional) {
+                  return {
+                    condition_code: "EURUSD_H1_WEAK_FLAT_CONTEXT",
+                    condition_label_fa: "زمینهٔ EURUSD H1 فعلاً ضعیف و کم‌جهت است",
+                    condition_detail_fa: `حرکت سه‌کندلی فعلی ${momentumFa(momentum)} است و قدرت جهت‌گیری کافی ندارد. سشن فعلی: ${sessionFa(session)}.`,
+                    next_observation_need_fa: "منتظر جهت‌گیری واضح‌تر، مخصوصاً در لندن یا همپوشانی لندن/نیویورک بمان.",
+                    readiness_score_display_only: score,
+                    readiness_level_fa: "ضعیف",
+                    observation_posture_fa: "انتظار",
+                    no_signal_reason_fa: "جهت‌گیری کافی وجود ندارد."
+                  };
+                }
+
+                if (session === "LONDON" || session === "LONDON_NY_OVERLAP") {
+                  return {
+                    condition_code: "EURUSD_H1_CONTEXT_PRESENT_DISPLAY_ONLY",
+                    condition_label_fa: "زمینهٔ جهت‌دار EURUSD H1 در سشن مناسب دیده می‌شود",
+                    condition_detail_fa: `حرکت سه‌کندلی ${momentumFa(momentum)} با قدرت ${momText} دیده شده و سشن فعلی ${sessionFa(session)} است. این فقط زمینهٔ پژوهشی است، نه سیگنال.`,
+                    next_observation_need_fa: "در مرحلهٔ بعد باید شرط‌های دقیق‌تر candidate، event/cost و no-trade بررسی شوند.",
+                    readiness_score_display_only: score,
+                    readiness_level_fa: "قابل مشاهده",
+                    observation_posture_fa: "زیر نظر بگیر",
+                    no_signal_reason_fa: "هنوز candidate condition، event/cost و validation authority کامل نشده‌اند."
+                  };
+                }
+
+                const d = parseDateUtc(latestTime);
+                const hour = d ? d.getUTCHours() : null;
+                const preLondon = session === "ASIA" && hour !== null && hour >= 5 && hour < 7;
+
+                if (preLondon) {
+                  return {
+                    condition_code: "EURUSD_H1_DIRECTIONAL_PRECONTEXT_WAIT_LONDON",
+                    condition_label_fa: "حرکت جهت‌دار دیده می‌شود، اما هنوز قبل از لندن است",
+                    condition_detail_fa: `EURUSD H1 در سه کندل اخیر ${momentumFa(momentum)} بوده، اما هنوز در محدودهٔ پیش‌لندن/آسیا قرار دارد. این یک پیش‌زمینهٔ قابل مشاهده است، نه کاندیدای فعال.`,
+                    next_observation_need_fa: "در اولین کندل‌های لندن دوباره بررسی شود؛ آیا جهت ادامه پیدا می‌کند یا محو می‌شود؟",
+                    readiness_score_display_only: score,
+                    readiness_level_fa: "پیش‌زمینه",
+                    observation_posture_fa: "منتظر سشن هدف",
+                    no_signal_reason_fa: "سشن هدف هنوز فعال نشده است."
+                  };
+                }
+
+                return {
+                  condition_code: "EURUSD_H1_SESSION_BLOCKED_DIRECTIONAL_CONTEXT",
+                  condition_label_fa: "حرکت وجود دارد، اما سشن مناسب نیست",
+                  condition_detail_fa: `حرکت سه‌کندلی ${momentumFa(momentum)} دیده شده، ولی سشن فعلی ${sessionFa(session)} است و با خانوادهٔ لندن/اورلپ هم‌راستا نیست.`,
+                  next_observation_need_fa: "تا سشن لندن یا همپوشانی لندن/نیویورک صبر کن.",
+                  readiness_score_display_only: score,
+                  readiness_level_fa: "محدود به سشن",
+                  observation_posture_fa: "انتظار",
+                  no_signal_reason_fa: "سشن نامناسب است."
+                };
+              }
+
+              if (surface === "USDJPY_H1") {
+                const [momText, momScore] = directionStrength(change3);
+                const [sessScore, sessText] = sessionScore(surface, session, latestTime);
+                const directional = isDirectional(momentum);
+                const rangeAdj = range === "EXPANDED" ? -20 : range === "NORMAL" ? 15 : 8;
+                const score = clamp(sessScore + momScore + rangeAdj, 0, 100);
+
+                if (!directional) {
+                  return {
+                    condition_code: "USDJPY_H1_WEAK_FLAT_MOMENTUM",
+                    condition_label_fa: "USDJPY H1 فعلاً روند کافی نشان نمی‌دهد",
+                    condition_detail_fa: `حرکت سه‌کندلی ${momentumFa(momentum)} است و تغییر اخیر برای خانوادهٔ trend/session continuity کافی نیست. رنج فعلی ${rangeFa(range)} است.`,
+                    next_observation_need_fa: "منتظر حرکت جهت‌دارتر یا شکست از حالت خنثی بمان.",
+                    readiness_score_display_only: score,
+                    readiness_level_fa: "ضعیف",
+                    observation_posture_fa: "انتظار",
+                    no_signal_reason_fa: "مومنتوم کافی نیست."
+                  };
+                }
+
+                if (range === "EXPANDED") {
+                  return {
+                    condition_code: "USDJPY_H1_DIRECTIONAL_BUT_RANGE_EXPANDED",
+                    condition_label_fa: "حرکت جهت‌دار هست، اما رنج بیش از حد باز شده",
+                    condition_detail_fa: `USDJPY H1 جهت ${momentumFa(momentum)} دارد، اما رنج فعلی گسترش‌یافته است. این وضعیت می‌تواند دیرهنگام یا پرریسک باشد.`,
+                    next_observation_need_fa: "منتظر عادی شدن رنج یا ادامهٔ کنترل‌شدهٔ حرکت بمان.",
+                    readiness_score_display_only: score,
+                    readiness_level_fa: "احتیاطی",
+                    observation_posture_fa: "زیر نظر با احتیاط",
+                    no_signal_reason_fa: "رنج گسترش‌یافته و caveat داده‌ای باقی است."
+                  };
+                }
+
+                return {
+                  condition_code: "USDJPY_H1_CONTEXT_PRESENT_WITH_CAVEAT",
+                  condition_label_fa: "زمینهٔ روندی USDJPY H1 دیده می‌شود، با احتیاط",
+                  condition_detail_fa: `USDJPY H1 حرکت ${momentumFa(momentum)} دارد و رنج ${rangeFa(range)} است. با این حال caveat داده‌ای USDJPY H1 همچنان باید باقی بماند.`,
+                  next_observation_need_fa: "در مرحلهٔ بعد باید تداوم روند و کیفیت داده دوباره بررسی شود.",
+                  readiness_score_display_only: score,
+                  readiness_level_fa: "قابل مشاهده با احتیاط",
+                  observation_posture_fa: "زیر نظر بگیر",
+                  no_signal_reason_fa: "caveat داده‌ای و نبود validation authority باقی است."
+                };
+              }
+
+              return {
+                condition_code: "GENERIC_CONTEXT_RECORDED",
+                condition_label_fa: "زمینهٔ بازار ثبت شد",
+                condition_detail_fa: "برای این سطح فعلاً منطق شرطی اختصاصی تعریف نشده و فقط market-state ثبت می‌شود.",
+                next_observation_need_fa: "در صورت نیاز باید object-specific rule تعریف شود.",
+                readiness_score_display_only: 10,
+                readiness_level_fa: "ثبت عمومی",
+                observation_posture_fa: "ثبت",
+                no_signal_reason_fa: "منطق اختصاصی candidate هنوز تعریف نشده است."
+              };
+            }
+
+            const datastate = readJson("datastate/prv1_datastate1_current.json", {
+              market_states: {},
+              created_at_utc: null
+            });
+
+            const payload = readJson("payloads/sig_brain_state_current.json", {
+              cards: [],
+              signal_authorized: false,
+              broker_execution_authorized: false,
+              forward_shadow_authorized: false,
+              action_surface_authorized: false
+            });
+
+            const marketStates = datastate.market_states || {};
+            const conditions = {};
+            const cards = [];
+
+            for (const [surface, state] of Object.entries(marketStates)) {
+              const c = baseConditionForMarketState(state);
+
+              const condition = {
+                surface,
+                instrument: state.instrument,
+                timeframe: state.timeframe,
+                candidate_family: state.candidate_family,
+                lifecycle: state.lifecycle,
+                latest_close: state.latest_close,
+                latest_bar_time_utc: state.latest_bar_time_utc,
+                session_bucket_utc: state.session_bucket_utc,
+                session_label_fa: sessionFa(state.session_bucket_utc),
+                momentum_direction_3bar: state.momentum_direction_3bar,
+                momentum_label_fa: momentumFa(state.momentum_direction_3bar),
+                change_3bar_pct: state.change_3bar_pct,
+                range_regime: state.range_regime,
+                range_label_fa: rangeFa(state.range_regime),
+                market_state_status: state.market_state_status,
+                fetch_status: state.fetch_status,
+                display_authority: "CONDITION_DISPLAY_ONLY_NOT_SIGNAL",
+                signal_authorized: false,
+                broker_execution_authorized: false,
+                forward_shadow_authorized: false,
+                action_surface_authorized: false,
+                ...c
+              };
+
+              conditions[surface] = condition;
+              cards.push(condition);
+            }
+
+            if (Array.isArray(payload.cards)) {
+              for (const card of payload.cards) {
+                const key = card.surface || `${card.instrument}_${card.timeframe}`;
+                if (conditions[key]) {
+                  card.condition1 = {
+                    condition_code: conditions[key].condition_code,
+                    condition_label_fa: conditions[key].condition_label_fa,
+                    condition_detail_fa: conditions[key].condition_detail_fa,
+                    next_observation_need_fa: conditions[key].next_observation_need_fa,
+                    readiness_score_display_only: conditions[key].readiness_score_display_only,
+                    readiness_level_fa: conditions[key].readiness_level_fa,
+                    observation_posture_fa: conditions[key].observation_posture_fa
+                  };
+
+                  if (!Array.isArray(card.caveats)) card.caveats = [];
+                  card.caveats.push("CONDITION1_DISPLAY_ONLY_NOT_SIGNAL");
+                  card.caveats = Array.from(new Set(card.caveats));
+                }
+              }
+            }
+
+            payload.program = "SIG_BRAIN_RUNTIME_PLUS_CONDITION1";
+            payload.condition1_applied_at_utc = nowUtc();
+            payload.signal_authorized = false;
+            payload.broker_execution_authorized = false;
+            payload.forward_shadow_authorized = false;
+            payload.action_surface_authorized = false;
+
+            const conditionState = {
+              program: "PRV1_CONDITION1_CANDIDATE_CONDITION_DETECTOR",
+              created_at_utc: nowUtc(),
+              source_datastate_created_at_utc: datastate.created_at_utc,
+              authority: "CONDITION_DISPLAY_ONLY_NOT_SIGNAL",
+              condition_count: cards.length,
+              conditions,
+              forbidden_interpretation: [
+                "not_signal",
+                "not_buy_sell_hold",
+                "not_entry_stop_target",
+                "not_broker_execution",
+                "not_forward_shadow_activation",
+                "not_tradability_claim"
+              ]
+            };
+
+            const proof = {
+              status: "PASS",
+              program: "PRV1_CONDITION1_CANDIDATE_CONDITION_DETECTOR",
+              created_at_utc: nowUtc(),
+              source_datastate_created_at_utc: datastate.created_at_utc,
+              conditions_built: cards.length,
+              signal_authorized: false,
+              broker_execution_authorized: false,
+              forward_shadow_authorized: false,
+              action_surface_authorized: false
+            };
+
+            writeJson("condition/prv1_condition1_current.json", conditionState);
+            writeJson("personal_runtime_v1_latest_product/
