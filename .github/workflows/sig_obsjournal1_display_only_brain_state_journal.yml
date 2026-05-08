@@ -62,7 +62,11 @@ jobs:
           def existing_lines():
               if not JOURNAL.exists():
                   return []
-              return [line for line in JOURNAL.read_text(encoding="utf-8").splitlines() if line.strip()]
+              return [
+                  line
+                  for line in JOURNAL.read_text(encoding="utf-8").splitlines()
+                  if line.strip()
+              ]
 
           payload = read_payload()
           cards = payload.get("cards", [])
@@ -123,6 +127,7 @@ jobs:
           for row in parsed:
               for state, count in row.get("state_counts", {}).items():
                   aggregate_state_counts[state] = aggregate_state_counts.get(state, 0) + int(count)
+
               for s in row.get("surface_states", []):
                   key = f"{s.get('instrument')}_{s.get('timeframe')}"
                   surface_latest[key] = s
@@ -155,14 +160,31 @@ jobs:
               "forbidden_state_count": 0
           }
 
-          forbidden = {"BUY", "SELL", "HOLD", "ENTRY", "STOP", "TARGET", "BROKER_EXECUTION", "SIGNAL_AUTHORIZED"}
+          forbidden = {
+              "BUY",
+              "SELL",
+              "HOLD",
+              "ENTRY",
+              "STOP",
+              "TARGET",
+              "BROKER_EXECUTION",
+              "SIGNAL_AUTHORIZED"
+          }
+
           for c in cards:
               if c.get("brain_state") in forbidden:
                   proof["status"] = "FAIL"
                   proof["forbidden_state_count"] += 1
 
-          SUMMARY.write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
-          PROOF.write_text(json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8")
+          SUMMARY.write_text(
+              json.dumps(summary, indent=2, ensure_ascii=False),
+              encoding="utf-8"
+          )
+
+          PROOF.write_text(
+              json.dumps(proof, indent=2, ensure_ascii=False),
+              encoding="utf-8"
+          )
 
           if proof["status"] != "PASS":
               raise SystemExit("SIG OBSJOURNAL1 proof failed")
@@ -179,104 +201,34 @@ jobs:
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>SIG Brain Journal</title>
             <style>
-              body { margin:0; font-family:Arial, Helvetica, sans-serif; background:#0f172a; color:#e5e7eb; }
-              .wrap { max-width:820px; margin:0 auto; padding:16px; }
-              .hero,.card { border:1px solid #334155; border-radius:22px; background:#111827; padding:16px; margin:12px 0; }
-              .card { background:#020617; }
-              .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#1e293b; color:#93c5fd; font-size:12px; }
-              h1 { font-size:34px; line-height:1.1; margin:16px 0 10px; }
-              h2 { margin:0 0 10px; font-size:24px; }
-              .muted { color:#94a3b8; }
-              .state { color:#facc15; font-weight:800; overflow-wrap:anywhere; }
-              .grid { display:grid; grid-template-columns:1fr; gap:10px; }
-              .kv { padding:10px; border-radius:14px; background:#0f172a; border:1px solid #1e293b; }
-              .label { color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
-              .value { margin-top:4px; overflow-wrap:anywhere; }
-              .danger { color:#fca5a5; }
-              @media (min-width:700px) { .grid { grid-template-columns:1fr 1fr; } }
-            </style>
-          </head>
-          <body>
-            <div class="wrap">
-              <section class="hero">
-                <span class="badge">DISPLAY-ONLY OBSERVATION JOURNAL</span>
-                <h1>SIG Brain Journal</h1>
-                <p class="muted">Tracks display-only brain states over time. Not signal, not validation, not forward shadow activation.</p>
-                <p class="muted" id="meta">Loading...</p>
-              </section>
-              <main id="content"></main>
-              <section class="card">
-                <strong class="danger">Forbidden interpretation:</strong>
-                <p class="muted">Journal entries are not trades, not wins/losses, not PnL, and not signal evidence by themselves.</p>
-              </section>
-            </div>
-            <script>
-              async function main() {
-                const res = await fetch('../../journal/sig_brain_state_journal_summary.json?ts=' + Date.now());
-                const data = await res.json();
-                document.getElementById('meta').textContent =
-                  'Snapshots retained: ' + data.retained_snapshot_count +
-                  ' | Updated: ' + data.updated_at_utc;
-
-                const latest = data.latest_surface_states || {};
-                const content = document.getElementById('content');
-
-                content.innerHTML = Object.entries(latest).map(([k,v]) => `
-                  <section class="card">
-                    <h2>${v.instrument} — ${v.timeframe}</h2>
-                    <div class="grid">
-                      <div class="kv">
-                        <div class="label">Latest state</div>
-                        <div class="value state">${v.brain_state}</div>
-                      </div>
-                      <div class="kv">
-                        <div class="label">Surface evidence</div>
-                        <div class="value">${v.surface_evidence_available}</div>
-                      </div>
-                      <div class="kv">
-                        <div class="label">Freshness</div>
-                        <div class="value">${v.freshness_status}</div>
-                      </div>
-                      <div class="kv">
-                        <div class="label">Caveat / blocker counts</div>
-                        <div class="value">${v.caveat_count} caveats / ${v.blocker_count} blockers</div>
-                      </div>
-                    </div>
-                  </section>
-                `).join('');
+              body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #0f172a;
+                color: #e5e7eb;
               }
 
-              main().catch(err => {
-                document.getElementById('meta').textContent = 'Failed to load journal summary.';
-                document.getElementById('content').innerHTML =
-                  '<section class="card danger">Journal summary could not be loaded.</section>';
-              });
-            </script>
-          </body>
-          </html>
-          HTML
+              .wrap {
+                max-width: 820px;
+                margin: 0 auto;
+                padding: 16px;
+              }
 
-      - name: Commit observation journal files
-        shell: bash
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+              .hero,
+              .card {
+                border: 1px solid #334155;
+                border-radius: 22px;
+                background: #111827;
+                padding: 16px;
+                margin: 12px 0;
+              }
 
-          git add personal_runtime_v1_latest_product/journal/sig_brain_state_journal.jsonl
-          git add personal_runtime_v1_latest_product/journal/sig_brain_state_journal_summary.json
-          git add personal_runtime_v1_latest_product/proofs/sig_obsjournal1_proof.json
-          git add personal_runtime_v1_latest_product/panel/sigbrain-journal/index.html
+              .card {
+                background: #020617;
+              }
 
-          git commit -m "Append SIG Brain display-only observation journal snapshot" || echo "No changes to commit"
-          git push
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+              .badge {
+                display: inline-block;
+                padding: 6px 10px;
+                border-radius: 999px;
+                background: #1e293b
