@@ -1,0 +1,157 @@
+name: PRV1 DATASTATE PAGEFIX1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-datastate-page:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create datastate page and fallback JSON
+        shell: bash
+        run: |
+          mkdir -p panel/sigbrain-data datastate proofs
+
+          if [ ! -f datastate/prv1_datastate1_current.json ]; then
+            cat > datastate/prv1_datastate1_current.json <<'JSON'
+          {
+            "program": "PRV1_DATASTATE_PAGEFIX1_FALLBACK",
+            "created_at_utc": "PENDING_DATASTATE1_RUN",
+            "authority": "DISPLAY_ONLY_NOT_SIGNAL",
+            "surface_count": 0,
+            "market_states": {},
+            "note": "Data-state page exists, but DATASTATE1 market-state JSON has not been successfully generated yet."
+          }
+          JSON
+          fi
+
+          cat > panel/sigbrain-data/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>PRV1 + SIG Brain Data State</title>
+            <style>
+              body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0f172a;color:#e5e7eb}
+              .wrap{max-width:820px;margin:0 auto;padding:16px}
+              .hero,.card{border:1px solid #334155;border-radius:22px;background:#111827;padding:18px;margin:12px 0}
+              .card{background:#020617}
+              .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#1e293b;color:#93c5fd;font-size:12px;margin-bottom:12px}
+              h1{font-size:34px;line-height:1.08;margin:10px 0}
+              h2{font-size:26px;margin:0 0 10px}
+              .muted{color:#94a3b8;line-height:1.45}
+              .grid{display:grid;grid-template-columns:1fr;gap:10px}
+              .kv{background:#0f172a;border:1px solid #1e293b;border-radius:14px;padding:12px}
+              .label{color:#94a3b8;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+              .value{overflow-wrap:anywhere;font-weight:700}
+              .ok{color:#86efac}.warn{color:#facc15}.bad{color:#fca5a5}
+            </style>
+          </head>
+          <body>
+            <div class="wrap">
+              <section class="hero">
+                <span class="badge">LIVE MARKET STATE / DISPLAY ONLY</span>
+                <h1>PRV1 + SIG Brain Data State</h1>
+                <p class="muted">Market-state page. Not signal, not validation, not trade instruction.</p>
+                <p class="muted" id="meta">Loading...</p>
+              </section>
+              <main id="content"></main>
+            </div>
+
+            <script>
+              function kv(label,value){
+                return `<div class="kv"><div class="label">${label}</div><div class="value">${value ?? "n/a"}</div></div>`;
+              }
+
+              async function main(){
+                const res = await fetch("../../datastate/prv1_datastate1_current.json?ts=" + Date.now());
+                const data = await res.json();
+
+                document.getElementById("meta").textContent =
+                  "Updated: " + data.created_at_utc + " | Surfaces: " + data.surface_count;
+
+                const states = data.market_states || {};
+                const entries = Object.values(states);
+
+                if (!entries.length) {
+                  document.getElementById("content").innerHTML =
+                    `<section class="card">
+                      <h2>DATASTATE pending</h2>
+                      <p class="muted">${data.note || "No market-state surfaces available yet."}</p>
+                    </section>`;
+                  return;
+                }
+
+                document.getElementById("content").innerHTML = entries.map(s => `
+                  <section class="card">
+                    <h2>${s.instrument} — ${s.timeframe}</h2>
+                    <p class="muted">${s.candidate_family || ""}</p>
+                    <div class="grid">
+                      ${kv("Fetch", s.fetch_status)}
+                      ${kv("Bars", s.bar_count)}
+                      ${kv("Latest close", s.latest_close)}
+                      ${kv("Latest time", s.latest_bar_time_utc)}
+                      ${kv("Session", s.session_bucket_utc)}
+                      ${kv("Momentum 3-bar", s.momentum_direction_3bar)}
+                      ${kv("Change 3-bar %", s.change_3bar_pct)}
+                      ${kv("Range regime", s.range_regime)}
+                      ${kv("Candidate context", s.candidate_context_status)}
+                      ${kv("Context reason", s.candidate_context_reason)}
+                    </div>
+                  </section>
+                `).join("");
+              }
+
+              main().catch(() => {
+                document.getElementById("meta").textContent = "Failed to load data-state JSON.";
+                document.getElementById("content").innerHTML =
+                  '<section class="card"><p class="bad">Data-state JSON could not be loaded.</p></section>';
+              });
+            </script>
+          </body>
+          </html>
+          HTML
+
+          cat > proofs/prv1_datastate_pagefix1_proof.json <<'JSON'
+          {
+            "status": "PASS",
+            "program": "PRV1_DATASTATE_PAGEFIX1",
+            "scope": "page_path_fix_only",
+            "signal_authorized": false,
+            "broker_execution_authorized": false,
+            "forward_shadow_authorized": false,
+            "action_surface_authorized": false
+          }
+          JSON
+
+      - name: Commit pagefix files
+        shell: bash
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add panel/sigbrain-data/index.html
+          git add datastate/prv1_datastate1_current.json
+          git add proofs/prv1_datastate_pagefix1_proof.json
+          git commit -m "Add DATASTATE page path fix" || echo "No changes to commit"
+          git push
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
