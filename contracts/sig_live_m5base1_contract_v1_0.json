@@ -1,0 +1,40 @@
+{
+  "contract_id": "SIG_LIVE_M5BASE1_CONTRACT_v1_0",
+  "created_utc": "2026-05-09T07:43:27Z",
+  "purpose": "Use manually seeded M5 as canonical base, update only M5 from API, internally resample M15/H1/H4/D1.",
+  "manual_seed_files_consumed": [
+    "EURUSD5.csv",
+    "USDJPY5.csv",
+    "XAUUSD5 (1).csv"
+  ],
+  "canonical_base": "data/live_m5/canonical/*_M5_canonical.csv.gz",
+  "resampled_outputs": "data/live_resampled/*_{M15,H1,H4,D1}_from_M5.csv.gz",
+  "brain5_input": "inputs/sig_brain5_raw_bars_latest.json",
+  "api_incremental_policy": {
+    "provider": "Twelve Data",
+    "interval": "5min",
+    "symbols": {
+      "EURUSD": "EUR/USD",
+      "USDJPY": "USD/JPY",
+      "XAUUSD": "XAU/USD"
+    },
+    "recommended_schedule": "every_10_minutes_weekdays",
+    "outputsize": 60,
+    "closed_bar_lag_minutes": 2,
+    "quota_estimate": "3 credits per run; about 432 credits/day at 10-min weekdays if each symbol costs 1 credit"
+  },
+  "resampling_policy": {
+    "M15": "3 closed M5 bars",
+    "H1": "12 closed M5 bars",
+    "H4": "48 closed M5 bars",
+    "D1": "288 closed M5 bars UTC day for FX; 276 expected M5 rows for XAUUSD due common daily maintenance break"
+  },
+  "boundary": [
+    "read-only data only",
+    "not signal",
+    "no buy/sell/hold",
+    "no entry/stop/target",
+    "no broker/execution",
+    "no profitability/tradability claim"
+  ]
+}
