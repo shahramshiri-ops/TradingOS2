@@ -1,0 +1,255 @@
+{
+  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_0",
+  "created_utc": "2026-05-08T14:11:50Z",
+  "authority": "DISPLAY_ONLY_CONTEXT_MEMORY_REGISTRY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_TRADABILITY_CLAIM|NO_BROKER_EXECUTION",
+  "design_note": "This registry is file-first and append-only/versioned. New memories are added as objects; the mobile panel and matcher do not hardcode them.",
+  "memory_count": 3,
+  "active_runtime_memory_count": 2,
+  "memories": [
+    {
+      "memory_id": "EURUSD_NY_UP_EXTENSION_UPPER_REJECTION_FADE_DOWN_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "M15",
+      "memory_class": "weakened_watch_memory",
+      "activation_status": "HOLDOUT_WEAKENED_PARK_OR_REVIEW",
+      "active_in_runtime": false,
+      "score_not_probability": 55,
+      "band": "WATCH_WEAKENED",
+      "plain_language_label_fa": "EURUSD — حافظهٔ تضعیف‌شده: upper rejection بعد از up-extension",
+      "plain_language_summary_fa": "این حافظه قبلاً وارد watch شده بود ولی بعد از holdout ضعیف شد؛ در runtime فعال نمی‌شود مگر دوباره review شود.",
+      "required_context_fields": [],
+      "matching_rule": {
+        "required_all": []
+      },
+      "evidence_summary": {
+        "status": "holdout weakened",
+        "holdout_touched": true,
+        "runtime_active": false
+      },
+      "allowed_use": [
+        "registry visibility only",
+        "historical caution that this path weakened"
+      ],
+      "forbidden_use": [
+        "signal",
+        "entry",
+        "stop",
+        "target",
+        "profitability",
+        "tradability"
+      ],
+      "runtime_display_caveat_required": "Weakened/parked memory only. Not active, not signal."
+    },
+    {
+      "memory_id": "EURUSD_SESSION_UPSIDE_SWEEP_REJECTION_FADE_DOWN_CAVEATED_WATCH_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "M15",
+      "memory_class": "caveated_brain_watch_context",
+      "activation_status": "ACTIVE_CAVEATED_WATCH_MEMORY_NOT_SIGNAL",
+      "active_in_runtime": true,
+      "score_not_probability": 62,
+      "band": "CAVEATED_VALIDATION_WATCH",
+      "plain_language_label_fa": "EURUSD — هشدار احتیاطی بعد از sweep ناموفق سطح بالایی",
+      "plain_language_summary_fa": "اگر EURUSD در London / London-NY overlap / New York یک سطح بالایی مهم را sweep کند ولی کندل M15 بسته‌شده دوباره داخل سطح برگردد، این حافظه نشان می‌دهد که در داده‌های تاریخی رفتار fade-down نسبت به baseline کمی بهتر بوده است. این فقط watch/context است، نه سیگنال فروش.",
+      "required_context_fields": [
+        "session_bucket",
+        "upside_sweep_flag",
+        "sweep_then_reject_back_inside_up_flag",
+        "h1_dir",
+        "h4_dir",
+        "conflict_severity"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "session_bucket",
+            "op": "in",
+            "value": [
+              "LONDON",
+              "LONDON_NY_OVERLAP",
+              "NEW_YORK"
+            ]
+          },
+          {
+            "field": "upside_sweep_flag",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "sweep_then_reject_back_inside_up_flag",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "op": "not_pair_eq",
+            "left_field": "h1_dir",
+            "right_field": "h4_dir",
+            "value": "UP",
+            "label": "NOT(h1_dir == UP AND h4_dir == UP)"
+          },
+          {
+            "field": "conflict_severity",
+            "op": "not_eq",
+            "value": "HIGH"
+          }
+        ]
+      },
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 caveated diagnostic only",
+        "holdout_window": "2020-2024 untouched / not opened",
+        "validation_deltas": {
+          "H4_gross_delta": 0.0073192239858906,
+          "H8_gross_delta": 0.0137710390874947,
+          "H16_gross_delta": 0.0171990171990171,
+          "average_gross_delta": 0.012763093424134134,
+          "average_classic_delta": 0.015979281710980033,
+          "average_ecn_delta": 0.002872859240192
+        },
+        "caveats": {
+          "clean_validation_passed": false,
+          "sample_caveat": true,
+          "era_caveat": true,
+          "cost_fragility": false,
+          "min_rows": 78,
+          "max_year_share": 0.4634146341463415,
+          "m5_missing": true,
+          "event_cost_guard_not_integrated": true
+        }
+      },
+      "allowed_use": [
+        "show as caveated watch/context memory",
+        "warn that failed upside sweep has historically had fade-down tendency versus baseline",
+        "use as one contextual input in future brain-state summary",
+        "use to explain why blind long continuation after failed upside sweep is caveated"
+      ],
+      "forbidden_use": [
+        "sell signal",
+        "buy/sell/hold instruction",
+        "entry/stop/target",
+        "position sizing",
+        "profitability claim",
+        "tradability claim",
+        "broker-realistic claim",
+        "probability claim",
+        "clean validated edge claim",
+        "automatic holdout opening"
+      ],
+      "runtime_display_caveat_required": "Caveated historical watch only. Not a sell signal, not an entry instruction, and not a profitability/tradability claim."
+    },
+    {
+      "memory_id": "USDJPY_ALIGNMENT_ABSENT_CHOP_AVOID_SHORT_CONTEXT_CAVEATED_WATCH_v1_0",
+      "instrument": "USDJPY",
+      "timeframe": "M15",
+      "memory_class": "caveated_no_trade_avoidance_context",
+      "activation_status": "ACTIVE_CAVEATED_NO_TRADE_WATCH_MEMORY_NOT_SIGNAL",
+      "active_in_runtime": true,
+      "score_not_probability": 70,
+      "band": "CAVEATED_VALIDATION_NO_TRADE_WATCH",
+      "plain_language_label_fa": "USDJPY — هشدار no-trade / پرهیز از short در chop بدون هم‌راستایی",
+      "plain_language_summary_fa": "اگر USDJPY در London / London-NY overlap / New York هم‌راستایی واضح H4/H1 نداشته باشد و M15 هم حالت chop / range-neutral داشته باشد، تاریخ discovery و validation diagnostic نشان داده که short-like continuation نسبت به baseline بیشتر به سمت adverse/neutral رفته است. این حافظه فقط هشدار no-trade / avoid-short است، نه سیگنال خرید یا فروش.",
+      "required_context_fields": [
+        "session_bucket",
+        "h4_h1_up_context",
+        "h4_h1_down_context",
+        "m15_range_ratio_12",
+        "m15_dir"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "session_bucket",
+            "op": "in",
+            "value": [
+              "LONDON",
+              "LONDON_NY_OVERLAP",
+              "NEW_YORK"
+            ]
+          },
+          {
+            "field": "h4_h1_up_context",
+            "op": "bool_eq",
+            "value": false
+          },
+          {
+            "field": "h4_h1_down_context",
+            "op": "bool_eq",
+            "value": false
+          },
+          {
+            "field": "m15_range_ratio_12",
+            "op": "between",
+            "value": [
+              0.65,
+              1.2
+            ]
+          },
+          {
+            "field": "m15_dir",
+            "op": "in",
+            "value": [
+              "FLAT",
+              "UNKNOWN"
+            ]
+          }
+        ]
+      },
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 caveated no-trade diagnostic only",
+        "holdout_window": "2020-2024 untouched / not opened",
+        "validation_deltas": {
+          "H4_gross_adverse_neutral_delta": 0.0409303316118622,
+          "H8_gross_adverse_neutral_delta": 0.0228065335399745,
+          "H16_gross_adverse_neutral_delta": 0.0203146369513862,
+          "average_gross_delta": 0.028017167367740996,
+          "average_classic_delta": 0.026604792588838484,
+          "average_ecn_delta": 0.03061399421227151
+        },
+        "caveats": {
+          "clean_validation_passed": false,
+          "sample_caveat": false,
+          "era_caveat": false,
+          "cost_fragility": false,
+          "min_rows": 462,
+          "max_year_share": 0.2727272727272727,
+          "m5_missing": true,
+          "event_cost_guard_not_integrated": true,
+          "holdout_touched": false
+        }
+      },
+      "allowed_use": [
+        "show as caveated no-trade / avoid-short watch context",
+        "warn that USDJPY short-like continuation is historically weaker in alignment-absent M15 chop",
+        "use as a risk-awareness/no-trade filter input in future brain-state summary",
+        "help explain why a short-context idea is caveated when alignment is absent and M15 is chop"
+      ],
+      "forbidden_use": [
+        "sell signal",
+        "buy signal",
+        "inverse long signal",
+        "buy/sell/hold instruction",
+        "entry/stop/target",
+        "position sizing",
+        "profitability claim",
+        "tradability claim",
+        "broker-realistic claim",
+        "probability claim",
+        "clean validated edge claim",
+        "automatic holdout opening"
+      ],
+      "runtime_display_caveat_required": "Caveated no-trade watch only. Not a buy/sell signal, not an entry instruction, and not a profitability/tradability claim."
+    }
+  ],
+  "global_forbidden": [
+    "buy/sell/hold instruction",
+    "entry/stop/target",
+    "position sizing",
+    "profitability claim",
+    "tradability claim",
+    "broker-realistic claim",
+    "probability claim",
+    "clean validated edge claim",
+    "automatic execution"
+  ]
+}

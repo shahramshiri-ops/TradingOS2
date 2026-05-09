@@ -1,0 +1,117 @@
+{
+  "catalog_version": "SIG_FEATURE_FAMILY_CATALOG_v1_0",
+  "created_utc": "2026-05-08T14:46:35Z",
+  "authority": "FEATURE_FAMILY_CATALOG_ONLY_NOT_SIGNAL",
+  "families": [
+    {
+      "family_id": "core_identity",
+      "status": "ACTIVE_CURRENT",
+      "meaning_fa": "شناسه سطح، ابزار، تایم‌فریم و metadata",
+      "fields": [
+        "instrument",
+        "timeframe"
+      ],
+      "current_builder_support": "Brain5"
+    },
+    {
+      "family_id": "core_time_session",
+      "status": "ACTIVE_CURRENT",
+      "meaning_fa": "زمان UTC و session",
+      "fields": [
+        "latest_bar_open_ts_utc",
+        "session_bucket"
+      ],
+      "current_builder_support": "Brain5"
+    },
+    {
+      "family_id": "direction_alignment",
+      "status": "ACTIVE_CURRENT_PLUS_FUTURE_D1",
+      "meaning_fa": "جهت M15/H1/H4/D1 و هم‌راستایی/تعارض",
+      "fields": [
+        "m15_dir",
+        "h1_dir",
+        "h4_dir",
+        "d1_dir",
+        "conflict_severity",
+        "h4_h1_up_context",
+        "h4_h1_down_context"
+      ],
+      "current_builder_support": "Brain5 supports M15/H1/H4; D1 future"
+    },
+    {
+      "family_id": "range_chop_volatility",
+      "status": "ACTIVE_CURRENT_PLUS_FUTURE",
+      "meaning_fa": "رنج، chop، compression، expansion",
+      "fields": [
+        "m15_range_ratio_12",
+        "alignment_absent_chop",
+        "compression_state"
+      ],
+      "current_builder_support": "Brain5 supports m15_range_ratio_12 and alignment_absent_chop"
+    },
+    {
+      "family_id": "sweep_liquidity",
+      "status": "ACTIVE_CURRENT_PLUS_FUTURE_DOWNSIDE",
+      "meaning_fa": "سویپ سطوح، برگشت داخل سطح، نوع سطح مرجع",
+      "fields": [
+        "upside_sweep_flag",
+        "sweep_then_reject_back_inside_up_flag",
+        "sweep_reference_type_up",
+        "downside_sweep_flag",
+        "sweep_then_reject_back_inside_down_flag"
+      ],
+      "current_builder_support": "Brain5 supports upside sweep/reject and reference type"
+    },
+    {
+      "family_id": "opening_drive",
+      "status": "PARKED_FUTURE",
+      "meaning_fa": "حرکت اولیه London/NY و شکست/پذیرش آن",
+      "fields": [
+        "opening_drive_active",
+        "opening_drive_failure_flag"
+      ],
+      "current_builder_support": "not active; DISC9 parked"
+    },
+    {
+      "family_id": "d1_context_levels",
+      "status": "FUTURE_NEEDED_FOR_D1_MEMORIES",
+      "meaning_fa": "سطوح و ساختار D1 بسته‌شده",
+      "fields": [
+        "previous_day_high",
+        "previous_day_low",
+        "d1_inside_outside_state"
+      ],
+      "current_builder_support": "not active in Brain5 current"
+    },
+    {
+      "family_id": "event_calendar_context",
+      "status": "FUTURE_GUARD_LAYER",
+      "meaning_fa": "پنجره خبر/رویداد و ریسک event",
+      "fields": [
+        "event_window_status",
+        "minutes_to_event"
+      ],
+      "current_builder_support": "not active"
+    },
+    {
+      "family_id": "data_quality_freshness",
+      "status": "ACTIVE_PARTIAL",
+      "meaning_fa": "کیفیت داده و تازگی runtime",
+      "fields": [
+        "fetch_status",
+        "data_sufficiency_status"
+      ],
+      "current_builder_support": "Brain5 supports data_sufficiency_status; fetch_status upstream"
+    },
+    {
+      "family_id": "cost_friction_context",
+      "status": "FUTURE_GUARD_LAYER",
+      "meaning_fa": "هزینه، اسپرد، fragility یا observed cost",
+      "fields": [
+        "cost_regime_status"
+      ],
+      "current_builder_support": "not active"
+    }
+  ],
+  "professional_rule": "Do not add new one-off fields directly into memory objects. First add/update the context field registry and assign each field to a family/module."
+}

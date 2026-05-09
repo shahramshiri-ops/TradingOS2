@@ -1,0 +1,41 @@
+{
+  "contract_id": "SIG_BRAIN4_RUNTIME_INTEGRATION_CONTRACT_v1_0",
+  "created_utc": "2026-05-08T14:11:50Z",
+  "input_contract": {
+    "required_file": "inputs/sig_brain4_live_context_latest.json",
+    "accepted_top_level_keys": [
+      "surfaces",
+      "instruments"
+    ],
+    "minimum_fields_for_memory_matching": {
+      "EURUSD_SESSION_UPSIDE_SWEEP_REJECTION_FADE_DOWN_CAVEATED_WATCH_v1_0": [
+        "session_bucket",
+        "upside_sweep_flag",
+        "sweep_then_reject_back_inside_up_flag",
+        "h1_dir",
+        "h4_dir",
+        "conflict_severity"
+      ],
+      "USDJPY_ALIGNMENT_ABSENT_CHOP_AVOID_SHORT_CONTEXT_CAVEATED_WATCH_v1_0": [
+        "session_bucket",
+        "h4_h1_up_context",
+        "h4_h1_down_context",
+        "m15_range_ratio_12",
+        "m15_dir"
+      ]
+    }
+  },
+  "output_contract": {
+    "file": "runtime/sig_brain/sig_brain4_runtime_payload_current.json",
+    "panel_copy_target": "panel/brain4/sig_brain4_runtime_payload_current.json",
+    "authority": "DISPLAY_ONLY_BRAIN_STATE_NOT_SIGNAL"
+  },
+  "must_not_do": [
+    "fetch market data",
+    "call broker",
+    "create buy/sell/hold",
+    "create entries/stops/targets",
+    "claim probability",
+    "claim profitability/tradability"
+  ]
+}

@@ -1,0 +1,593 @@
+{
+  "registry_version": "SIG_CONTEXT_FIELD_REGISTRY_v1_0",
+  "created_utc": "2026-05-08T14:46:35Z",
+  "authority": "CONTEXT_FIELD_REGISTRY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
+  "purpose": "Canonical catalog of fields that brain memories may require for runtime matching.",
+  "design_rule": [
+    "Every active brain memory must declare required_context_fields.",
+    "Every required_context_field must exist in this registry.",
+    "Runtime context builders must declare which registry fields they support.",
+    "If a required field is missing at runtime, matcher must return MEMORY_INPUT_INSUFFICIENT, not false inactivity.",
+    "New memory families should reuse existing fields when possible and add new fields only through a registry patch."
+  ],
+  "field_count": 29,
+  "fields": [
+    {
+      "field_id": "instrument",
+      "family": "core_identity",
+      "module": "core_surface_identity",
+      "dtype": "string",
+      "allowed_values": [
+        "EURUSD",
+        "USDJPY",
+        "XAUUSD",
+        "SPX",
+        "NQ"
+      ],
+      "meaning_fa": "نام ابزار/بازار",
+      "required_for_current_runtime": true,
+      "derivation_status": "provided_by_surface",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "timeframe",
+      "family": "core_identity",
+      "module": "core_surface_identity",
+      "dtype": "string",
+      "allowed_values": [
+        "M5",
+        "M15",
+        "H1",
+        "H4",
+        "D1"
+      ],
+      "meaning_fa": "تایم‌فریم سطح runtime",
+      "required_for_current_runtime": true,
+      "derivation_status": "provided_by_surface",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "latest_bar_open_ts_utc",
+      "family": "core_time_session",
+      "module": "bar_time",
+      "dtype": "utc_timestamp",
+      "allowed_values": null,
+      "meaning_fa": "زمان باز شدن آخرین کندل به UTC",
+      "required_for_current_runtime": true,
+      "derivation_status": "provided_by_latest_bar",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "session_bucket",
+      "family": "core_time_session",
+      "module": "session_policy",
+      "dtype": "enum",
+      "allowed_values": [
+        "ASIA",
+        "LONDON",
+        "LONDON_NY_OVERLAP",
+        "NEW_YORK",
+        "ROLLOVER_THIN"
+      ],
+      "meaning_fa": "باکت session براساس ساعت UTC",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_latest_bar_time_utc",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "m15_dir",
+      "family": "direction_alignment",
+      "module": "m15_local_direction",
+      "dtype": "enum",
+      "allowed_values": [
+        "UP",
+        "DOWN",
+        "FLAT",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "جهت محلی M15 براساس تغییر چند کندل بسته‌شده",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_m15_bars",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM_IF_CURRENT_BAR_UNCLOSED",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h1_dir",
+      "family": "direction_alignment",
+      "module": "htf_direction",
+      "dtype": "enum",
+      "allowed_values": [
+        "UP",
+        "DOWN",
+        "FLAT",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "جهت H1 از کندل‌های بسته‌شده",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_h1_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "MEDIUM_IF_UNCLOSED_H1_USED",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h4_dir",
+      "family": "direction_alignment",
+      "module": "htf_direction",
+      "dtype": "enum",
+      "allowed_values": [
+        "UP",
+        "DOWN",
+        "FLAT",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "جهت H4 از H4 بسته‌شده یا مشتق‌شده از H1",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_h1_aggregation_in_brain5_currently",
+      "source_timeframes": [
+        "H1",
+        "H4"
+      ],
+      "lookahead_risk": "MEDIUM_IF_PARTIAL_H4_USED",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "d1_dir",
+      "family": "direction_alignment",
+      "module": "d1_context",
+      "dtype": "enum",
+      "allowed_values": [
+        "UP",
+        "DOWN",
+        "FLAT",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "جهت D1 فقط از کندل‌های روزانه بسته‌شده",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_supported_when_d1_memory_added",
+      "source_timeframes": [
+        "D1"
+      ],
+      "lookahead_risk": "HIGH_IF_CURRENT_DAY_CLOSE_USED",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "conflict_severity",
+      "family": "direction_alignment",
+      "module": "alignment_conflict",
+      "dtype": "enum",
+      "allowed_values": [
+        "NONE",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "شدت تعارض بین جهت‌های M15/H1/H4",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_m15_h1_h4_direction",
+      "source_timeframes": [
+        "M15",
+        "H1",
+        "H4"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h4_h1_up_context",
+      "family": "direction_alignment",
+      "module": "htf_alignment_flags",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "هم‌راستایی صعودی H4/H1 در session فعال",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_h4_h1_dir_and_session",
+      "source_timeframes": [
+        "H1",
+        "H4",
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h4_h1_down_context",
+      "family": "direction_alignment",
+      "module": "htf_alignment_flags",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "هم‌راستایی نزولی H4/H1 در session فعال",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_h4_h1_dir_and_session",
+      "source_timeframes": [
+        "H1",
+        "H4",
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "m15_range_ratio_12",
+      "family": "range_chop_volatility",
+      "module": "m15_range_regime",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "نسبت رنج کندل M15 آخر به میانگین حدود ۱۲ کندل اخیر",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_m15_bars",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM_IF_UNCLOSED_BAR_USED",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "alignment_absent_chop",
+      "family": "range_chop_volatility",
+      "module": "alignment_absent_chop",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "نبود هم‌راستایی H4/H1 همراه با M15 chop/range-neutral",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_h4_h1_flags_m15_range_ratio_m15_dir",
+      "source_timeframes": [
+        "M15",
+        "H1",
+        "H4"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "compression_state",
+      "family": "range_chop_volatility",
+      "module": "compression",
+      "dtype": "enum",
+      "allowed_values": [
+        "COMPRESSED",
+        "NORMAL",
+        "EXPANDED",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "وضعیت فشردگی/گسترش دامنه",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_or_optional",
+      "source_timeframes": [
+        "M15",
+        "H1"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "upside_sweep_flag",
+      "family": "sweep_liquidity",
+      "module": "session_sweep",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "عبور/سویپ سطح بالایی مرجع توسط کندل بسته‌شده/آخرین کندل قابل ارزیابی",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_m15_recent_highs_session_levels",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM_IF_REFERENCE_LEVEL_NOT_CLOSED",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "sweep_then_reject_back_inside_up_flag",
+      "family": "sweep_liquidity",
+      "module": "session_sweep",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "سویپ سطح بالایی و بسته‌شدن دوباره داخل سطح",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_m15_close_vs_reference_level",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM_IF_UNCLOSED_BAR_USED",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "sweep_reference_type_up",
+      "family": "sweep_liquidity",
+      "module": "session_sweep",
+      "dtype": "enum",
+      "allowed_values": [
+        "ASIA",
+        "LONDON_EARLY",
+        "PREVIOUS_DAY",
+        "PRIOR48",
+        "NONE",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "نوع سطح مرجع بالایی که sweep شده",
+      "required_for_current_runtime": false,
+      "derivation_status": "derived_optional_current_brain5",
+      "source_timeframes": [
+        "M15",
+        "D1"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "downside_sweep_flag",
+      "family": "sweep_liquidity",
+      "module": "session_sweep",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "سویپ سطح پایینی مرجع",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_supported_when_downside_sweep_memory_added",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "sweep_then_reject_back_inside_down_flag",
+      "family": "sweep_liquidity",
+      "module": "session_sweep",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "سویپ سطح پایینی و بسته‌شدن دوباره داخل سطح",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_supported_when_downside_sweep_memory_added",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "opening_drive_active",
+      "family": "opening_drive",
+      "module": "session_opening_drive",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "فعال بودن opening drive در London/NY",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_or_parked_disc9_family",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "opening_drive_failure_flag",
+      "family": "opening_drive",
+      "module": "session_opening_drive",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "شکست/عدم پذیرش opening drive",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_or_parked_disc9_family",
+      "source_timeframes": [
+        "M15"
+      ],
+      "lookahead_risk": "MEDIUM",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "previous_day_high",
+      "family": "d1_context_levels",
+      "module": "previous_day_levels",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "سقف روز قبل براساس D1 بسته‌شده یا M15 روز قبل",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_optional_for_d1_or_sweep_memory",
+      "source_timeframes": [
+        "D1",
+        "M15"
+      ],
+      "lookahead_risk": "HIGH_IF_CURRENT_DAY_USED",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "previous_day_low",
+      "family": "d1_context_levels",
+      "module": "previous_day_levels",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "کف روز قبل براساس D1 بسته‌شده یا M15 روز قبل",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_optional_for_d1_or_sweep_memory",
+      "source_timeframes": [
+        "D1",
+        "M15"
+      ],
+      "lookahead_risk": "HIGH_IF_CURRENT_DAY_USED",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "d1_inside_outside_state",
+      "family": "d1_context_levels",
+      "module": "d1_structure",
+      "dtype": "enum",
+      "allowed_values": [
+        "INSIDE_DAY",
+        "OUTSIDE_DAY",
+        "NORMAL",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "وضعیت inside/outside روزانه فقط با کندل‌های بسته‌شده",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_supported_when_d1_memory_added",
+      "source_timeframes": [
+        "D1"
+      ],
+      "lookahead_risk": "HIGH_IF_CURRENT_DAY_USED",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "event_window_status",
+      "family": "event_calendar_context",
+      "module": "event_risk",
+      "dtype": "enum",
+      "allowed_values": [
+        "NO_EVENT",
+        "PRE_EVENT",
+        "EVENT_WINDOW",
+        "POST_EVENT",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "وضعیت پنجره رویداد/خبر",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_event_calendar_layer",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW_IF_CALENDAR_PREKNOWN",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "minutes_to_event",
+      "family": "event_calendar_context",
+      "module": "event_risk",
+      "dtype": "integer_or_null",
+      "allowed_values": null,
+      "meaning_fa": "تعداد دقیقه تا رویداد مهم بعدی",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_event_calendar_layer",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW_IF_CALENDAR_PREKNOWN",
+      "current_brain5_support": false,
+      "future_module": true
+    },
+    {
+      "field_id": "fetch_status",
+      "family": "data_quality_freshness",
+      "module": "runtime_freshness",
+      "dtype": "enum",
+      "allowed_values": [
+        "OK",
+        "STALE",
+        "MISSING",
+        "ERROR",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "وضعیت fetch/read-only data",
+      "required_for_current_runtime": false,
+      "derivation_status": "from_live_fetch_layer",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": false,
+      "future_module": false
+    },
+    {
+      "field_id": "data_sufficiency_status",
+      "family": "data_quality_freshness",
+      "module": "runtime_freshness",
+      "dtype": "enum",
+      "allowed_values": [
+        "OK",
+        "LIMITED_HISTORY",
+        "MISSING_REQUIRED_BARS",
+        "UNKNOWN"
+      ],
+      "meaning_fa": "کفایت داده برای ساخت context",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_by_brain5",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "cost_regime_status",
+      "family": "cost_friction_context",
+      "module": "cost_proxy_or_observed",
+      "dtype": "enum",
+      "allowed_values": [
+        "NORMAL",
+        "FRAGILE",
+        "UNKNOWN",
+        "NOT_OBSERVED"
+      ],
+      "meaning_fa": "وضعیت هزینه/اسپرد مشاهده‌شده یا proxy",
+      "required_for_current_runtime": false,
+      "derivation_status": "future_cost_observation_layer",
+      "source_timeframes": [],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": false,
+      "future_module": true
+    }
+  ],
+  "global_boundary": [
+    "The registry defines context fields only.",
+    "It does not authorize signals, entries, stops, targets, profitability, tradability, broker execution, or probability claims."
+  ]
+}
