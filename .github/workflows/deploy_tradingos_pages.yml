@@ -1,0 +1,40 @@
+name: Deploy TradingOS Static Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "panel/**"
+      - "index.html"
+      - ".github/workflows/deploy_tradingos_pages.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: tradingos-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy-pages:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure required panel path exists
+        run: |
+          test -f panel/brain4/index.html
+          test -f panel/brain4/sig_brain4_runtime_payload_current.json
+          touch .nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+      - id: deployment
+        uses: actions/deploy-pages@v4
