@@ -1,15 +1,13 @@
-/* SIG-BRAIN-OPS6 — Simple Refresh Status & Brain Timing Fix
-   Purpose: keep the backend brain multi-timeframe and advanced, but show a simple
-   personal-research active-event surface. Main panel shows last successful refresh,
-   raw feed status, active events, and validity only. Technical M5/M15/H1/H4/D1 timing
-   is hidden in diagnostics. This UI remains display-only and never emits
+/* SIG-BRAIN-OPS5 — Active Event Minimal Panel Redesign
+   Purpose: keep the backend brain powerful, but show only confirmed active memory events
+   from a short recent validity window. This UI remains display-only and never emits
    buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS6_SIMPLE_REFRESH_STATUS_ACTIVE_EVENTS_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS5_ACTIVE_EVENT_MINIMAL_PANEL_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_HOURS = 24;
 const HISTORY_MAX_ITEMS = 20;
-const STORAGE_HISTORY_KEY = 'sigBrain4.activeEventHistory.v2';
-const STORAGE_NOTIFIED_KEY = 'sigBrain4.notifiedEventIds.v2';
+const STORAGE_HISTORY_KEY = 'sigBrain4.activeEventHistory.v1';
+const STORAGE_NOTIFIED_KEY = 'sigBrain4.notifiedEventIds.v1';
 
 async function loadJson(path, required=false){
   try{
@@ -23,7 +21,6 @@ async function loadJson(path, required=false){
 }
 async function loadPayload(){ return await loadJson('sig_brain4_runtime_payload_current.json', true); }
 async function loadContext(){ return await loadJson('../../inputs/sig_brain4_live_context_latest.json', false); }
-async function loadRefreshStatus(){ return await loadJson('sig_live_refresh_status_latest.json', false); }
 
 function esc(x){ return String(x ?? '—').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[m])); }
 function asArray(x){ return Array.isArray(x) ? x : []; }
@@ -55,20 +52,6 @@ function sessionFromUtcDate(d){
   if(h >= 16 && h < 21) return 'NEW_YORK';
   return 'ROLLOVER_THIN_LIQUIDITY';
 }
-function humanAgeFa(minutes){
-  if(minutes === null || minutes === undefined || Number.isNaN(minutes)) return 'نامشخص';
-  if(minutes <= 0) return 'همین الان';
-  if(minutes < 60) return `${minutes} دقیقه پیش`;
-  const h = Math.floor(minutes/60), m = minutes % 60;
-  return m ? `${h} ساعت و ${m} دقیقه پیش` : `${h} ساعت پیش`;
-}
-function freshnessFromRefreshAge(age){
-  if(age === null || age === undefined) return {status:'UNKNOWN', label:'نامشخص', css:'unknown'};
-  if(age <= 15) return {status:'LIVE_OK', label:'بروزرسانی تازه است', css:'ok'};
-  if(age <= 35) return {status:'LAGGING', label:'بروزرسانی کمی عقب است', css:'lagging'};
-  if(age <= 75) return {status:'STALE', label:'بروزرسانی عقب افتاده است', css:'stale'};
-  return {status:'VERY_STALE', label:'بروزرسانی خیلی عقب است', css:'very-stale'};
-}
 function latestContextRow(context, cards){
   const rows = [];
   for(const s of asArray(context?.surfaces)){
@@ -83,18 +66,20 @@ function latestContextRow(context, cards){
   rows.sort((a,b)=>b.date.getTime()-a.date.getTime());
   return rows[0] || null;
 }
-function refreshInfo(status, context, payload, cards){
+function freshnessInfo(context, payload, cards){
   const now = new Date();
-  const refreshTs = parseUtc(status?.last_successful_refresh_utc || status?.created_utc || context?.created_utc || payload?.source_context_summary?.context_created_utc || payload?.created_utc);
-  const refreshAge = refreshTs ? minutesBetween(now, refreshTs) : null;
-  const fresh = freshnessFromRefreshAge(refreshAge);
   const latest = latestContextRow(context, cards);
   const tfMin = timeframeMinutes(latest?.timeframe || 'M15');
   const latestClose = latest?.date ? addMinutes(latest.date, tfMin) : null;
   const ageFromClose = latestClose ? minutesBetween(now, latestClose) : null;
-  const providerM5 = parseUtc(status?.provider_m5?.max_latest_bar_open_ts_utc);
-  const latestProviderM5Label = providerM5 ? isoMinute(providerM5) : '—';
-  return {now, refreshTs, refreshAge, ...fresh, expectedSession:sessionFromUtcDate(now), latest, latestClose, ageFromClose, latestProviderM5Label, statusPayload:status || null};
+  const refreshTs = parseUtc(context?.created_utc || payload?.source_context_summary?.context_created_utc || payload?.created_utc);
+  let status = 'UNKNOWN', label = 'نامشخص', css = 'unknown';
+  if(ageFromClose === null){ status='UNKNOWN'; label='زمان آخرین کندل پیدا نشد'; css='unknown'; }
+  else if(ageFromClose <= 20){ status='LIVE_OK'; label='تازه'; css='ok'; }
+  else if(ageFromClose <= 45){ status='LAGGING'; label='کمی عقب'; css='lagging'; }
+  else if(ageFromClose <= 90){ status='STALE'; label='عقب‌مانده'; css='stale'; }
+  else { status='VERY_STALE'; label='خیلی عقب'; css='very-stale'; }
+  return {now, latest, latestClose, ageFromClose, refreshTs, status, label, css, expectedSession:sessionFromUtcDate(now)};
 }
 function isParked(c){
   const text = `${c.memory_class||''} ${c.brain_state||''} ${c.band||''}`.toUpperCase();
@@ -122,12 +107,12 @@ function compactMeaningFa(c){
   if(id.includes('SWEEP_REJECTION')) return 'شرط sweep سطح بالایی و برگشت داخل سطح روی کندل بسته‌شده فعال شده؛ فقط watch پژوهشی fade-down.';
   return c.plain_language_summary_fa || 'یک memory event روی آخرین context بسته‌شده فعال شده است.';
 }
-function eventFromCard(c, payload, context, refreshStatus, now){
+function eventFromCard(c, payload, context, now){
   if(!c || !c.is_active_match || isParked(c) || isInsufficient(c)) return null;
   const lc = c.latest_context || {};
   const barOpen = parseUtc(lc.latest_bar_open_ts_utc);
   const barClose = barOpen ? addMinutes(barOpen, timeframeMinutes(c.timeframe)) : null;
-  const detected = parseUtc(refreshStatus?.last_successful_refresh_utc || refreshStatus?.created_utc || context?.created_utc || payload?.source_context_summary?.context_created_utc || payload?.created_utc) || now;
+  const detected = parseUtc(context?.created_utc || payload?.source_context_summary?.context_created_utc || payload?.created_utc) || now;
   const expires = addMinutes(detected, ACTIVE_EVENT_WINDOW_MIN);
   const eventId = `${c.memory_id || 'memory'}::${lc.latest_bar_open_ts_utc || isoMinute(detected)}`;
   const expired = expires ? now.getTime() > expires.getTime() : false;
@@ -175,17 +160,18 @@ function notificationPermissionLabel(){
   if(Notification.permission === 'denied') return 'اعلان در مرورگر بسته است';
   return 'فعال‌سازی اعلان مرورگر';
 }
-function renderSummary(info, activeEvents){
+function renderSummary(info, activeEvents, payload){
   const activeCount = activeEvents.length;
-  const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'هیچ رویداد فعال معتبری در ۱۰ دقیقهٔ اخیر نیست';
-  const refreshText = info.refreshTs ? `${humanAgeFa(info.refreshAge)} · ${isoMinute(info.refreshTs)}` : 'نامشخص';
+  const latestLabel = info.latest ? `${info.latest.ts} · ${info.latest.instrument || ''} ${info.latest.timeframe || ''}` : '—';
+  const closeAge = info.ageFromClose === null ? '—' : `${info.ageFromClose} دقیقه از بسته‌شدن`;
+  const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'هیچ رویداد فعال معتبر در ۱۰ دقیقهٔ اخیر نیست';
   return `<div class="status-row ${esc(info.css)}">
       <div class="status-main"><b>${esc(msg)}</b><span>${esc(info.status)} · ${esc(info.label)}</span></div>
-      <div><b>آخرین بروزرسانی موفق</b><span>${esc(refreshText)}</span></div>
-      <div><b>دادهٔ زنده</b><span>M5 خام؛ پشت صحنه برای memoryهای چندتایم‌فریمی آماده می‌شود</span></div>
-      <div><b>UTC / session فعلی</b><span>${esc(isoMinute(info.now))} · ${esc(info.expectedSession)}</span></div>
+      <div><b>آخرین کندل</b><span>${esc(latestLabel)}</span></div>
+      <div><b>سن داده</b><span>${esc(closeAge)}</span></div>
+      <div><b>UTC / session</b><span>${esc(isoMinute(info.now))} · ${esc(info.expectedSession)}</span></div>
     </div>
-    <div class="minimal-boundary">صفحهٔ اصلی فقط eventهای فعال و منقضی‌نشده را نشان می‌دهد. کندل M5/M15/H1/H4/D1، watchهای ناقص و شرط‌های خام در Diagnostics هستند.</div>`;
+    <div class="minimal-boundary">این پنل فقط eventهای فعال و منقضی‌نشده را نشان می‌دهد. watchهای ناقص، شرط‌های خام و memoryهای آرشیوی از صفحهٔ اصلی حذف شده‌اند.</div>`;
 }
 function eventCard(e){
   const cls = e.no_trade ? 'no-trade-event' : 'watch-event';
@@ -194,12 +180,12 @@ function eventCard(e){
       <span class="event-badge">${e.no_trade ? 'NO-TRADE CONTEXT' : 'ACTIVE WATCH'}</span>
       <span class="event-expiry">اعتبار تا ${esc(e.expires_at_utc)}</span>
     </div>
-    <h2>${esc(e.instrument)} <small>${esc(e.timeframe)}</small></h2>
+    <h2>${esc(e.instrument)} ${esc(e.timeframe)}</h2>
     <div class="event-posture">${esc(e.posture_fa)}</div>
     <p>${esc(e.meaning_fa)}</p>
     <div class="event-grid">
       <div><b>فعال‌شده</b><span>${esc(e.detected_at_utc)}</span></div>
-      <div><b>کندل مبنای memory</b><span>${esc(e.source_bar_close_ts_utc)}</span></div>
+      <div><b>کندل مبنا</b><span>${esc(e.source_bar_close_ts_utc)}</span></div>
       <div><b>session</b><span>${esc(e.session_bucket)}</span></div>
       <div><b>قدرت پژوهشی</b><span>${esc(e.score_not_probability)}/100 · نه احتمال</span></div>
     </div>
@@ -210,7 +196,7 @@ function emptyActive(){
   return `<section class="empty-active">
     <div class="empty-icon">●</div>
     <h2>فعلاً رویداد فعال نداریم</h2>
-    <p>هیچ memory event منقضی‌نشده‌ای در پنجرهٔ ۱۰ دقیقهٔ اخیر فعال نشده است. صفحه را بعد از بروزرسانی بعدی چک کن.</p>
+    <p>هیچ memory event منقضی‌نشده‌ای در پنجرهٔ ۱۰ دقیقهٔ اخیر فعال نشده است. پنل را بعد از refresh بعدی دوباره چک کن.</p>
   </section>`;
 }
 function historyCard(e){
@@ -223,31 +209,21 @@ function historyCard(e){
 }
 function renderHistory(history){
   if(!history.length) return `<section class="history"><h2>History</h2><p class="muted">هنوز event فعالی در این مرورگر ثبت نشده است.</p></section>`;
-  return `<section class="history"><h2>History</h2><p class="muted">رویدادهای ثبت‌شدهٔ اخیر در همین مرورگر؛ برای مرور سبک، نه صفحه اصلی تصمیم.</p>${history.slice(0,10).map(historyCard).join('')}</section>`;
+  return `<section class="history"><h2>History</h2><p class="muted">رویدادهای ثبت‌شدهٔ اخیر در همین مرورگر؛ برای audit سبک، نه صفحه اصلی تصمیم.</p>${history.slice(0,10).map(historyCard).join('')}</section>`;
 }
-function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info){
+function renderDiagnostics(payload, cards, context, activeEvents){
   const hiddenInactive = cards.filter(c=>!c.is_active_match).length;
-  const providerLatest = refreshStatus?.provider_m5?.max_latest_bar_open_ts_utc || '—';
-  const latestContext = refreshStatus?.brain_context?.latest || null;
-  const lagCode = refreshStatus?.lag_diagnostic?.lag_reason_code || '—';
-  const lagText = refreshStatus?.lag_diagnostic?.plain_language_fa || '—';
   return `<details class="diagnostics">
     <summary>Diagnostics / جزئیات فنی پنهان</summary>
     <div class="diag-grid">
       <div><b>panel_version</b><span>${esc(PANEL_VERSION)}</span></div>
-      <div><b>last_successful_refresh_utc</b><span>${esc(refreshStatus?.last_successful_refresh_utc || info.refreshTs?.toISOString())}</span></div>
-      <div><b>raw_live_feed</b><span>${esc(refreshStatus?.raw_live_feed_timeframe || 'M5')}</span></div>
-      <div><b>latest_provider_m5_open</b><span>${esc(providerLatest)}</span></div>
-      <div><b>latest_memory_context</b><span>${esc(latestContext ? `${latestContext.instrument} ${latestContext.timeframe} ${latestContext.latest_bar_open_ts_utc}→${latestContext.latest_bar_close_ts_utc}` : '—')}</span></div>
-      <div><b>lag_reason</b><span>${esc(lagCode)} · ${esc(lagText)}</span></div>
       <div><b>payload_cards</b><span>${esc(cards.length)}</span></div>
       <div><b>active_events_visible</b><span>${esc(activeEvents.length)}</span></div>
       <div><b>inactive_or_watch_hidden</b><span>${esc(hiddenInactive)}</span></div>
       <div><b>payload_created_utc</b><span>${esc(payload?.created_utc)}</span></div>
       <div><b>context_created_utc</b><span>${esc(context?.created_utc)}</span></div>
-      <div><b>memory_timeframe_policy</b><span>${esc(refreshStatus?.memory_timeframe_policy_fa || 'دادهٔ خام زنده M5 است؛ هر memory با timeframe خودش ارزیابی می‌شود.')}</span></div>
     </div>
-    <p class="muted">M5 دادهٔ خام live است. هر memory بر اساس timeframe خودش مثل M5/M15/H1/H4/D1 ارزیابی می‌شود. این بخش فقط برای عیب‌یابی است.</p>
+    <p class="muted">شرط‌های خام و watchهای ناقص عمداً در صفحهٔ اصلی نمایش داده نمی‌شوند. برای ممیزی کامل، payload JSON و registryهای repo را بررسی کن.</p>
   </details>`;
 }
 function showToast(text){
@@ -289,19 +265,19 @@ function attachControls(){
   if(refreshBtn) refreshBtn.onclick = ()=>window.location.reload();
 }
 
-Promise.all([loadPayload(), loadContext(), loadRefreshStatus()]).then(([payload, context, refreshStatus])=>{
+Promise.all([loadPayload(), loadContext()]).then(([payload, context])=>{
   const cards = asArray(payload.cards);
   const now = new Date();
-  const info = refreshInfo(refreshStatus, context, payload, cards);
-  const candidateEvents = cards.map(c=>eventFromCard(c, payload, context, refreshStatus, now)).filter(Boolean);
+  const info = freshnessInfo(context, payload, cards);
+  const candidateEvents = cards.map(c=>eventFromCard(c, payload, context, now)).filter(Boolean);
   const activeEvents = candidateEvents.filter(e=>!e.expired);
   const history = mergeHistory(candidateEvents, now);
 
   const summaryEl = document.getElementById('summary');
   summaryEl.classList.remove('skeleton');
-  summaryEl.innerHTML = renderSummary(info, activeEvents);
+  summaryEl.innerHTML = renderSummary(info, activeEvents, payload);
   document.getElementById('context-strip').innerHTML = renderControls();
-  document.getElementById('cards').innerHTML = `${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info)}`;
+  document.getElementById('cards').innerHTML = `${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history)}${renderDiagnostics(payload, cards, context, activeEvents)}`;
   attachControls();
   maybeNotify(activeEvents);
 }).catch(err=>{

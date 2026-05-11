@@ -3,10 +3,9 @@ name: SIG Live M5 Refresh Resample Brain
 on:
   workflow_dispatch:
   schedule:
-    # Every 5 minutes Monday-Friday UTC, offset from :00 to reduce GitHub scheduler congestion.
-    # GitHub schedules are not guaranteed to run exactly on time; this improves odds and keeps
-    # the panel's last-successful-refresh status current even when a new M15 bar is not yet complete.
-    - cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * 1-5"
+    # Every 10 minutes Monday-Friday UTC, offset from :00 to reduce GitHub scheduler congestion.
+    # Uses M5-only Twelve Data fetch, then internally resamples M15/H1/H4/D1.
+    - cron: "3,13,23,33,43,53 * * * 1-5"
 
 concurrency:
   group: sig-live-m5-refresh-resample-brain
@@ -15,7 +14,6 @@ concurrency:
 jobs:
   live-m5-refresh-resample-brain:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     permissions:
       contents: write
       actions: write
@@ -42,13 +40,12 @@ jobs:
           print("numpy", np.__version__)
           PY
 
-      - name: Run read-only M5 refresh + internal resampling + brain payload + refresh status
+      - name: Run read-only M5 refresh + internal resampling + brain payload
         run: |
           python scripts/run_live_m5_refresh_pipeline.py --fetch-live
           python scripts/validate_sig_live_m5base1_outputs.py
-          python scripts/build_sig_live_refresh_status.py
 
-      - name: Commit generated read-only data, brain payload, and refresh status
+      - name: Commit generated read-only data and brain payload
         id: commit_generated
         run: |
           git config user.name "github-actions"
@@ -59,7 +56,7 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Update read-only live refresh status and brain state"
+          git commit -m "Update read-only M5 canonical resampled brain state"
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
