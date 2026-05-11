@@ -9,11 +9,16 @@ on:
       - 'scripts/build_sig_brain4_runtime_payload.py'
       - 'panel/brain4/**'
 
+concurrency:
+  group: sig-brain4-display-only-mobile-panel
+  cancel-in-progress: true
+
 jobs:
   build-brain4-panel:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
       pages: write
       id-token: write
     steps:
@@ -23,9 +28,23 @@ jobs:
           python scripts/build_sig_brain4_runtime_payload.py
           python scripts/validate_sig_brain4_outputs.py
       - name: Commit generated display-only payload
+        id: commit_generated
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add runtime/sig_brain/sig_brain4_runtime_payload_current.json panel/brain4/sig_brain4_runtime_payload_current.json proofs/sig_brain4_validation_result.json
-          git commit -m "Update SIG Brain4 display-only payload" || echo "No changes"
-          git push || true
+          if git diff --cached --quiet; then
+            echo "No generated changes"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Update SIG Brain4 display-only payload"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Trigger static Pages deploy after generated commit
+        if: steps.commit_generated.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run deploy_tradingos_pages.yml --ref "${GITHUB_REF_NAME}"

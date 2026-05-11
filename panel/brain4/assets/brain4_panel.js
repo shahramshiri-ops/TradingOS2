@@ -21,6 +21,82 @@ function numberFmt(x){
   if(typeof x === 'number') return Number.isInteger(x) ? String(x) : x.toFixed(5).replace(/0+$/,'').replace(/\.$/,'');
   return String(x);
 }
+
+function parseUtc(value){
+  if(!value) return null;
+  const d = new Date(String(value));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+function isoMinute(d){
+  if(!d) return '—';
+  return d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+function minutesBetween(later, earlier){
+  if(!later || !earlier) return null;
+  return Math.round((later.getTime() - earlier.getTime()) / 60000);
+}
+function sessionFromUtcDate(d){
+  if(!d) return '—';
+  const h = d.getUTCHours() + d.getUTCMinutes()/60;
+  if(h >= 0 && h < 7) return 'ASIA';
+  if(h >= 7 && h < 12) return 'LONDON';
+  if(h >= 12 && h < 16) return 'LONDON_NY_OVERLAP';
+  if(h >= 16 && h < 21) return 'NEW_YORK';
+  return 'ROLLOVER_THIN_LIQUIDITY';
+}
+function latestBarFromContext(context, cards){
+  const rows = [];
+  for(const s of asArray(context?.surfaces)){
+    const d = parseUtc(s.latest_bar_open_ts_utc);
+    if(d) rows.push({date:d, ts:s.latest_bar_open_ts_utc, instrument:s.instrument, timeframe:s.timeframe, session:s.session_bucket});
+  }
+  for(const c of asArray(cards)){
+    const lc = c.latest_context || {};
+    const d = parseUtc(lc.latest_bar_open_ts_utc);
+    if(d) rows.push({date:d, ts:lc.latest_bar_open_ts_utc, instrument:c.instrument, timeframe:c.timeframe, session:lc.session_bucket});
+  }
+  rows.sort((a,b)=>b.date.getTime()-a.date.getTime());
+  return rows[0] || null;
+}
+function freshnessInfo(context, payload, cards){
+  const now = new Date();
+  const latest = latestBarFromContext(context, cards);
+  const contextCreated = parseUtc(context?.created_utc || payload?.source_context_summary?.context_created_utc || payload?.created_utc);
+  const ageMin = latest ? minutesBetween(now, latest.date) : null;
+  let status = 'UNKNOWN';
+  let statusFa = 'نامشخص';
+  let css = 'unknown';
+  if(ageMin === null){
+    status = 'UNKNOWN'; statusFa = 'زمان آخرین bar پیدا نشد'; css = 'unknown';
+  }else if(ageMin <= 35){
+    status = 'LIVE_OK'; statusFa = 'context تازه است'; css = 'ok';
+  }else if(ageMin <= 90){
+    status = 'STALE'; statusFa = 'context عقب است'; css = 'stale';
+  }else{
+    status = 'VERY_STALE'; statusFa = 'context خیلی عقب است؛ برای وضعیت فعلی استفاده نکن'; css = 'very-stale';
+  }
+  return {
+    now, latest, contextCreated, ageMin, status, statusFa, css,
+    expectedSession: sessionFromUtcDate(now),
+    contextSession: latest?.session || [...new Set(asArray(context?.surfaces).map(s=>s.session_bucket).filter(Boolean))].join(' / ') || '—'
+  };
+}
+function freshnessBanner(info){
+  const age = info.ageMin === null ? '—' : `${info.ageMin} دقیقه`;
+  const latestLabel = info.latest ? `${info.latest.ts} · ${info.latest.instrument || ''} ${info.latest.timeframe || ''}` : '—';
+  const mismatch = info.contextSession && info.contextSession !== '—' && info.contextSession !== info.expectedSession;
+  const note = info.css === 'ok'
+    ? 'session کارت‌ها بر اساس آخرین کندل بسته‌شده محاسبه شده است.'
+    : 'هشدار: کارت‌ها ممکن است بازار فعلی را نشان ندهند. ابتدا workflow refresh را اجرا/بررسی کن.';
+  const mismatchNote = mismatch ? ` اختلاف session: context=${info.contextSession} ولی clock=${info.expectedSession}.` : '';
+  return `<div class="freshness-banner ${esc(info.css)}">
+    <div><b>${esc(info.status)}</b><span>${esc(info.statusFa)}</span></div>
+    <div><b>آخرین کندل بسته‌شده</b><span>${esc(latestLabel)}</span></div>
+    <div><b>سن داده</b><span>${esc(age)}</span></div>
+    <div><b>UTC / session فعلی</b><span>${esc(isoMinute(info.now))} · ${esc(info.expectedSession)}</span></div>
+  </div>
+  <div class="freshness-note ${esc(info.css)}">${esc(note + mismatchNote)}</div>`;
+}
 function surfaceFor(context, instrument, timeframe){
   return asArray(context?.surfaces).find(s => s.instrument === instrument && s.timeframe === timeframe) || null;
 }
@@ -158,14 +234,16 @@ function summaryPanel(p, cards, context){
   const watch = cards.filter(c=>!isParked(c) && !c.is_active_match && !isInsufficient(c)).length;
   const sessions = [...new Set(asArray(context?.surfaces).map(s=>s.session_bucket).filter(Boolean))].join(' / ') || '—';
   const contextUtc = context?.created_utc || p.source_context_summary?.context_created_utc || '—';
-  return `<div class="summary-grid">
+  const fresh = freshnessInfo(context, p, cards);
+  return `${freshnessBanner(fresh)}
+  <div class="summary-grid">
     <div><b>${active}</b><span>match فعال اکنون</span></div>
     <div><b>${watch}</b><span>watch نزدیک/منتظر trigger</span></div>
     <div><b>${noTrade}</b><span>حافظهٔ no-trade در registry</span></div>
     <div><b>${parked}</b><span>آرشیو / weak شده</span></div>
   </div>
   <div class="summary-note">
-    session فعلی: <strong>${esc(sessions)}</strong> · context UTC: <strong>${esc(contextUtc)}</strong><br>
+    session آخرین context: <strong>${esc(sessions)}</strong> · context UTC: <strong>${esc(contextUtc)}</strong><br>
     ${esc(p.global_boundary?.plain_language_fa || 'نمایش پژوهشی فقط برای context historical memory.')}
   </div>`;
 }
@@ -194,8 +272,11 @@ function groupedCards(cards, context){
 }
 Promise.all([loadPayload(), loadContext()]).then(([p, context])=>{
   const cards = asArray(p.cards);
-  document.getElementById('summary').classList.remove('skeleton');
-  document.getElementById('summary').innerHTML = summaryPanel(p, cards, context);
+  const summaryEl = document.getElementById('summary');
+  const fresh = freshnessInfo(context, p, cards);
+  summaryEl.classList.remove('skeleton','freshness-ok','freshness-stale','freshness-very-stale','freshness-unknown');
+  summaryEl.classList.add('freshness-' + fresh.css);
+  summaryEl.innerHTML = summaryPanel(p, cards, context);
   document.getElementById('context-strip').innerHTML = contextStrip(context);
   document.getElementById('cards').innerHTML = groupedCards(cards, context);
 }).catch(err=>{
