@@ -21,6 +21,25 @@ function numberFmt(x){
   if(typeof x === 'number') return Number.isInteger(x) ? String(x) : x.toFixed(5).replace(/0+$/,'').replace(/\.$/,'');
   return String(x);
 }
+function toNumber(x){
+  if(x === null || x === undefined || x === '') return null;
+  const n = Number(String(x).replace(/[,،]/g,''));
+  return Number.isFinite(n) ? n : null;
+}
+function observedFromCondition(s){
+  const m = String(s || '').match(/observed=(.+)$/);
+  return m ? m[1].trim() : '';
+}
+function rangeFromCondition(s){
+  const m = String(s || '').match(/between\s*\[\s*([\d.+-]+)\s*,\s*([\d.+-]+)\s*\]/);
+  return m ? {lo:Number(m[1]), hi:Number(m[2])} : null;
+}
+function firstAvailable(obj, keys){
+  for(const k of keys){
+    if(obj && obj[k] !== undefined && obj[k] !== null && obj[k] !== '') return {key:k, value:obj[k]};
+  }
+  return null;
+}
 
 function parseUtc(value){
   if(!value) return null;
@@ -68,10 +87,12 @@ function freshnessInfo(context, payload, cards){
   let css = 'unknown';
   if(ageMin === null){
     status = 'UNKNOWN'; statusFa = 'زمان آخرین bar پیدا نشد'; css = 'unknown';
-  }else if(ageMin <= 35){
+  }else if(ageMin <= 25){
     status = 'LIVE_OK'; statusFa = 'context تازه است'; css = 'ok';
+  }else if(ageMin <= 45){
+    status = 'LAGGING'; statusFa = 'context کمی عقب است؛ برای M15 با احتیاط بخوان'; css = 'lagging';
   }else if(ageMin <= 90){
-    status = 'STALE'; statusFa = 'context عقب است'; css = 'stale';
+    status = 'STALE'; statusFa = 'context عقب است؛ refresh را بررسی کن'; css = 'stale';
   }else{
     status = 'VERY_STALE'; statusFa = 'context خیلی عقب است؛ برای وضعیت فعلی استفاده نکن'; css = 'very-stale';
   }
@@ -87,7 +108,9 @@ function freshnessBanner(info){
   const mismatch = info.contextSession && info.contextSession !== '—' && info.contextSession !== info.expectedSession;
   const note = info.css === 'ok'
     ? 'session کارت‌ها بر اساس آخرین کندل بسته‌شده محاسبه شده است.'
-    : 'هشدار: کارت‌ها ممکن است بازار فعلی را نشان ندهند. ابتدا workflow refresh را اجرا/بررسی کن.';
+    : info.css === 'lagging'
+      ? 'context کمی عقب است؛ برای M15 اول آخرین کندل بسته‌شده را با چارت/refresh چک کن.'
+      : 'هشدار: کارت‌ها ممکن است بازار فعلی را نشان ندهند. ابتدا workflow refresh را اجرا/بررسی کن.';
   const mismatchNote = mismatch ? ` اختلاف session: context=${info.contextSession} ولی clock=${info.expectedSession}.` : '';
   return `<div class="freshness-banner ${esc(info.css)}">
     <div><b>${esc(info.status)}</b><span>${esc(info.statusFa)}</span></div>
@@ -127,7 +150,7 @@ function stateLabel(c){
 }
 function conditionHuman(raw){
   const s = String(raw || '');
-  const observed = (s.match(/observed=([^\s]+)/)||[])[1];
+  const observed = observedFromCondition(s);
   const observedText = observed ? `مشاهده: ${observed}` : '';
   if(s.startsWith('session_bucket eq NEW_YORK')) return `جلسه باید New York باشد؛ ${observedText}`;
   if(s.startsWith('session_bucket in')) return `جلسه باید London / London-NY / New York باشد؛ ${observedText}`;
@@ -138,13 +161,86 @@ function conditionHuman(raw){
   if(s.startsWith('data_sufficiency_status eq OK')) return `کفایت داده OK است`;
   if(s.startsWith('instrument eq')) return `instrument درست است؛ ${observedText}`;
   if(s.startsWith('timeframe eq')) return `timeframe درست است؛ ${observedText}`;
-  if(s.startsWith('h4_h1_up_context bool_eq False')) return `هم‌راستایی صعودی H4/H1 غایب است؛ ${observedText || 'پاس'}`;
-  if(s.startsWith('h4_h1_down_context bool_eq False')) return `هم‌راستایی نزولی H4/H1 غایب است؛ ${observedText || 'پاس'}`;
-  if(s.startsWith('m15_range_ratio_12 between')) return `M15 در محدودهٔ chop/range-neutral است؛ ${observedText}`;
+  if(s.startsWith('h4_h1_up_context bool_eq False')){
+    if(observed === 'True' || observed === 'true') return 'هم‌راستایی صعودی H4/H1 وجود دارد؛ شرط no-trade/avoid-short می‌خواهد هم‌راستایی واضح وجود نداشته باشد.';
+    return `هم‌راستایی صعودی H4/H1 غایب است؛ ${observedText || 'پاس'}`;
+  }
+  if(s.startsWith('h4_h1_down_context bool_eq False')){
+    if(observed === 'True' || observed === 'true') return 'هم‌راستایی نزولی H4/H1 وجود دارد؛ شرط no-trade/avoid-short می‌خواهد هم‌راستایی واضح وجود نداشته باشد.';
+    return `هم‌راستایی نزولی H4/H1 غایب است؛ ${observedText || 'پاس'}`;
+  }
+  if(s.startsWith('m15_range_ratio_12 between')){
+    const r = rangeFromCondition(s);
+    const v = toNumber(observed);
+    const rangeText = r ? `محدودهٔ لازم: ${numberFmt(r.lo)} تا ${numberFmt(r.hi)}` : 'محدودهٔ لازم نامشخص';
+    if(r && v !== null && v < r.lo) return `M15 فعلاً زیر باند chop/range-neutral تعریف‌شده است؛ مشاهده: ${numberFmt(v)}، ${rangeText}`;
+    if(r && v !== null && v > r.hi) return `M15 فعلاً بالاتر از باند chop/range-neutral تعریف‌شده است؛ مشاهده: ${numberFmt(v)}، ${rangeText}`;
+    if(r && v !== null) return `M15 داخل باند chop/range-neutral تعریف‌شده است؛ مشاهده: ${numberFmt(v)}، ${rangeText}`;
+    return `M15 باید در باند chop/range-neutral تعریف‌شده باشد؛ ${observedText}، ${rangeText}`;
+  }
   if(s.startsWith('m15_dir in')) return `جهت M15 خنثی/نامشخص است؛ ${observedText}`;
   if(s.startsWith('NOT(h1_dir == UP AND h4_dir == UP)')) return `H1 و H4 همزمان up نیستند`;
   if(s.startsWith('conflict_severity not_eq HIGH')) return `تضاد شدید context وجود ندارد؛ ${observedText}`;
   return s;
+}
+function semanticState(c){
+  const failed = asArray(c.failed_conditions).join(' | ');
+  const missing = asArray(c.missing_inputs).join(' | ');
+  const id = c.memory_id || '';
+  if(c.is_active_match){
+    return {state:'Context matched on last closed bar', posture: postureLabel(c), now:'فعال از نظر حافظهٔ تاریخی؛ هنوز دستور معامله نیست.'};
+  }
+  if(isParked(c)){
+    return {state:'Archived / weakened', posture:'فقط audit و سابقه', now:'در runtime فعال نمی‌شود مگر review جدید بیاید.'};
+  }
+  if(missing){
+    return {state:'Missing runtime field', posture: postureLabel(c), now:'فعال‌سازی ممنوع تا وقتی field کامل شود.'};
+  }
+  if(failed.includes('session_bucket eq NEW_YORK')){
+    return {state:'Waiting for New York session', posture: postureLabel(c), now:'در session فعلی کاربرد مستقیم ندارد.'};
+  }
+  if(failed.includes('session_bucket in')){
+    return {state:'Waiting for active London/NY session', posture: postureLabel(c), now:'دامنهٔ session هنوز کامل نیست.'};
+  }
+  if(failed.includes('upside_sweep_flag bool_eq True')){
+    return {state:'Waiting for upside sweep', posture: postureLabel(c), now:'هنوز برخورد/عبور از سطح بالایی تأیید نشده.'};
+  }
+  if(failed.includes('sweep_then_reject_back_inside_up_flag bool_eq True')){
+    return {state:'Waiting for M15 close-back-inside confirmation', posture: postureLabel(c), now:'sweep دیده شده/ممکن است، اما rejection بسته‌شده هنوز کامل نیست.'};
+  }
+  if(failed.includes('m15_range_ratio_12 between')){
+    return {state:'Outside defined M15 chop/range-neutral band', posture: postureLabel(c), now: isNoTrade(c) ? 'no-trade warning هنوز فعال نیست.' : 'trigger هنوز کامل نیست.'};
+  }
+  if(id.includes('ALIGNMENT_ABSENT_CHOP')){
+    return {state:'Waiting for alignment-absent chop context', posture: postureLabel(c), now:'avoid-short context هنوز فعال نیست.'};
+  }
+  return {state:'Trigger incomplete', posture: postureLabel(c), now:'هیچ match فعالی روی کندل بسته‌شدهٔ فعلی وجود ندارد.'};
+}
+function semanticStrip(c){
+  const s = semanticState(c);
+  return `<div class="semantic-strip">
+    <div><b>State</b><span>${esc(s.state)}</span></div>
+    <div><b>Posture if completed</b><span>${esc(s.posture)}</span></div>
+    <div><b>Now</b><span>${esc(s.now)}</span></div>
+  </div>`;
+}
+function prior48DistanceBox(surface){
+  if(!surface || surface.sweep_reference_value_up === undefined) return '';
+  const ref = toNumber(surface.sweep_reference_value_up);
+  const last = firstAvailable(surface, ['latest_close','latest_close_bid','last_close','close','m15_close','latest_bar_close','current_price','last_price']);
+  if(ref === null){
+    return `<div class="field-gap"><b>prior48 distance</b><span>reference عددی در context پیدا نشد.</span></div>`;
+  }
+  if(!last){
+    return `<div class="field-gap"><b>prior48 distance</b><span>در context فعلی close/last price وجود ندارد؛ builder gap برای نمایش فاصله تا سطح.</span></div>`;
+  }
+  const px = toNumber(last.value);
+  if(px === null) return `<div class="field-gap"><b>prior48 distance</b><span>last price خوانا نیست؛ field=${esc(last.key)}</span></div>`;
+  const diff = ref - px;
+  const pipFactor = String(surface.instrument || '').includes('JPY') ? 100 : 10000;
+  const pips = diff * pipFactor;
+  const relation = diff > 0 ? 'زیر prior48 high' : diff < 0 ? 'بالای prior48 high' : 'روی prior48 high';
+  return `<div class="level-distance"><b>فاصله تا prior48 high</b><span>${esc(numberFmt(Math.abs(pips)))} pip · ${esc(relation)} · last=${esc(numberFmt(px))}</span></div>`;
 }
 function mainBlocker(c){
   const missing = asArray(c.missing_inputs);
@@ -186,6 +282,7 @@ function contextMini(surface){
     <div><b>H1/H4</b><span>${esc(surface.h1_dir)} / ${esc(surface.h4_dir)}</span></div>
     <div><b>M15</b><span>${esc(surface.m15_dir)} · ratio ${esc(numberFmt(surface.m15_range_ratio_12))}</span></div>
     ${prior}
+    ${prior48DistanceBox(surface)}
   </div>`;
 }
 function badgeClass(c){
@@ -210,6 +307,7 @@ function card(c, context){
       <span class="pill">score ${esc(c.score_not_probability)}/100</span>
       <span class="pill">${esc(c.band)}</span>
     </div>
+    ${semanticStrip(c)}
     <p class="summary-text">${esc(c.plain_language_summary_fa)}</p>
     <div class="posture-box">
       <div><b>مانع اصلی فعلی</b><span>${esc(mainBlocker(c))}</span></div>
@@ -274,7 +372,7 @@ Promise.all([loadPayload(), loadContext()]).then(([p, context])=>{
   const cards = asArray(p.cards);
   const summaryEl = document.getElementById('summary');
   const fresh = freshnessInfo(context, p, cards);
-  summaryEl.classList.remove('skeleton','freshness-ok','freshness-stale','freshness-very-stale','freshness-unknown');
+  summaryEl.classList.remove('skeleton','freshness-ok','freshness-lagging','freshness-stale','freshness-very-stale','freshness-unknown');
   summaryEl.classList.add('freshness-' + fresh.css);
   summaryEl.innerHTML = summaryPanel(p, cards, context);
   document.getElementById('context-strip').innerHTML = contextStrip(context);
