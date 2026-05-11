@@ -1,0 +1,77 @@
+{
+  "support_registry_version": "SIG_CONTEXT_BUILDER_SUPPORT_REGISTRY_v1_1_USDJPY_PRIOR48_INSTALLED",
+  "created_utc": "2026-05-11T08:30:00Z",
+  "builders": [
+    {
+      "builder_id": "SIG-BRAIN5",
+      "script": "scripts/build_sig_brain5_live_context.py",
+      "status": "ACTIVE_CURRENT",
+      "supported_fields": [
+        "instrument",
+        "timeframe",
+        "latest_bar_open_ts_utc",
+        "session_bucket",
+        "m15_dir",
+        "h1_dir",
+        "h4_dir",
+        "conflict_severity",
+        "h4_h1_up_context",
+        "h4_h1_down_context",
+        "m15_range_ratio_12",
+        "alignment_absent_chop",
+        "upside_sweep_flag",
+        "sweep_then_reject_back_inside_up_flag",
+        "sweep_reference_type_up",
+        "data_sufficiency_status",
+        "sweep_reference_policy_up"
+      ],
+      "not_supported_current": [
+        "d1_dir",
+        "compression_state",
+        "downside_sweep_flag",
+        "sweep_then_reject_back_inside_down_flag",
+        "opening_drive_active",
+        "opening_drive_failure_flag",
+        "previous_day_high",
+        "previous_day_low",
+        "d1_inside_outside_state",
+        "event_window_status",
+        "minutes_to_event",
+        "fetch_status",
+        "cost_regime_status"
+      ],
+      "boundary": "derived read-only context only; not signal"
+    }
+  ],
+  "instrument_timeframe_support": [
+    {
+      "builder_id": "SIG-BRAIN5",
+      "instrument": "USDJPY",
+      "timeframe": "M15",
+      "supported_fields": [
+        "instrument",
+        "timeframe",
+        "latest_bar_open_ts_utc",
+        "session_bucket",
+        "m15_dir",
+        "h1_dir",
+        "h4_dir",
+        "conflict_severity",
+        "h4_h1_up_context",
+        "h4_h1_down_context",
+        "m15_range_ratio_12",
+        "alignment_absent_chop",
+        "upside_sweep_flag",
+        "sweep_then_reject_back_inside_up_flag",
+        "sweep_reference_type_up",
+        "sweep_reference_policy_up",
+        "data_sufficiency_status"
+      ],
+      "semantic_policy": {
+        "sweep_reference_policy_up": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0"
+      },
+      "proof_status": "PASS_BY_SIG_BRAIN_OPS1_LOCAL_FIXTURE_AND_RUNTIME_VALIDATION",
+      "boundary": "read-only derived context only; not signal"
+    }
+  ]
+}

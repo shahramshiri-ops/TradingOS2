@@ -2,10 +2,11 @@
 from __future__ import annotations
 import argparse, datetime as dt, json
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 AUTHORITY = "SIG_BRAIN5_UPSTREAM_CONTEXT_BUILDER|READ_ONLY_DERIVED_CONTEXT|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION"
 ACTIVE_SESSIONS = ["LONDON", "LONDON_NY_OVERLAP", "NEW_YORK"]
+PRIOR48_POLICY_UP = "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0"
 
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -76,6 +77,65 @@ def previous_day_high(m15, day):
     rows = [b for b in m15 if parse_ts(b["bar_open_ts_utc"]).date() == day - dt.timedelta(days=1)]
     return max((fnum(b["high"]) for b in rows), default=None)
 
+
+def prior_window_high_closed(m15: List[Dict[str, Any]], window_bars: int = 192, min_bars: int = 96) -> Tuple[Optional[float], Dict[str, Any]]:
+    """Return a PRIOR48 reference high using CLOSED M15 bars only.
+
+    The latest/evaluated bar is excluded. This function is used for the
+    USDJPY PRIOR48 memory integration and preserves the declared research
+    semantic: PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0.
+    """
+    prior = m15[:-1]
+    available = len(prior)
+    if available < min_bars:
+        return None, {
+            "reference_available": False,
+            "prior_bars_available": available,
+            "required_min_bars": min_bars,
+            "window_bars": window_bars,
+            "policy": PRIOR48_POLICY_UP,
+            "insufficiency_reason": "INSUFFICIENT_PRIOR_CLOSED_M15_BARS_FOR_PRIOR48_POLICY"
+        }
+    win = prior[-window_bars:]
+    return max((fnum(b["high"]) for b in win), default=None), {
+        "reference_available": True,
+        "prior_bars_available": available,
+        "bars_used": len(win),
+        "required_min_bars": min_bars,
+        "window_bars": window_bars,
+        "policy": PRIOR48_POLICY_UP
+    }
+
+def evaluate_usdjpy_prior48_upside_sweep_reject(m15: List[Dict[str, Any]], tolerance_multiplier: float) -> Dict[str, Any]:
+    lb = latest(m15)
+    high, close, low, open_ = fnum(lb["high"]), fnum(lb["close"]), fnum(lb["low"]), fnum(lb["open"])
+    rng = high - low
+    close_loc = (close - low) / rng if rng else None
+    upper_wick = (high - max(open_, close)) / rng if rng else None
+    tol = abs(close) * tolerance_multiplier
+    ref, meta = prior_window_high_closed(m15, window_bars=192, min_bars=96)
+    if ref is None:
+        return {
+            "upside_sweep_flag": None,
+            "sweep_then_reject_back_inside_up_flag": None,
+            "sweep_reference_type_up": "UNKNOWN",
+            "sweep_reference_policy_up": PRIOR48_POLICY_UP,
+            "sweep_reference_value_up": None,
+            "sweep_reference_meta_up": meta,
+            "data_sufficiency_status": "MISSING_REQUIRED_BARS"
+        }
+    upside = high > ref + tol
+    reject = bool(upside and close <= ref and ((upper_wick is not None and upper_wick >= 0.45) or (close_loc is not None and close_loc <= 0.50)))
+    return {
+        "upside_sweep_flag": bool(upside),
+        "sweep_then_reject_back_inside_up_flag": reject,
+        "sweep_reference_type_up": "PRIOR48" if upside else "NONE",
+        "sweep_reference_policy_up": PRIOR48_POLICY_UP,
+        "sweep_reference_value_up": ref,
+        "sweep_reference_meta_up": meta,
+        "data_sufficiency_status": "OK"
+    }
+
 def eurusd_context(m15, h1):
     lb, ts = latest(m15), parse_ts(latest(m15)["bar_open_ts_utc"])
     sess = session_bucket(ts)
@@ -105,7 +165,11 @@ def usdjpy_context(m15, h1):
     up = h4d == "UP" and h1d == "UP" and sess in ACTIVE_SESSIONS
     down = h4d == "DOWN" and h1d == "DOWN" and sess in ACTIVE_SESSIONS
     chop = sess in ACTIVE_SESSIONS and not up and not down and rr is not None and 0.65 <= rr <= 1.20 and m15d in ("FLAT","UNKNOWN")
-    return {"instrument":"USDJPY","timeframe":"M15","latest_bar_open_ts_utc":lb.get("bar_open_ts_utc"),"session_bucket":sess,"h1_dir":h1d,"h4_dir":h4d,"m15_dir":m15d,"h4_h1_up_context":up,"h4_h1_down_context":down,"m15_range_ratio_12":rr,"alignment_absent_chop":chop,"context_builder_status":"DERIVED_FROM_READ_ONLY_RECENT_BARS","data_sufficiency_status":"OK" if len(m15)>=12 and len(h1)>=8 else "LIMITED_HISTORY","signal_authorized":False}
+    sweep = evaluate_usdjpy_prior48_upside_sweep_reject(m15, tolerance_multiplier=0.00002)
+    data_suff = "OK" if len(m15)>=12 and len(h1)>=8 else "LIMITED_HISTORY"
+    if sweep.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS":
+        data_suff = "MISSING_REQUIRED_BARS"
+    return {"instrument":"USDJPY","timeframe":"M15","latest_bar_open_ts_utc":lb.get("bar_open_ts_utc"),"session_bucket":sess,"h1_dir":h1d,"h4_dir":h4d,"m15_dir":m15d,"h4_h1_up_context":up,"h4_h1_down_context":down,"m15_range_ratio_12":rr,"alignment_absent_chop":chop,"upside_sweep_flag":sweep.get("upside_sweep_flag"),"sweep_then_reject_back_inside_up_flag":sweep.get("sweep_then_reject_back_inside_up_flag"),"sweep_reference_type_up":sweep.get("sweep_reference_type_up"),"sweep_reference_policy_up":sweep.get("sweep_reference_policy_up"),"sweep_reference_value_up":sweep.get("sweep_reference_value_up"),"sweep_reference_meta_up":sweep.get("sweep_reference_meta_up"),"context_builder_status":"DERIVED_FROM_READ_ONLY_RECENT_BARS","data_sufficiency_status":data_suff,"signal_authorized":False}
 def build_context(raw):
     surfaces = []
     for inst, builder in [("EURUSD", eurusd_context), ("USDJPY", usdjpy_context)]:
@@ -114,7 +178,7 @@ def build_context(raw):
             surfaces.append(builder(m15, h1))
         else:
             surfaces.append({"instrument":inst,"timeframe":"M15","context_builder_status":"MISSING_REQUIRED_BARS","missing":[x for x, ok in [(f"{inst} M15", bool(m15)), (f"{inst} H1", bool(h1))] if not ok],"signal_authorized":False})
-    return {"context_version":"SIG_BRAIN5_DERIVED_LIVE_CONTEXT_v1_0","created_utc":utc_now(),"source_authority":AUTHORITY,"input_context_version":raw.get("context_version"),"input_created_utc":raw.get("created_utc"),"surfaces":surfaces,"global_boundary":{"display_only":True,"signal_authorized":False,"action_surface_authorized":False,"broker_execution_authorized":False,"plain_language_fa":"این فایل فقط context مشتق‌شده برای matcher مغز است؛ سیگنال، ورود، خروج، سودآوری یا اجرا نیست."}}
+    return {"context_version":"SIG_BRAIN5_DERIVED_LIVE_CONTEXT_v1_1_USDJPY_PRIOR48","created_utc":utc_now(),"source_authority":AUTHORITY,"input_context_version":raw.get("context_version"),"input_created_utc":raw.get("created_utc"),"surfaces":surfaces,"global_boundary":{"display_only":True,"signal_authorized":False,"action_surface_authorized":False,"broker_execution_authorized":False,"plain_language_fa":"این فایل فقط context مشتق‌شده برای matcher مغز است؛ سیگنال، ورود، خروج، سودآوری یا اجرا نیست."}}
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw-bars", default="inputs/sig_brain5_raw_bars_latest.json")

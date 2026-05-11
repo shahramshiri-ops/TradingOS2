@@ -14,7 +14,7 @@ def surface_fields(context, instrument, timeframe):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--memory-registry", default="data/sig_brain/brain_memory_registry_v1_0.json")
+    ap.add_argument("--memory-registry", default="sig_brain/brain_memory_registry_v1_0.json")
     ap.add_argument("--context", default="inputs/sig_brain4_live_context_latest.json")
     ap.add_argument("--out", default="proofs/sig_brain6_runtime_context_coverage_result.json")
     args = ap.parse_args()

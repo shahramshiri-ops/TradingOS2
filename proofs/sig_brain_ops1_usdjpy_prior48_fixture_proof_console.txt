@@ -1,0 +1,116 @@
+{
+  "program": "SIG-DISCOVERY-FACTORY1-W1-BRAININTEG1-PATCHBUILD1",
+  "proof_type": "FIXTURE_PROOF_ONLY_NOT_HOLDOUT_NOT_MEMORY_ACTIVATION",
+  "validation_status": "PASS",
+  "gates": [
+    {
+      "gate": "G3_BRAIN5_DERIVATION_96_PRIOR",
+      "status": "PASS",
+      "observed": {
+        "instrument": "USDJPY",
+        "timeframe": "M15",
+        "latest_bar_open_ts_utc": "2026-05-08T16:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_dir": "FLAT",
+        "h4_dir": "UP",
+        "m15_dir": "DOWN",
+        "h4_h1_up_context": false,
+        "h4_h1_down_context": false,
+        "m15_range_ratio_12": 6.260869565217391,
+        "alignment_absent_chop": false,
+        "upside_sweep_flag": true,
+        "sweep_then_reject_back_inside_up_flag": true,
+        "sweep_reference_type_up": "PRIOR48",
+        "sweep_reference_policy_up": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0",
+        "sweep_reference_value_up": 100.0,
+        "sweep_reference_meta_up": {
+          "reference_available": true,
+          "prior_bars_available": 96,
+          "bars_used": 96,
+          "required_min_bars": 96,
+          "window_bars": 192,
+          "policy": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0"
+        },
+        "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS",
+        "data_sufficiency_status": "OK",
+        "signal_authorized": false
+      }
+    },
+    {
+      "gate": "G4_INSUFFICIENT_HISTORY_95_PRIOR",
+      "status": "PASS",
+      "observed": {
+        "instrument": "USDJPY",
+        "timeframe": "M15",
+        "latest_bar_open_ts_utc": "2026-05-08T16:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_dir": "FLAT",
+        "h4_dir": "UP",
+        "m15_dir": "DOWN",
+        "h4_h1_up_context": false,
+        "h4_h1_down_context": false,
+        "m15_range_ratio_12": 6.260869565217391,
+        "alignment_absent_chop": false,
+        "upside_sweep_flag": null,
+        "sweep_then_reject_back_inside_up_flag": null,
+        "sweep_reference_type_up": "UNKNOWN",
+        "sweep_reference_policy_up": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0",
+        "sweep_reference_value_up": null,
+        "sweep_reference_meta_up": {
+          "reference_available": false,
+          "prior_bars_available": 95,
+          "required_min_bars": 96,
+          "window_bars": 192,
+          "policy": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0",
+          "insufficiency_reason": "INSUFFICIENT_PRIOR_CLOSED_M15_BARS_FOR_PRIOR48_POLICY"
+        },
+        "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS",
+        "data_sufficiency_status": "MISSING_REQUIRED_BARS",
+        "signal_authorized": false
+      }
+    },
+    {
+      "gate": "G5_CURRENT_BAR_EXCLUSION",
+      "status": "PASS",
+      "observed_ref": 100.0
+    },
+    {
+      "gate": "G7_BRAIN4_REQUIRED_FIELDS_MATCH_TRUE",
+      "status": "PASS",
+      "observed_state": "CAVEATED_WATCH_ACTIVE"
+    },
+    {
+      "gate": "G7_BRAIN4_REQUIRED_FIELDS_MISSING_POLICY",
+      "status": "PASS",
+      "observed_state": "MEMORY_INPUT_INSUFFICIENT",
+      "missing_inputs": [
+        "sweep_reference_policy_up"
+      ]
+    },
+    {
+      "gate": "G9_NO_ACTION_SURFACE_VALIDATORS",
+      "status": "PASS",
+      "brain5_validation": {
+        "validation_status": "PASS",
+        "context": "inputs/sig_brain4_live_context_latest.json",
+        "failures": [],
+        "derived_surface_count": 2,
+        "signal_authorized": false,
+        "action_surface_authorized": false,
+        "brain4_result": "{\n  \"status\": \"sig_brain4_runtime_payload_created\",\n  \"out\": \"runtime/sig_brain/sig_brain4_runtime_payload_current.json\",\n  \"panel_out\": \"panel/brain4/sig_brain4_runtime_payload_current.json\",\n  \"active_match_count\": 1,\n  \"signal_authorized\": false,\n  \"action_surface_authorized\": false\n}"
+      },
+      "brain4_validation": {
+        "validation_status": "PASS",
+        "payload": "runtime/sig_brain/sig_brain4_runtime_payload_current.json",
+        "failures": [],
+        "signal_authorized": false,
+        "action_surface_authorized": false,
+        "card_count": 4
+      }
+    }
+  ],
+  "signal_authorized": false,
+  "action_surface_authorized": false,
+  "holdout_opened": false,
+  "memory_activation_authorized": false
+}

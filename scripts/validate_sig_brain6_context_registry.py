@@ -8,9 +8,9 @@ def load_json(path: Path):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--field-registry", default="data/sig_brain/context_field_registry_v1_0.json")
-    ap.add_argument("--memory-registry", default="data/sig_brain/brain_memory_registry_v1_0.json")
-    ap.add_argument("--builder-support", default="data/sig_brain/context_builder_support_registry_v1_0.json")
+    ap.add_argument("--field-registry", default="sig_brain/context_field_registry_v1_0.json")
+    ap.add_argument("--memory-registry", default="sig_brain/brain_memory_registry_v1_0.json")
+    ap.add_argument("--builder-support", default="sig_brain/context_builder_support_registry_v1_0.json")
     ap.add_argument("--proof-out", default="proofs/sig_brain6_context_registry_validation_result.json")
     args = ap.parse_args()
 

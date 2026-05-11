@@ -4,8 +4,9 @@ import argparse, json, subprocess, sys
 from pathlib import Path
 REQUIRED = {
     "EURUSD": ["session_bucket", "upside_sweep_flag", "sweep_then_reject_back_inside_up_flag", "h1_dir", "h4_dir", "conflict_severity"],
-    "USDJPY": ["session_bucket", "h4_h1_up_context", "h4_h1_down_context", "m15_range_ratio_12", "m15_dir"],
+    "USDJPY": ["session_bucket", "h4_h1_up_context", "h4_h1_down_context", "m15_range_ratio_12", "m15_dir", "upside_sweep_flag", "sweep_then_reject_back_inside_up_flag", "sweep_reference_type_up", "sweep_reference_policy_up"],
 }
+REQUIRED_POLICY = "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0"
 def load(p): return json.loads(Path(p).read_text(encoding="utf-8"))
 def main():
     ap = argparse.ArgumentParser()
@@ -26,6 +27,8 @@ def main():
         for f in fields:
             if f not in row:
                 failures.append(f"missing {inst}.{f}")
+        if inst == "USDJPY" and row.get("sweep_reference_policy_up") != REQUIRED_POLICY:
+            failures.append(f"USDJPY sweep_reference_policy_up must be {REQUIRED_POLICY}")
     brain4_result = None
     try:
         proc = subprocess.run([sys.executable, "scripts/build_sig_brain4_runtime_payload.py"], check=True, capture_output=True, text=True)

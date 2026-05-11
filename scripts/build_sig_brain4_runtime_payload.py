@@ -22,6 +22,9 @@ BLOCKED_TERMS = [
     "POSITION_SIZE", "LEVERAGE"
 ]
 
+NULLISH_VALUES = {None, "", "UNKNOWN", "MISSING", "MISSING_REQUIRED_BARS"}
+
+
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
@@ -58,6 +61,22 @@ def find_context_row(ctx: Dict[str, Any], instrument: str, timeframe: str) -> Di
         if str(row.get("instrument", "")).upper() == inst and str(row.get("timeframe", "")).upper() == tf:
             return row
     return None
+
+def is_required_value_missing(row: Dict[str, Any], field: str) -> bool:
+    if field not in row:
+        return True
+    val = row.get(field)
+    if val in NULLISH_VALUES:
+        return True
+    # For booleans, False is valid and must not be treated as missing.
+    return False
+
+def required_field_precheck(memory: Dict[str, Any], row: Dict[str, Any]) -> List[str]:
+    missing = []
+    for field in memory.get("required_context_fields", []) or []:
+        if is_required_value_missing(row, field):
+            missing.append(field)
+    return missing
 
 def eval_condition(row: Dict[str, Any], cond: Dict[str, Any]) -> Tuple[bool, str, bool]:
     """
@@ -118,6 +137,17 @@ def evaluate_memory(memory: Dict[str, Any], row: Dict[str, Any] | None) -> Dict[
             "reason": "No matching runtime context row was available."
         }
 
+    missing_required = required_field_precheck(memory, row)
+    if missing_required:
+        return {
+            "match_state": "MEMORY_INPUT_INSUFFICIENT",
+            "is_active_match": False,
+            "passed_conditions": [],
+            "failed_conditions": [],
+            "missing_inputs": missing_required,
+            "reason": "Required context fields are missing; memory cannot be evaluated."
+        }
+
     passed, failed, missing = [], [], []
     for cond in memory.get("matching_rule", {}).get("required_all", []):
         ok, reason, is_missing = eval_condition(row, cond)
@@ -166,7 +196,7 @@ def make_card(memory: Dict[str, Any], row: Dict[str, Any] | None, ev: Dict[str, 
         headline = "حافظه فعلاً فعال نیست"
 
     return {
-        "card_version": "sig_brain4_memory_card_v1_0",
+        "card_version": "sig_brain4_memory_card_v1_1_required_fields_precheck",
         "memory_id": memory.get("memory_id"),
         "instrument": memory.get("instrument"),
         "timeframe": memory.get("timeframe"),
@@ -210,9 +240,9 @@ def build_payload(context_path: Path, registry_path: Path) -> Dict[str, Any]:
     cards.sort(key=lambda c: (0 if c["is_active_match"] else 1, c["sort_rank"]))
 
     return {
-        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_0",
+        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_1_REQUIRED_FIELDS_PRECHECK",
         "created_utc": utc_now(),
-        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_0",
+        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_1_REQUIRED_FIELDS_PRECHECK",
         "authority": AUTHORITY,
         "deployment_status": "DISPLAY_ONLY_RUNTIME_BRAIN_MEMORY_MATCHER_NOT_SIGNAL_NOT_BROKER",
         "signal_authorized": False,
@@ -243,7 +273,7 @@ def build_payload(context_path: Path, registry_path: Path) -> Dict[str, Any]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--context", default="inputs/sig_brain4_live_context_latest.json")
-    ap.add_argument("--registry", default="data/sig_brain/brain_memory_registry_v1_0.json")
+    ap.add_argument("--registry", default="sig_brain/brain_memory_registry_v1_0.json")
     ap.add_argument("--out", default="runtime/sig_brain/sig_brain4_runtime_payload_current.json")
     ap.add_argument("--panel-out", default="panel/brain4/sig_brain4_runtime_payload_current.json")
     args = ap.parse_args()
