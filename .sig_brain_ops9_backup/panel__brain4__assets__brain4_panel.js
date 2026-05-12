@@ -1,18 +1,13 @@
-/* SIG-BRAIN-OPS9 — Official Server-Side Brain Event History
-   Extends OPS8 with official repo-backed event history.
-   Browser localStorage is no longer the source of truth for History; it is only used
-   for notification de-duplication.
-
-   Previous lineage: SIG-BRAIN-OPS8 — Local Time Display & Event History Cleanup
+/* SIG-BRAIN-OPS8 — Local Time Display & Event History Cleanup
    Purpose: keep the backend brain multi-timeframe and advanced, but show a simple
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS9_OFFICIAL_SERVER_SIDE_HISTORY_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS8_LOCAL_TIME_HISTORY_UI_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
-const HISTORY_KEEP_DAYS = 7;
-const HISTORY_MAX_ITEMS = 500;
-const STORAGE_HISTORY_KEY = 'sigBrain4.activeEventHistory.deprecated.v2';
+const HISTORY_KEEP_HOURS = 24;
+const HISTORY_MAX_ITEMS = 50;
+const STORAGE_HISTORY_KEY = 'sigBrain4.activeEventHistory.v2';
 const STORAGE_NOTIFIED_KEY = 'sigBrain4.notifiedEventIds.v2';
 
 async function loadJson(path, required=false){
@@ -28,7 +23,6 @@ async function loadJson(path, required=false){
 async function loadPayload(){ return await loadJson('sig_brain4_runtime_payload_current.json', true); }
 async function loadContext(){ return await loadJson('../../inputs/sig_brain4_live_context_latest.json', false); }
 async function loadRefreshStatus(){ return await loadJson('sig_live_refresh_status_latest.json', false); }
-async function loadOfficialHistory(){ return await loadJson('sig_brain4_event_history_current.json', false); }
 
 function esc(x){ return String(x ?? '—').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[m])); }
 function asArray(x){ return Array.isArray(x) ? x : []; }
@@ -74,7 +68,7 @@ function remainingFa(now, expires){
   const h = Math.floor(m/60), r = m % 60;
   return r ? `${h} ساعت و ${r} دقیقه باقی‌مانده` : `${h} ساعت باقی‌مانده`;
 }
-function historyScopeLabel(){ return `History رسمی سروری؛ ${HISTORY_KEEP_DAYS} روز اخیر، حداکثر ${HISTORY_MAX_ITEMS} رویداد، مشترک بین همهٔ دستگاه‌ها`; }
+function historyScopeLabel(){ return `History امروز / ۲۴ ساعت اخیر؛ حداکثر ${HISTORY_MAX_ITEMS} رویداد در همین مرورگر`; }
 function addMinutes(d, min){ return d ? new Date(d.getTime() + min*60000) : null; }
 function minutesBetween(later, earlier){ if(!later || !earlier) return null; return Math.round((later.getTime()-earlier.getTime())/60000); }
 function numberFmt(x){
@@ -198,56 +192,6 @@ function eventFromCard(c, payload, context, refreshStatus, now){
     sort_ts:detected ? detected.getTime() : now.getTime()
   };
 }
-
-function normalizeOfficialEvent(e){
-  if(!e || !e.event_id) return null;
-  const activated = e.activated_at_utc || e.detected_at_utc || e.first_seen_utc || null;
-  const expires = e.expires_at_utc || null;
-  const posture = e.posture_fa || e.simple_posture_fa || e.event_type_fa || e.event_type || 'memory event پژوهشی فعال';
-  const meaning = e.meaning_fa || e.display_message_fa || e.simple_message_fa || e.plain_language_summary_fa || 'یک memory event رسمی فعال شده است.';
-  const expired = String(e.status || '').toUpperCase() === 'EXPIRED' || (parseUtc(expires) && new Date().getTime() > parseUtc(expires).getTime());
-  return {
-    event_id:e.event_id,
-    memory_id:e.memory_id,
-    instrument:e.instrument,
-    timeframe:e.timeframe,
-    score_not_probability:e.score_not_probability,
-    band:e.band,
-    posture_fa:posture,
-    meaning_fa:meaning,
-    source_bar_open_ts_utc:e.source_bar_open_ts_utc || null,
-    source_bar_close_ts_utc:e.source_bar_close_ts_utc || null,
-    detected_at_utc:activated,
-    activated_at_utc:activated,
-    expires_at_utc:expires,
-    session_bucket:e.session_bucket || e.session || '—',
-    status:expired ? 'EXPIRED' : (e.status || 'ACTIVE_NOW'),
-    expired,
-    no_trade:Boolean(e.no_trade || String(e.event_type || '').toUpperCase().includes('NO_TRADE') || String(e.posture_fa || '').includes('اجتناب') || String(e.posture_fa || '').includes('احتیاط')),
-    forbidden:e.forbidden || e.forbidden_use || 'بدون buy/sell، بدون entry/stop/target، بدون probability، بدون broker/execution.',
-    sort_ts:parseUtc(activated)?.getTime() || parseUtc(expires)?.getTime() || 0,
-    official:true,
-    last_seen_utc:e.last_seen_utc || null
-  };
-}
-function officialEvents(historyPayload){
-  const rows = asArray(historyPayload?.events).map(normalizeOfficialEvent).filter(Boolean);
-  return rows.sort((a,b)=>(b.sort_ts||0)-(a.sort_ts||0));
-}
-function officialActiveEvents(historyPayload, now){
-  return officialEvents(historyPayload).filter(e=>{
-    const expires = parseUtc(e.expires_at_utc);
-    return !e.expired && expires && now.getTime() <= expires.getTime();
-  });
-}
-function officialHistoryMeta(historyPayload){
-  if(!historyPayload) return 'History رسمی هنوز ساخته نشده؛ fallback موقت از payload فعلی استفاده می‌شود.';
-  const count = asArray(historyPayload.events).length;
-  const created = parseUtc(historyPayload.created_utc);
-  const createdText = created ? `${localDateTime(created)} · ${humanAgeFa(minutesBetween(new Date(), created))}` : 'نامشخص';
-  return `History رسمی سروری · ${count} رویداد · آخرین ساخت ${createdText}`;
-}
-
 function safeLoad(key, fallback){
   try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(_){ return fallback; }
 }
@@ -325,12 +269,11 @@ function historyCard(e){
     <em>${esc(statusText)} · فعال‌شده ${esc(localTimeOnly(detected))}</em>
   </div>`;
 }
-function renderHistory(history, historyPayload){
-  const meta = officialHistoryMeta(historyPayload);
-  if(!history.length) return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">هنوز event رسمی فعالی در history سروری ثبت نشده است. ${esc(historyScopeLabel())}</p></section>`;
-  return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند.</p><p class="muted">${esc(meta)}</p>${history.slice(0,25).map(historyCard).join('')}</section>`;
+function renderHistory(history){
+  if(!history.length) return `<section class="history"><h2>History</h2><p class="muted">هنوز event فعالی در این مرورگر ثبت نشده است. ${esc(historyScopeLabel())}</p></section>`;
+  return `<section class="history"><h2>History</h2><p class="muted">${esc(historyScopeLabel())}. فقط رویدادهای واقعاً فعال‌شده ثبت می‌شوند؛ watchهای ناقص و inactiveها وارد تاریخچه نمی‌شوند.</p>${history.slice(0,10).map(historyCard).join('')}</section>`;
 }
-function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, historyPayload){
+function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info){
   const hiddenInactive = cards.filter(c=>!c.is_active_match).length;
   const providerLatest = refreshStatus?.provider_m5?.max_latest_bar_open_ts_utc || '—';
   const latestContext = refreshStatus?.brain_context?.latest || null;
@@ -352,7 +295,6 @@ function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus,
       <div><b>payload_created_utc</b><span>${esc(payload?.created_utc)}</span></div>
       <div><b>context_created_utc</b><span>${esc(context?.created_utc)}</span></div>
       <div><b>memory_timeframe_policy</b><span>${esc(refreshStatus?.memory_timeframe_policy_fa || 'دادهٔ خام زنده M5 است؛ هر memory با timeframe خودش ارزیابی می‌شود.')}</span></div>
-      <div><b>official_history</b><span>${esc(historyPayload ? `${asArray(historyPayload.events).length} events · ${historyPayload.created_utc || 'no created_utc'}` : 'missing')}</span></div>
     </div>
     <p class="muted">M5 دادهٔ خام live است. هر memory بر اساس timeframe خودش مثل M5/M15/H1/H4/D1 ارزیابی می‌شود. این بخش فقط برای عیب‌یابی است.</p>
   </details>`;
@@ -396,20 +338,19 @@ function attachControls(){
   if(refreshBtn) refreshBtn.onclick = ()=>window.location.reload();
 }
 
-Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHistory()]).then(([payload, context, refreshStatus, officialHistory])=>{
+Promise.all([loadPayload(), loadContext(), loadRefreshStatus()]).then(([payload, context, refreshStatus])=>{
   const cards = asArray(payload.cards);
   const now = new Date();
   const info = refreshInfo(refreshStatus, context, payload, cards);
-  const fallbackEvents = cards.map(c=>eventFromCard(c, payload, context, refreshStatus, now)).filter(Boolean);
-  const serverActiveEvents = officialActiveEvents(officialHistory, now);
-  const activeEvents = serverActiveEvents.length ? serverActiveEvents : fallbackEvents.filter(e=>!e.expired);
-  const history = officialHistory ? officialEvents(officialHistory) : fallbackEvents;
+  const candidateEvents = cards.map(c=>eventFromCard(c, payload, context, refreshStatus, now)).filter(Boolean);
+  const activeEvents = candidateEvents.filter(e=>!e.expired);
+  const history = mergeHistory(candidateEvents, now);
 
   const summaryEl = document.getElementById('summary');
   summaryEl.classList.remove('skeleton');
   summaryEl.innerHTML = renderSummary(info, activeEvents);
   document.getElementById('context-strip').innerHTML = renderControls();
-  document.getElementById('cards').innerHTML = `${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}`;
+  document.getElementById('cards').innerHTML = `${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info)}`;
   attachControls();
   maybeNotify(activeEvents);
 }).catch(err=>{
