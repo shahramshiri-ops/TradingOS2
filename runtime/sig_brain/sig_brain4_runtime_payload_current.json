@@ -1,6 +1,6 @@
 {
   "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_1_REQUIRED_FIELDS_PRECHECK",
-  "created_utc": "2026-05-12T00:47:31Z",
+  "created_utc": "2026-05-12T00:57:26Z",
   "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_1_REQUIRED_FIELDS_PRECHECK",
   "authority": "SIG_BRAIN4_RUNTIME_MEMORY_MATCHER|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_PROFITABILITY_TRADABILITY_CLAIM|NO_BROKER_EXECUTION",
   "deployment_status": "DISPLAY_ONLY_RUNTIME_BRAIN_MEMORY_MATCHER_NOT_SIGNAL_NOT_BROKER",
@@ -11,7 +11,7 @@
   "source_context_summary": {
     "input_file": "inputs/sig_brain4_live_context_latest.json",
     "context_version": "SIG_BRAIN5_DERIVED_LIVE_CONTEXT_v1_1_USDJPY_PRIOR48",
-    "context_created_utc": "2026-05-12T00:47:31Z",
+    "context_created_utc": "2026-05-12T00:57:26Z",
     "source_authority": "SIG_BRAIN5_UPSTREAM_CONTEXT_BUILDER|READ_ONLY_DERIVED_CONTEXT|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION"
   },
   "registry_summary": {
@@ -51,7 +51,7 @@
       "latest_context": {
         "instrument": "EURUSD",
         "timeframe": "M15",
-        "latest_bar_open_ts_utc": "2026-05-12T00:15:00Z",
+        "latest_bar_open_ts_utc": "2026-05-12T00:30:00Z",
         "session_bucket": "ASIA",
         "upside_sweep_flag": false,
         "sweep_then_reject_back_inside_up_flag": false,
@@ -60,7 +60,7 @@
         "h4_dir": "UP",
         "m15_dir": "DOWN",
         "conflict_severity": "HIGH",
-        "m15_range_ratio_12": 1.2903225806450382,
+        "m15_range_ratio_12": 1.124999999999783,
         "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS",
         "data_sufficiency_status": "OK",
         "signal_authorized": false
@@ -135,7 +135,7 @@
       "latest_context": {
         "instrument": "EURUSD",
         "timeframe": "M15",
-        "latest_bar_open_ts_utc": "2026-05-12T00:15:00Z",
+        "latest_bar_open_ts_utc": "2026-05-12T00:30:00Z",
         "session_bucket": "ASIA",
         "upside_sweep_flag": false,
         "sweep_then_reject_back_inside_up_flag": false,
@@ -144,7 +144,7 @@
         "h4_dir": "UP",
         "m15_dir": "DOWN",
         "conflict_severity": "HIGH",
-        "m15_range_ratio_12": 1.2903225806450382,
+        "m15_range_ratio_12": 1.124999999999783,
         "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS",
         "data_sufficiency_status": "OK",
         "signal_authorized": false
@@ -189,11 +189,11 @@
       "primary_reason": "Context row is present but conditions are not matched.",
       "matched_conditions": [
         "h4_h1_up_context bool_eq False observed=False",
-        "h4_h1_down_context bool_eq False observed=False",
-        "m15_range_ratio_12 between [0.65, 1.2] observed=0.959123277536273"
+        "h4_h1_down_context bool_eq False observed=False"
       ],
       "failed_conditions": [
         "session_bucket in ['LONDON', 'LONDON_NY_OVERLAP', 'NEW_YORK'] observed=ASIA",
+        "m15_range_ratio_12 between [0.65, 1.2] observed=1.5718492099692785",
         "m15_dir in ['FLAT', 'UNKNOWN'] observed=UP"
       ],
       "missing_inputs": [],
@@ -224,18 +224,18 @@
       "latest_context": {
         "instrument": "USDJPY",
         "timeframe": "M15",
-        "latest_bar_open_ts_utc": "2026-05-12T00:15:00Z",
+        "latest_bar_open_ts_utc": "2026-05-12T00:30:00Z",
         "session_bucket": "ASIA",
         "h1_dir": "FLAT",
         "h4_dir": "FLAT",
         "m15_dir": "UP",
         "h4_h1_up_context": false,
         "h4_h1_down_context": false,
-        "m15_range_ratio_12": 0.959123277536273,
+        "m15_range_ratio_12": 1.5718492099692785,
         "alignment_absent_chop": false,
-        "upside_sweep_flag": false,
+        "upside_sweep_flag": true,
         "sweep_then_reject_back_inside_up_flag": false,
-        "sweep_reference_type_up": "NONE",
+        "sweep_reference_type_up": "PRIOR48",
         "sweep_reference_policy_up": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0",
         "sweep_reference_value_up": 157.29696,
         "sweep_reference_meta_up": {
@@ -293,14 +293,14 @@
       "matched_conditions": [
         "instrument eq USDJPY observed=USDJPY",
         "timeframe eq M15 observed=M15",
+        "upside_sweep_flag bool_eq True observed=True",
+        "sweep_reference_type_up eq PRIOR48 observed=PRIOR48",
         "sweep_reference_policy_up eq PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0 observed=PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0",
         "data_sufficiency_status eq OK observed=OK"
       ],
       "failed_conditions": [
         "session_bucket eq NEW_YORK observed=ASIA",
-        "upside_sweep_flag bool_eq True observed=False",
-        "sweep_then_reject_back_inside_up_flag bool_eq True observed=False",
-        "sweep_reference_type_up eq PRIOR48 observed=NONE"
+        "sweep_then_reject_back_inside_up_flag bool_eq True observed=False"
       ],
       "missing_inputs": [],
       "evidence_summary": {
@@ -462,18 +462,18 @@
       "latest_context": {
         "instrument": "USDJPY",
         "timeframe": "M15",
-        "latest_bar_open_ts_utc": "2026-05-12T00:15:00Z",
+        "latest_bar_open_ts_utc": "2026-05-12T00:30:00Z",
         "session_bucket": "ASIA",
         "h1_dir": "FLAT",
         "h4_dir": "FLAT",
         "m15_dir": "UP",
         "h4_h1_up_context": false,
         "h4_h1_down_context": false,
-        "m15_range_ratio_12": 0.959123277536273,
+        "m15_range_ratio_12": 1.5718492099692785,
         "alignment_absent_chop": false,
-        "upside_sweep_flag": false,
+        "upside_sweep_flag": true,
         "sweep_then_reject_back_inside_up_flag": false,
-        "sweep_reference_type_up": "NONE",
+        "sweep_reference_type_up": "PRIOR48",
         "sweep_reference_policy_up": "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0",
         "sweep_reference_value_up": 157.29696,
         "sweep_reference_meta_up": {
