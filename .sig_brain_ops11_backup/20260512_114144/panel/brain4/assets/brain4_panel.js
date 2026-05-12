@@ -8,7 +8,7 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS11_MEMORY_LIBRARY_AND_THIRD_H1_PATTERN_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS10_MTF_DIRECTIONAL_ACTIVE_EVENT_PANEL_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
@@ -259,76 +259,6 @@ function officialHistoryMeta(historyPayload){
   return `History رسمی سروری · ${count} رویداد · آخرین ساخت ${createdText}`;
 }
 
-function memoryRuntimeStatusFa(c){
-  if(c.active_in_runtime === true) return 'فعال در runtime';
-  const state = String(c.brain_state || '').toUpperCase();
-  const cls = String(c.memory_class || '').toUpperCase();
-  if(state.includes('WEAKENED') || cls.includes('WEAKENED')) return 'آرشیو / weak شده';
-  return 'آرشیو / غیرفعال در runtime';
-}
-function memoryLibraryClass(c){
-  if(c.active_in_runtime === true) return 'runtime-enabled';
-  if(isParked(c)) return 'archived';
-  return 'inactive';
-}
-function ifActiveMeaningFa(c){
-  if(c.if_active_historical_posture_fa) return c.if_active_historical_posture_fa;
-  if(isNoTrade(c)) return 'اگر فعال شود، context تاریخی احتیاط/اجتناب از short-like تصمیم را برجسته‌تر می‌کند؛ این buy signal نیست.';
-  if(isDirectionalWatch(c)){
-    const side = String(c.direction_side || '').toUpperCase();
-    if(side === 'LONG') return 'اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست.';
-    if(side === 'SHORT') return 'اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست.';
-    return 'اگر فعال شود، یک directional watch پژوهشی نسبت به baseline برجسته‌تر می‌شود؛ این signal نیست.';
-  }
-  const id = String(c.memory_id || '');
-  if(id.includes('FADE_DOWN') || id.includes('SWEEP_REJECTION')) return 'اگر فعال شود، رفتار تاریخی fade-down / rejection context برجسته‌تر می‌شود؛ این دستور فروش نیست.';
-  if(isParked(c)) return 'این memory فعلاً فقط برای audit و سابقه نگه‌داری می‌شود و در runtime فعال نمی‌شود مگر review جدید بیاید.';
-  return c.plain_language_summary_fa || 'اگر فعال شود، فقط یک context پژوهشی تاریخی را برجسته می‌کند، نه دستور معامله.';
-}
-function memoryShortTypeFa(c){
-  if(isNoTrade(c)) return 'no-trade / احتیاط';
-  if(isDirectionalWatch(c)) return 'directional watch';
-  if(isParked(c)) return 'archived';
-  return 'watch context';
-}
-function memoryLibraryCard(c){
-  const cls = memoryLibraryClass(c);
-  const score = c.score_not_probability ?? '—';
-  return `<article class="memory-lib-card ${cls}">
-    <div class="memory-lib-head">
-      <span class="memory-lib-status">${esc(memoryRuntimeStatusFa(c))}</span>
-      <span class="memory-lib-type">${esc(memoryShortTypeFa(c))}</span>
-    </div>
-    <h3>${esc(c.instrument)} <small>${esc(c.timeframe)}</small></h3>
-    <div class="memory-lib-title">${esc(c.headline_fa || c.plain_language_label_fa || c.memory_id)}</div>
-    <p><b>اگر فعال شود:</b> ${esc(ifActiveMeaningFa(c))}</p>
-    <div class="memory-lib-grid">
-      <div><b>memory_id</b><span>${esc(c.memory_id)}</span></div>
-      <div><b>قدرت پژوهشی</b><span>${esc(score)}/100 · نه احتمال</span></div>
-      <div><b>وضعیت</b><span>${esc(c.activation_status || c.brain_state || '—')}</span></div>
-    </div>
-    <div class="memory-lib-footer">بدون buy/sell، بدون entry/stop/target، بدون probability، بدون broker/execution.</div>
-  </article>`;
-}
-function renderMemoryLibrary(cards){
-  const sorted = [...asArray(cards)].sort((a,b)=>{
-    const ar = a.active_in_runtime === true ? 0 : 1;
-    const br = b.active_in_runtime === true ? 0 : 1;
-    if(ar !== br) return ar - br;
-    return String(a.instrument||'').localeCompare(String(b.instrument||'')) || String(a.timeframe||'').localeCompare(String(b.timeframe||''));
-  });
-  const activeCount = sorted.filter(c=>c.active_in_runtime === true).length;
-  const archivedCount = sorted.length - activeCount;
-  return `<section class="memory-library">
-    <div class="memory-lib-summary">
-      <b>${esc(sorted.length)} الگو در مغز</b>
-      <span>${esc(activeCount)} فعال در runtime · ${esc(archivedCount)} آرشیو/غیرفعال</span>
-      <p>این تب فقط کتابخانهٔ حافظه‌ها را نشان می‌دهد: اگر هر الگو فعال شود چه سناریوی تاریخی برجسته‌تر می‌شود. این تب هم سیگنال، دستور خرید/فروش یا نقطه ورود تولید نمی‌کند.</p>
-    </div>
-    ${sorted.map(memoryLibraryCard).join('')}
-  </section>`;
-}
-
 function safeLoad(key, fallback){
   try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; }catch(_){ return fallback; }
 }
@@ -461,14 +391,8 @@ function maybeNotify(activeEvents){
   safeSave(STORAGE_NOTIFIED_KEY, [...notified].slice(-100));
 }
 function renderControls(){
-  return `<div class="tabs" role="tablist" aria-label="SIG Brain tabs">
-    <button id="activeTabBtn" class="tab-btn active" type="button" data-tab="active">رویدادهای فعال</button>
-    <button id="libraryTabBtn" class="tab-btn" type="button" data-tab="library">الگوهای مغز</button>
-  </div>
-  <div class="panel-actions">
-    <button id="notifyBtn" class="notify-btn" type="button">${esc(notificationPermissionLabel())}</button>
-    <button id="refreshBtn" class="ghost-btn" type="button">Refresh panel</button>
-  </div>`;
+  return `<button id="notifyBtn" class="notify-btn" type="button">${esc(notificationPermissionLabel())}</button>
+  <button id="refreshBtn" class="ghost-btn" type="button">Refresh panel</button>`;
 }
 function attachControls(){
   const notifyBtn = document.getElementById('notifyBtn');
@@ -481,14 +405,6 @@ function attachControls(){
   }
   const refreshBtn = document.getElementById('refreshBtn');
   if(refreshBtn) refreshBtn.onclick = ()=>window.location.reload();
-  for(const btn of document.querySelectorAll('.tab-btn')){
-    btn.onclick = ()=>{
-      const tab = btn.getAttribute('data-tab');
-      for(const b of document.querySelectorAll('.tab-btn')) b.classList.toggle('active', b === btn);
-      document.getElementById('active-tab')?.classList.toggle('hidden', tab !== 'active');
-      document.getElementById('library-tab')?.classList.toggle('hidden', tab !== 'library');
-    };
-  }
 }
 
 Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHistory()]).then(([payload, context, refreshStatus, officialHistory])=>{
@@ -504,7 +420,7 @@ Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHist
   summaryEl.classList.remove('skeleton');
   summaryEl.innerHTML = renderSummary(info, activeEvents);
   document.getElementById('context-strip').innerHTML = renderControls();
-  document.getElementById('cards').innerHTML = `<section id="active-tab" class="tab-panel">${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}</section><section id="library-tab" class="tab-panel hidden">${renderMemoryLibrary(cards)}</section>`;
+  document.getElementById('cards').innerHTML = `${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}`;
   attachControls();
   maybeNotify(activeEvents);
 }).catch(err=>{

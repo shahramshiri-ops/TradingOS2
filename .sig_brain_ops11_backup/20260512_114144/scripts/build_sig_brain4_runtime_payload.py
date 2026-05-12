@@ -205,10 +205,7 @@ def make_card(memory: Dict[str, Any], row: Dict[str, Any] | None, ev: Dict[str, 
         "timeframe": memory.get("timeframe"),
         "memory_class": memory.get("memory_class"),
         "candidate_type": memory.get("candidate_type"),
-        "activation_status": memory.get("activation_status"),
-        "active_in_runtime": bool(memory.get("active_in_runtime", False)),
         "direction_side": memory.get("direction_side") or memory.get("directional_side"),
-        "if_active_historical_posture_fa": memory.get("if_active_historical_posture_fa"),
         "brain_state": state,
         "is_active_match": active,
         "status_badge": "ACTIVE WATCH / NOT SIGNAL" if active else "NOT ACTIVE / DISPLAY ONLY",
@@ -250,9 +247,9 @@ def build_payload(context_path: Path, registry_path: Path) -> Dict[str, Any]:
     cards.sort(key=lambda c: (0 if c["is_active_match"] else 1, c["sort_rank"]))
 
     return {
-        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_3_MTF_DIRECTIONAL_OPS11",
+        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_2_MTF_DIRECTIONAL_OPS10",
         "created_utc": utc_now(),
-        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_3_MTF_DIRECTIONAL_OPS11",
+        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_2_MTF_DIRECTIONAL_OPS10",
         "authority": AUTHORITY,
         "deployment_status": "DISPLAY_ONLY_RUNTIME_BRAIN_MEMORY_MATCHER_NOT_SIGNAL_NOT_BROKER",
         "signal_authorized": False,

@@ -1,5 +1,5 @@
 {
-  "registry_version": "SIG_CONTEXT_FIELD_REGISTRY_v1_3_MTF_H1_DIRECTIONAL_OPS11",
+  "registry_version": "SIG_CONTEXT_FIELD_REGISTRY_v1_2_MTF_H1_DIRECTIONAL_OPS10",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "CONTEXT_FIELD_REGISTRY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
   "purpose": "Canonical catalog of fields that brain memories may require for runtime matching.",
@@ -10,7 +10,7 @@
     "If a required field is missing at runtime, matcher must return MEMORY_INPUT_INSUFFICIENT, not false inactivity.",
     "New memory families should reuse existing fields when possible and add new fields only through a registry patch."
   ],
-  "field_count": 42,
+  "field_count": 30,
   "fields": [
     {
       "field_id": "instrument",
@@ -762,85 +762,11 @@
       "lookahead_risk": "LOW_IF_PRIOR_CLOSED_ONLY",
       "current_brain5_support": true,
       "future_module": false
-    },
-    {
-      "field_id": "h1_failed_breakout_or_session_sweep_state",
-      "family": "failed_breakout_session_sweep",
-      "module": "h1_closed_bar_failed_breakout_session_sweep",
-      "dtype": "enum",
-      "allowed_values": [
-        "LONDON_MORNING_LOW_FAILED_DOWNSIDE_RECLAIM_INSIDE",
-        "NONE",
-        "UNKNOWN"
-      ],
-      "meaning_fa": "وضعیت شکست/سویپ ناموفق H1 روی سطح session، مخصوص familyهای targeted failed-breakout",
-      "required_for_current_runtime": true,
-      "derivation_status": "derived_by_brain5_ops11_closed_bar_policy",
-      "source_timeframes": [
-        "H1"
-      ],
-      "lookahead_risk": "LOW_IF_CLOSED_BAR_POLICY_HELD",
-      "current_brain5_support": true,
-      "future_module": false
-    },
-    {
-      "field_id": "failed_breakout_failure_side",
-      "family": "failed_breakout_session_sweep",
-      "module": "h1_closed_bar_failed_breakout_session_sweep",
-      "dtype": "enum",
-      "allowed_values": [
-        "FAILED_DOWNSIDE",
-        "FAILED_UPSIDE",
-        "NONE",
-        "UNKNOWN"
-      ],
-      "meaning_fa": "سمت شکست ناموفق، مانند FAILED_DOWNSIDE",
-      "required_for_current_runtime": true,
-      "derivation_status": "derived_by_brain5_ops11_closed_bar_policy",
-      "source_timeframes": [
-        "H1"
-      ],
-      "lookahead_risk": "LOW_IF_CLOSED_BAR_POLICY_HELD",
-      "current_brain5_support": true,
-      "future_module": false
-    },
-    {
-      "field_id": "directional_side",
-      "family": "directional_watch_metadata",
-      "module": "runtime_memory_matching",
-      "dtype": "enum",
-      "allowed_values": [
-        "LONG",
-        "SHORT",
-        "NONE",
-        "UNKNOWN"
-      ],
-      "meaning_fa": "سمت directional watch به عنوان context پژوهشی، نه دستور معامله",
-      "required_for_current_runtime": true,
-      "derivation_status": "derived_by_brain5_ops11_closed_bar_policy",
-      "source_timeframes": [],
-      "lookahead_risk": "LOW_IF_CLOSED_BAR_POLICY_HELD",
-      "current_brain5_support": true,
-      "future_module": false
-    },
-    {
-      "field_id": "policy_id",
-      "family": "policy_metadata",
-      "module": "runtime_memory_matching",
-      "dtype": "string",
-      "allowed_values": null,
-      "meaning_fa": "شناسه policy/runtime rule که context را ساخته است",
-      "required_for_current_runtime": true,
-      "derivation_status": "derived_by_brain5_ops11_closed_bar_policy",
-      "source_timeframes": [],
-      "lookahead_risk": "LOW_IF_CLOSED_BAR_POLICY_HELD",
-      "current_brain5_support": true,
-      "future_module": false
     }
   ],
   "global_boundary": [
     "The registry defines context fields only.",
     "It does not authorize signals, entries, stops, targets, profitability, tradability, broker execution, or probability claims."
   ],
-  "updated_utc": "2026-05-12T09:00:00Z"
+  "updated_utc": "2026-05-12T06:25:00Z"
 }

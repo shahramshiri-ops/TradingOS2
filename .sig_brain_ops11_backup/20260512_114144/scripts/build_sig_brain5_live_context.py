@@ -12,7 +12,6 @@ ACTIVE_SESSIONS = ["LONDON", "LONDON_NY_OVERLAP", "NEW_YORK"]
 PRIOR48_POLICY_UP = "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0"
 FAILED_BREAKOUT_POLICY = "PRIOR_DAY_LOW_CLOSED_D1_v1_0"
 SESSION_REF_POLICY = "LONDON_MORNING_RANGE_0700_1159_CLOSED_H1_v1_0"
-TARGETED_LONDON_LOW_POLICY = "SIG_MTF_DIR_W16_TARGETED_EURUSD_H1_FAILED_BREAKOUT_SESSION_SWEEP_v1_0"
 
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -194,47 +193,6 @@ def evaluate_london_low_sweep_reject(h1: List[Dict[str, Any]]) -> Dict[str, Any]
     event = low < ref - tol and close >= ref
     return {"session_reference_range_type": "LONDON_MORNING_RANGE", "session_reference_break_event_type": "LONDON_LOW_SWEEP_REJECT_LONG" if event else "NONE", "session_reference_policy_id": SESSION_REF_POLICY, "session_reference_low_value": ref}
 
-def evaluate_targeted_london_morning_low_failed_downside(h1: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """OPS11 targeted H1 London-morning-low failed downside/reclaim context.
-
-    This uses only closed H1 bars and the same London-morning reference window as
-    evaluate_london_low_sweep_reject. It emits generic matching fields required by
-    the W16 delivery pack. These are display-only context fields and do not create
-    a signal, entry, stop, target, or probability.
-    """
-    lb = latest(h1)
-    ts = parse_ts(lb["bar_open_ts_utc"])
-    ref = london_morning_low_closed_h1(h1, ts)
-    base = {
-        "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "failed_breakout_failure_side": "UNKNOWN",
-        "directional_side": "UNKNOWN",
-        "policy_id": TARGETED_LONDON_LOW_POLICY,
-        "targeted_london_morning_low_reference_value": ref,
-    }
-    if ref is None:
-        base["data_sufficiency_status"] = "MISSING_REQUIRED_BARS"
-        return base
-    low, close = fnum(lb["low"]), fnum(lb["close"])
-    tol = abs(close) * 0.00003
-    event = low < ref - tol and close >= ref
-    if event:
-        base.update({
-            "h1_failed_breakout_or_session_sweep_state": "LONDON_MORNING_LOW_FAILED_DOWNSIDE_RECLAIM_INSIDE",
-            "failed_breakout_level_type": "LONDON_MORNING_LOW",
-            "failed_breakout_failure_side": "FAILED_DOWNSIDE",
-            "directional_side": "LONG",
-            "policy_id": TARGETED_LONDON_LOW_POLICY,
-        })
-    else:
-        base.update({
-            "h1_failed_breakout_or_session_sweep_state": "NONE",
-            "failed_breakout_failure_side": "NONE",
-            "directional_side": "NONE",
-            "policy_id": TARGETED_LONDON_LOW_POLICY,
-        })
-    return base
-
 def eurusd_context(m15: List[Dict[str, Any]], h1: List[Dict[str, Any]]) -> Dict[str, Any]:
     lb, ts = latest(m15), parse_ts(latest(m15)["bar_open_ts_utc"])
     sess = session_bucket(ts)
@@ -280,24 +238,14 @@ def eurusd_h1_mtf_context(h1: List[Dict[str, Any]], h4: List[Dict[str, Any]], d1
     h4_state = h4_trend_state(h4)
     failed = evaluate_failed_breakout_prior_day_low(h1, d1)
     session_ref = evaluate_london_low_sweep_reject(h1)
-    targeted_failed = evaluate_targeted_london_morning_low_failed_downside(h1)
     data_suff = "OK" if len(h1) >= 24 and len(h4) >= 8 and len(d1) >= 5 else "LIMITED_HISTORY"
-    if failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or session_ref.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or targeted_failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS":
+    if failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or session_ref.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS":
         # Keep the row evaluable when one family is insufficient only if the active memory family still has fields.
         # Field-level UNKNOWN/NONE prevents false activation; global status stays LIMITED_HISTORY unless all core bars are missing.
         data_suff = "LIMITED_HISTORY" if data_suff == "OK" else data_suff
-    row = {"instrument": "EURUSD", "timeframe": "H1", "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"), "session_bucket": sess, "d1_trend_state": d1_state, "h4_trend_state": h4_state, "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS11", "data_sufficiency_status": data_suff, "signal_authorized": False}
+    row = {"instrument": "EURUSD", "timeframe": "H1", "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"), "session_bucket": sess, "d1_trend_state": d1_state, "h4_trend_state": h4_state, "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS10", "data_sufficiency_status": data_suff, "signal_authorized": False}
     row.update(failed)
     row.update(session_ref)
-    # OPS11 targeted London-morning-low failed downside fields are overlaid last.
-    # This only changes generic failed_breakout_level_type when the targeted event
-    # is actually present; otherwise prior-day fields from OPS10 stay intact.
-    if targeted_failed.get("h1_failed_breakout_or_session_sweep_state") == "LONDON_MORNING_LOW_FAILED_DOWNSIDE_RECLAIM_INSIDE":
-        row.update(targeted_failed)
-    else:
-        for k, v in targeted_failed.items():
-            if k not in row:
-                row[k] = v
     return row
 
 def build_context(raw: Dict[str, Any]) -> Dict[str, Any]:
@@ -313,7 +261,7 @@ def build_context(raw: Dict[str, Any]) -> Dict[str, Any]:
     eur_d1 = find_surface(raw, "EURUSD", "D1")
     if eur_h1 and eur_h4 and eur_d1 and len(eur_h1) >= 5 and len(eur_h4) >= 4 and len(eur_d1) >= 4:
         surfaces.append(eurusd_h1_mtf_context(eur_h1, eur_h4, eur_d1))
-    return {"context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_3_MTF_H1_DIRECTIONAL_OPS11", "created_utc": utc_now(), "source_authority": AUTHORITY, "surfaces": surfaces, "global_boundary": {"signal_authorized": False, "action_surface_authorized": False, "broker_execution_authorized": False, "plain_language": "Read-only multi-timeframe context only. Not a signal."}}
+    return {"context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_2_MTF_H1_DIRECTIONAL_OPS10", "created_utc": utc_now(), "source_authority": AUTHORITY, "surfaces": surfaces, "global_boundary": {"signal_authorized": False, "action_surface_authorized": False, "broker_execution_authorized": False, "plain_language": "Read-only multi-timeframe context only. Not a signal."}}
 
 def main() -> int:
     ap = argparse.ArgumentParser()
