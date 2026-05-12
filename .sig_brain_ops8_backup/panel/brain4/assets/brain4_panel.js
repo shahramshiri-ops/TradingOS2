@@ -1,12 +1,13 @@
-/* SIG-BRAIN-OPS8 — Local Time Display & Event History Cleanup
+/* SIG-BRAIN-OPS6 — Simple Refresh Status & Brain Timing Fix
    Purpose: keep the backend brain multi-timeframe and advanced, but show a simple
-   personal-research active-event surface with human-readable local times. UTC and
-   technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
-   and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS8_LOCAL_TIME_HISTORY_UI_v1_0';
+   personal-research active-event surface. Main panel shows last successful refresh,
+   raw feed status, active events, and validity only. Technical M5/M15/H1/H4/D1 timing
+   is hidden in diagnostics. This UI remains display-only and never emits
+   buy/sell/entry/stop/target/probability/broker instructions. */
+const PANEL_VERSION = 'SIG-BRAIN-OPS6_SIMPLE_REFRESH_STATUS_ACTIVE_EVENTS_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_HOURS = 24;
-const HISTORY_MAX_ITEMS = 50;
+const HISTORY_MAX_ITEMS = 20;
 const STORAGE_HISTORY_KEY = 'sigBrain4.activeEventHistory.v2';
 const STORAGE_NOTIFIED_KEY = 'sigBrain4.notifiedEventIds.v2';
 
@@ -28,47 +29,6 @@ function esc(x){ return String(x ?? '—').replace(/[&<>"']/g, m=>({ '&':'&amp;'
 function asArray(x){ return Array.isArray(x) ? x : []; }
 function parseUtc(value){ if(!value) return null; const d = new Date(String(value)); return Number.isNaN(d.getTime()) ? null : d; }
 function isoMinute(d){ return d ? d.toISOString().replace(/\.\d{3}Z$/, 'Z') : '—'; }
-function browserTimeZone(){
-  try{ return Intl.DateTimeFormat().resolvedOptions().timeZone || 'local'; }catch(_){ return 'local'; }
-}
-function localTimeOnly(d){
-  if(!d) return '—';
-  try{
-    return new Intl.DateTimeFormat('fa-IR-u-nu-latn', {hour:'2-digit', minute:'2-digit', hour12:false}).format(d);
-  }catch(_){
-    return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:false});
-  }
-}
-function localDateShort(d){
-  if(!d) return '—';
-  try{
-    return new Intl.DateTimeFormat('fa-IR-u-nu-latn', {month:'2-digit', day:'2-digit'}).format(d);
-  }catch(_){
-    return d.toLocaleDateString();
-  }
-}
-function localDateTime(d){
-  if(!d) return '—';
-  try{
-    return new Intl.DateTimeFormat('fa-IR-u-nu-latn', {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false}).format(d);
-  }catch(_){
-    return d.toLocaleString([], {year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false});
-  }
-}
-function localDateTimeWithZone(d){
-  if(!d) return '—';
-  const tz = browserTimeZone();
-  return `${localDateTime(d)} · ${tz}`;
-}
-function remainingFa(now, expires){
-  const m = minutesBetween(expires, now);
-  if(m === null || m === undefined || Number.isNaN(m)) return 'نامشخص';
-  if(m <= 0) return 'منقضی شده';
-  if(m < 60) return `${m} دقیقه باقی‌مانده`;
-  const h = Math.floor(m/60), r = m % 60;
-  return r ? `${h} ساعت و ${r} دقیقه باقی‌مانده` : `${h} ساعت باقی‌مانده`;
-}
-function historyScopeLabel(){ return `History امروز / ۲۴ ساعت اخیر؛ حداکثر ${HISTORY_MAX_ITEMS} رویداد در همین مرورگر`; }
 function addMinutes(d, min){ return d ? new Date(d.getTime() + min*60000) : null; }
 function minutesBetween(later, earlier){ if(!later || !earlier) return null; return Math.round((later.getTime()-earlier.getTime())/60000); }
 function numberFmt(x){
@@ -218,33 +178,28 @@ function notificationPermissionLabel(){
 function renderSummary(info, activeEvents){
   const activeCount = activeEvents.length;
   const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'هیچ رویداد فعال معتبری در ۱۰ دقیقهٔ اخیر نیست';
-  const refreshText = info.refreshTs ? `${localDateTimeWithZone(info.refreshTs)} · ${humanAgeFa(info.refreshAge)}` : 'نامشخص';
-  const currentText = `${localDateTimeWithZone(info.now)} · ${info.expectedSession}`;
+  const refreshText = info.refreshTs ? `${humanAgeFa(info.refreshAge)} · ${isoMinute(info.refreshTs)}` : 'نامشخص';
   return `<div class="status-row ${esc(info.css)}">
       <div class="status-main"><b>${esc(msg)}</b><span>${esc(info.status)} · ${esc(info.label)}</span></div>
       <div><b>آخرین بروزرسانی موفق</b><span>${esc(refreshText)}</span></div>
-      <div><b>دادهٔ زنده</b><span>M5 خام؛ هر memory با timeframe خودش ارزیابی می‌شود</span></div>
-      <div><b>زمان محلی / session فعلی</b><span>${esc(currentText)}</span></div>
+      <div><b>دادهٔ زنده</b><span>M5 خام؛ پشت صحنه برای memoryهای چندتایم‌فریمی آماده می‌شود</span></div>
+      <div><b>UTC / session فعلی</b><span>${esc(isoMinute(info.now))} · ${esc(info.expectedSession)}</span></div>
     </div>
-    <div class="minimal-boundary">صفحهٔ اصلی فقط eventهای فعال و منقضی‌نشده را نشان می‌دهد. زمان‌ها به وقت همین دستگاه نمایش داده می‌شوند؛ UTC و جزئیات M5/M15/H1/H4/D1 در Diagnostics هستند.</div>`;
+    <div class="minimal-boundary">صفحهٔ اصلی فقط eventهای فعال و منقضی‌نشده را نشان می‌دهد. کندل M5/M15/H1/H4/D1، watchهای ناقص و شرط‌های خام در Diagnostics هستند.</div>`;
 }
 function eventCard(e){
   const cls = e.no_trade ? 'no-trade-event' : 'watch-event';
-  const detected = parseUtc(e.detected_at_utc);
-  const expires = parseUtc(e.expires_at_utc);
-  const sourceClose = parseUtc(e.source_bar_close_ts_utc);
-  const validText = expires ? `اعتبار تا ${localTimeOnly(expires)} · ${remainingFa(new Date(), expires)}` : 'اعتبار نامشخص';
   return `<article class="event-card ${cls}">
     <div class="event-head">
       <span class="event-badge">${e.no_trade ? 'NO-TRADE CONTEXT' : 'ACTIVE WATCH'}</span>
-      <span class="event-expiry">${esc(validText)}</span>
+      <span class="event-expiry">اعتبار تا ${esc(e.expires_at_utc)}</span>
     </div>
     <h2>${esc(e.instrument)} <small>${esc(e.timeframe)}</small></h2>
     <div class="event-posture">${esc(e.posture_fa)}</div>
     <p>${esc(e.meaning_fa)}</p>
     <div class="event-grid">
-      <div><b>فعال‌شده</b><span>${esc(localDateTime(detected))}</span></div>
-      <div><b>کندل مبنای memory</b><span>${esc(localTimeOnly(sourceClose))}</span></div>
+      <div><b>فعال‌شده</b><span>${esc(e.detected_at_utc)}</span></div>
+      <div><b>کندل مبنای memory</b><span>${esc(e.source_bar_close_ts_utc)}</span></div>
       <div><b>session</b><span>${esc(e.session_bucket)}</span></div>
       <div><b>قدرت پژوهشی</b><span>${esc(e.score_not_probability)}/100 · نه احتمال</span></div>
     </div>
@@ -255,23 +210,20 @@ function emptyActive(){
   return `<section class="empty-active">
     <div class="empty-icon">●</div>
     <h2>فعلاً رویداد فعال نداریم</h2>
-    <p>هیچ memory event منقضی‌نشده‌ای در پنجرهٔ ۱۰ دقیقهٔ اخیر فعال نشده است. با بروزرسانی بعدی دوباره چک کن.</p>
+    <p>هیچ memory event منقضی‌نشده‌ای در پنجرهٔ ۱۰ دقیقهٔ اخیر فعال نشده است. صفحه را بعد از بروزرسانی بعدی چک کن.</p>
   </section>`;
 }
 function historyCard(e){
-  const expires = parseUtc(e.expires_at_utc);
-  const detected = parseUtc(e.detected_at_utc);
-  const expired = expires && new Date().getTime() > expires.getTime();
-  const statusText = expired ? `منقضی شده · تا ${localTimeOnly(expires)}` : `هنوز معتبر · تا ${localTimeOnly(expires)}`;
+  const expired = parseUtc(e.expires_at_utc) && new Date().getTime() > parseUtc(e.expires_at_utc).getTime();
   return `<div class="history-item ${expired ? 'expired' : 'live'}">
     <b>${esc(e.instrument)} ${esc(e.timeframe)}</b>
     <span>${esc(e.posture_fa)}</span>
-    <em>${esc(statusText)} · فعال‌شده ${esc(localTimeOnly(detected))}</em>
+    <em>${expired ? 'منقضی شده' : 'هنوز در پنجره اعتبار'} · ${esc(e.detected_at_utc)}</em>
   </div>`;
 }
 function renderHistory(history){
-  if(!history.length) return `<section class="history"><h2>History</h2><p class="muted">هنوز event فعالی در این مرورگر ثبت نشده است. ${esc(historyScopeLabel())}</p></section>`;
-  return `<section class="history"><h2>History</h2><p class="muted">${esc(historyScopeLabel())}. فقط رویدادهای واقعاً فعال‌شده ثبت می‌شوند؛ watchهای ناقص و inactiveها وارد تاریخچه نمی‌شوند.</p>${history.slice(0,10).map(historyCard).join('')}</section>`;
+  if(!history.length) return `<section class="history"><h2>History</h2><p class="muted">هنوز event فعالی در این مرورگر ثبت نشده است.</p></section>`;
+  return `<section class="history"><h2>History</h2><p class="muted">رویدادهای ثبت‌شدهٔ اخیر در همین مرورگر؛ برای مرور سبک، نه صفحه اصلی تصمیم.</p>${history.slice(0,10).map(historyCard).join('')}</section>`;
 }
 function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info){
   const hiddenInactive = cards.filter(c=>!c.is_active_match).length;
@@ -283,7 +235,6 @@ function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus,
     <summary>Diagnostics / جزئیات فنی پنهان</summary>
     <div class="diag-grid">
       <div><b>panel_version</b><span>${esc(PANEL_VERSION)}</span></div>
-      <div><b>local_timezone</b><span>${esc(browserTimeZone())}</span></div>
       <div><b>last_successful_refresh_utc</b><span>${esc(refreshStatus?.last_successful_refresh_utc || info.refreshTs?.toISOString())}</span></div>
       <div><b>raw_live_feed</b><span>${esc(refreshStatus?.raw_live_feed_timeframe || 'M5')}</span></div>
       <div><b>latest_provider_m5_open</b><span>${esc(providerLatest)}</span></div>
