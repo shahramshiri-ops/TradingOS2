@@ -1,10 +1,10 @@
 {
-  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_1_MTF_H1_DIRECTIONAL_WATCH_OPS10",
+  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_0",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "DISPLAY_ONLY_CONTEXT_MEMORY_REGISTRY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_TRADABILITY_CLAIM|NO_BROKER_EXECUTION",
   "design_note": "This registry is file-first and append-only/versioned. New memories are added as objects; the mobile panel and matcher do not hardcode them.",
-  "memory_count": 6,
-  "active_runtime_memory_count": 2,
+  "memory_count": 4,
+  "active_runtime_memory_count": 3,
   "memories": [
     {
       "memory_id": "EURUSD_NY_UP_EXTENSION_UPPER_REJECTION_FADE_DOWN_v1_0",
@@ -45,8 +45,8 @@
       "instrument": "EURUSD",
       "timeframe": "M15",
       "memory_class": "caveated_brain_watch_context",
-      "activation_status": "ARCHIVED_SUPERSEDED_BY_MTF_DIRECTIONAL_DELIVERY_STANDARD",
-      "active_in_runtime": false,
+      "activation_status": "ACTIVE_CAVEATED_WATCH_MEMORY_NOT_SIGNAL",
+      "active_in_runtime": true,
       "score_not_probability": 62,
       "band": "CAVEATED_VALIDATION_WATCH",
       "plain_language_label_fa": "EURUSD — هشدار احتیاطی بعد از sweep ناموفق سطح بالایی",
@@ -121,8 +121,7 @@
         "show as caveated watch/context memory",
         "warn that failed upside sweep has historically had fade-down tendency versus baseline",
         "use as one contextual input in future brain-state summary",
-        "use to explain why blind long continuation after failed upside sweep is caveated",
-        "historical archive/provenance only"
+        "use to explain why blind long continuation after failed upside sweep is caveated"
       ],
       "forbidden_use": [
         "sell signal",
@@ -136,16 +135,15 @@
         "clean validated edge claim",
         "automatic holdout opening"
       ],
-      "runtime_display_caveat_required": "Archived legacy memory only. Not active in runtime, not signal.",
-      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed."
+      "runtime_display_caveat_required": "Caveated historical watch only. Not a sell signal, not an entry instruction, and not a profitability/tradability claim."
     },
     {
       "memory_id": "USDJPY_ALIGNMENT_ABSENT_CHOP_AVOID_SHORT_CONTEXT_CAVEATED_WATCH_v1_0",
       "instrument": "USDJPY",
       "timeframe": "M15",
       "memory_class": "caveated_no_trade_avoidance_context",
-      "activation_status": "ARCHIVED_SUPERSEDED_BY_MTF_DIRECTIONAL_DELIVERY_STANDARD",
-      "active_in_runtime": false,
+      "activation_status": "ACTIVE_CAVEATED_NO_TRADE_WATCH_MEMORY_NOT_SIGNAL",
+      "active_in_runtime": true,
       "score_not_probability": 70,
       "band": "CAVEATED_VALIDATION_NO_TRADE_WATCH",
       "plain_language_label_fa": "USDJPY — هشدار no-trade / پرهیز از short در chop بدون هم‌راستایی",
@@ -224,8 +222,7 @@
         "show as caveated no-trade / avoid-short watch context",
         "warn that USDJPY short-like continuation is historically weaker in alignment-absent M15 chop",
         "use as a risk-awareness/no-trade filter input in future brain-state summary",
-        "help explain why a short-context idea is caveated when alignment is absent and M15 is chop",
-        "historical archive/provenance only"
+        "help explain why a short-context idea is caveated when alignment is absent and M15 is chop"
       ],
       "forbidden_use": [
         "sell signal",
@@ -241,8 +238,7 @@
         "clean validated edge claim",
         "automatic holdout opening"
       ],
-      "runtime_display_caveat_required": "Archived legacy memory only. Not active in runtime, not signal.",
-      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed."
+      "runtime_display_caveat_required": "Caveated no-trade watch only. Not a buy/sell signal, not an entry instruction, and not a profitability/tradability claim."
     },
     {
       "created_utc": "2026-05-11T07:24:10Z",
@@ -527,18 +523,17 @@
         "cost/event guard later shows unacceptable fragility",
         "thread is found to be duplicate or disguised version of an existing memory"
       ],
-      "activation_status": "ARCHIVED_SUPERSEDED_BY_MTF_DIRECTIONAL_DELIVERY_STANDARD",
-      "active_in_runtime": false,
+      "activation_status": "ACTIVE_CAVEATED_WATCH_MEMORY_NOT_SIGNAL",
+      "active_in_runtime": true,
       "active_in_runtime_proposed": true,
       "source_candidate_draft_id": "USDJPY_PRIOR48_NY_UPSIDE_SWEEP_REJECTION_FADE_DOWN_CAVEATED_WATCH_CANDIDATE_v0_2",
       "integration_prerequisite_status": "PATCHBUILD1_PROOF_PASS_IN_HANDOFF_WORKSPACE; APPLY_ONLY_AFTER_BRAIN_CHAT_LOCAL_REVIEW",
       "allowed_use": [
         "runtime display-only caveated watch context",
         "historical-memory context card",
-        "operator review context only",
-        "historical archive/provenance only"
+        "operator review context only"
       ],
-      "runtime_display_caveat_required": "Archived legacy memory only. Not active in runtime, not signal.",
+      "runtime_display_caveat_required": "حافظهٔ فعالِ caveated watch فقط برای نمایش context تاریخی است؛ سیگنال، فروش/خرید، ورود/خروج، سودآوری، قابلیت معامله یا اجرای بروکری نیست. Holdout 2020-2024 باز نشده است.",
       "global_boundary": [
         "NOT_SIGNAL",
         "NO_BUY_SELL_HOLD",
@@ -573,259 +568,7 @@
         "If any required_context_field is missing/null/UNKNOWN where not allowed, return MEMORY_INPUT_INSUFFICIENT."
       ],
       "installed_by": "SIG-BRAIN-OPS1_REPO_PATCH_OPERATOR_REVIEW",
-      "installed_utc": "2026-05-11T08:30:00Z",
-      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed."
-    },
-    {
-      "memory_id": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0",
-      "instrument": "EURUSD",
-      "timeframe": "H1",
-      "base_timeframe": "H1",
-      "context_timeframes": [
-        "D1",
-        "H4",
-        "prior_day_level"
-      ],
-      "memory_class": "caveated_directional_watch_memory_not_signal",
-      "candidate_type": "directional_watch",
-      "direction_side": "LONG",
-      "directional_side": "LONG",
-      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_MEMORY_NOT_SIGNAL",
-      "active_in_runtime": true,
-      "score_not_probability": 72,
-      "band": "CAVEATED_DIRECTIONAL_WATCH",
-      "plain_language_label_fa": "EURUSD H1 — failed breakout / prior-day low reclaim — لانگ‌-بایاس پژوهشی",
-      "plain_language_summary_fa": "اگر EURUSD روی H1 در session آسیا، با D1 و H4 نزولی، کف روز قبل را به پایین بشکند اما کندل بسته‌شده دوباره بالای سطح برگردد، این memory یک directional LONG watch پژوهشی نشان می‌دهد. این سیگنال خرید یا دستور معامله نیست.",
-      "required_context_fields": [
-        "instrument",
-        "timeframe",
-        "latest_bar_open_ts_utc",
-        "session_bucket",
-        "d1_trend_state",
-        "h4_trend_state",
-        "failed_breakout_event_type",
-        "failed_breakout_level_type",
-        "failed_breakout_reference_policy_id"
-      ],
-      "matching_rule": {
-        "required_all": [
-          {
-            "field": "instrument",
-            "op": "eq",
-            "value": "EURUSD"
-          },
-          {
-            "field": "timeframe",
-            "op": "eq",
-            "value": "H1"
-          },
-          {
-            "field": "session_bucket",
-            "op": "eq",
-            "value": "ASIA"
-          },
-          {
-            "field": "d1_trend_state",
-            "op": "eq",
-            "value": "DOWN"
-          },
-          {
-            "field": "h4_trend_state",
-            "op": "eq",
-            "value": "DOWN"
-          },
-          {
-            "field": "failed_breakout_event_type",
-            "op": "eq",
-            "value": "FAILED_DOWNSIDE_BREAKOUT_RECLAIM_INSIDE"
-          },
-          {
-            "field": "failed_breakout_level_type",
-            "op": "eq",
-            "value": "PRIOR_DAY_LOW"
-          },
-          {
-            "field": "failed_breakout_reference_policy_id",
-            "op": "eq",
-            "value": "PRIOR_DAY_LOW_CLOSED_D1_v1_0"
-          }
-        ]
-      },
-      "evidence_summary": {
-        "validation_rows": 56,
-        "avg_delta": 0.09380058466816459,
-        "min_delta": 0.013544611147350949,
-        "positive_horizon_share": 1.0,
-        "effect_retention_tau": 1.5965801005424696,
-        "max_year_share": 0.26785714285714285
-      },
-      "future_signal_path_metadata": {
-        "future_setup_candidate": true,
-        "future_trigger_required": true,
-        "blocker_dependencies": [
-          "event_calendar",
-          "cost_spread",
-          "regime_drift"
-        ],
-        "confidence_vector_inputs": [
-          "evidence_strength",
-          "context_fit",
-          "mfe_mae_profile",
-          "baseline_suite",
-          "recency_stability"
-        ]
-      },
-      "allowed_use": [
-        "show as active caveated directional watch when runtime conditions fully match",
-        "use as personal research posture/context only",
-        "retain evidence and caveats for future setup/trigger pipeline research"
-      ],
-      "forbidden_use": [
-        "buy/sell instruction",
-        "entry/stop/target",
-        "position sizing",
-        "probability claim",
-        "profitability/tradability claim",
-        "broker execution",
-        "live trade recommendation",
-        "automatic execution"
-      ],
-      "mandatory_caveat": "Caveated H1 directional LONG watch only. Not a buy signal, not an entry instruction, and not a profitability/tradability claim.",
-      "runtime_display_caveat_required": "Caveated H1 directional LONG watch only. Not a buy signal, not an entry instruction, and not a profitability/tradability claim.",
-      "delivery_pack_source": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0_BRAIN_DELIVERY_PACK_v1_0",
-      "ops10_integration_note": "matching_rule contract was formalized from hypothesis_registry_row and threshold_decision_and_validation_summary because proposed object declared fields but not a complete runtime matching_rule."
-    },
-    {
-      "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_REJECT_LONG_LONG_SESSION_DIRECTIONAL_WATCH_v1_0",
-      "instrument": "EURUSD",
-      "timeframe": "H1",
-      "base_timeframe": "H1",
-      "context_timeframes": [
-        "D1",
-        "H4",
-        "session_reference_range"
-      ],
-      "memory_class": "caveated_directional_watch_memory_not_signal",
-      "candidate_type": "directional_watch",
-      "direction_side": "LONG",
-      "directional_side": "LONG",
-      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_MEMORY_NOT_SIGNAL",
-      "active_in_runtime": true,
-      "score_not_probability": 71,
-      "band": "CAVEATED_DIRECTIONAL_WATCH_YEAR_CONCENTRATION_CAVEAT",
-      "plain_language_label_fa": "EURUSD H1 — LONDON_LOW_SWEEP_REJECT_LONG / لانگ‌-بایاس",
-      "plain_language_summary_fa": "در LONDON_NY_OVERLAP، با D1=UP و H4=UP، رویداد LONDON_LOW_SWEEP_REJECT_LONG نسبت به رنج/مرجع session در validation جهت LONG را بهتر از baseline دامنه‌همسان نشان داد. این فقط directional watch است، نه سیگنال معامله.",
-      "required_context_fields": [
-        "instrument",
-        "timeframe",
-        "latest_bar_open_ts_utc",
-        "session_bucket",
-        "d1_trend_state",
-        "h4_trend_state",
-        "session_reference_range_type",
-        "session_reference_break_event_type",
-        "session_reference_policy_id"
-      ],
-      "matching_rule": {
-        "required_all": [
-          {
-            "field": "instrument",
-            "op": "eq",
-            "value": "EURUSD"
-          },
-          {
-            "field": "timeframe",
-            "op": "eq",
-            "value": "H1"
-          },
-          {
-            "field": "session_bucket",
-            "op": "eq",
-            "value": "LONDON_NY_OVERLAP"
-          },
-          {
-            "field": "d1_trend_state",
-            "op": "eq",
-            "value": "UP"
-          },
-          {
-            "field": "h4_trend_state",
-            "op": "eq",
-            "value": "UP"
-          },
-          {
-            "field": "session_reference_break_event_type",
-            "op": "eq",
-            "value": "LONDON_LOW_SWEEP_REJECT_LONG"
-          }
-        ]
-      },
-      "evidence_summary": {
-        "discovery_avg_delta": 0.035475010909464255,
-        "validation_avg_delta": 0.046546046546046514,
-        "validation_min_delta": 0.04051504051504051,
-        "effect_retention_tau": 1.3120798374054525,
-        "validation_rows": 77,
-        "baseline_rows": 117,
-        "year_count": 5,
-        "max_year_share": 0.38961038961038963,
-        "positive_horizon_share": 1.0,
-        "mfe_mae_ratio_h3": 0.9552238798841959,
-        "mfe_mae_ratio_h6": 0.7846153842130755,
-        "mfe_mae_ratio_h12": 0.8630136982360765,
-        "decision_status": "CAVEATED_EVIDENCE_READY_FOR_DELIVERY_PACK",
-        "decision_reasons": "YEAR_CONCENTRATION_35_40"
-      },
-      "future_signal_path_metadata": {
-        "future_setup_candidate": true,
-        "setup_layer_state": "session reference range established + D1/H4 regime context present",
-        "future_trigger_required": true,
-        "trigger_layer_event": "LONDON_LOW_SWEEP_REJECT_LONG",
-        "blocker_dependencies": [
-          "event_calendar",
-          "cost_spread",
-          "regime_drift",
-          "correlation_blocker",
-          "session_holiday_dst_policy"
-        ],
-        "confidence_vector_inputs": [
-          "evidence_strength",
-          "context_fit",
-          "concurrent_agreement",
-          "recency_stability",
-          "active_caveats"
-        ],
-        "dependency_family": "session_handover_directional",
-        "independent_confirmation_level": "MEDIUM_IF_NOT_COMBINED_WITH_SAME_SESSION_RANGE_FAMILIES"
-      },
-      "runtime_builder_requirements": [
-        "Build session reference ranges using fixed UTC/session policy and closed H1 bars only.",
-        "Asian range for London triggers must use 00:00-06:59 UTC completed H1 bars only.",
-        "London morning range for NY/overlap triggers must use 07:00-11:59 UTC completed H1 bars only.",
-        "Emit MEMORY_INPUT_INSUFFICIENT if required regime/session reference fields are missing.",
-        "No current/incomplete H1, H4, or D1 candle may be used for regime or reference range."
-      ],
-      "allowed_use": [
-        "show as active caveated directional watch when runtime conditions fully match",
-        "use as personal research posture/context only",
-        "retain year-concentration caveat visibly in evidence/diagnostics"
-      ],
-      "forbidden_use": [
-        "signal",
-        "buy/sell instruction",
-        "entry/stop/target",
-        "position sizing",
-        "probability claim",
-        "profitability claim",
-        "tradability claim",
-        "broker execution",
-        "live trade recommendation",
-        "automatic execution"
-      ],
-      "mandatory_caveat": "Caveated H1 directional watch only. Not a signal and not a trade recommendation.",
-      "runtime_display_caveat_required": "Caveated H1 directional watch only. Not a signal and not a trade recommendation.",
-      "dependency_caveat": "MEDIUM_HIGH correlation risk with adjacent session/reference-range families; do not combine as independent confirmation without separate dependency check.",
-      "delivery_pack_source": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_REJECT_LONG_LONG_SESSION_DIRECTIONAL_WATCH_v1_0_BRAIN_DELIVERY_PACK_v1_0"
+      "installed_utc": "2026-05-11T08:30:00Z"
     }
   ],
   "global_forbidden": [
@@ -838,7 +581,5 @@
     "probability claim",
     "clean validated edge claim",
     "automatic execution"
-  ],
-  "updated_utc": "2026-05-12T06:25:00Z",
-  "ops10_policy": "Legacy active M15 memories archived by user decision; new runtime-active memories must come from newer MTF directional delivery packs and supported builder fields."
+  ]
 }

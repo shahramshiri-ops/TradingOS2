@@ -167,11 +167,8 @@ def evaluate_memory(memory: Dict[str, Any], row: Dict[str, Any] | None) -> Dict[
         active = False
         reason = "Context row is present but conditions are not matched."
     else:
-        mem_text = f"{memory.get('activation_status', '')} {memory.get('memory_class', '')} {memory.get('candidate_type', '')}".upper()
-        if "NO_TRADE" in mem_text or "NO_TRADE" in str(memory.get("memory_class","")).upper():
+        if "NO_TRADE" in str(memory.get("activation_status", "")).upper() or "no_trade" in str(memory.get("memory_class","")).lower():
             state = "NO_TRADE_WATCH_ACTIVE"
-        elif "DIRECTIONAL" in mem_text:
-            state = "CAVEATED_DIRECTIONAL_WATCH_ACTIVE"
         else:
             state = "CAVEATED_WATCH_ACTIVE"
         active = True
@@ -204,8 +201,6 @@ def make_card(memory: Dict[str, Any], row: Dict[str, Any] | None, ev: Dict[str, 
         "instrument": memory.get("instrument"),
         "timeframe": memory.get("timeframe"),
         "memory_class": memory.get("memory_class"),
-        "candidate_type": memory.get("candidate_type"),
-        "direction_side": memory.get("direction_side") or memory.get("directional_side"),
         "brain_state": state,
         "is_active_match": active,
         "status_badge": "ACTIVE WATCH / NOT SIGNAL" if active else "NOT ACTIVE / DISPLAY ONLY",
@@ -218,8 +213,6 @@ def make_card(memory: Dict[str, Any], row: Dict[str, Any] | None, ev: Dict[str, 
         "failed_conditions": ev["failed_conditions"],
         "missing_inputs": ev["missing_inputs"],
         "evidence_summary": memory.get("evidence_summary", {}),
-        "future_signal_path_metadata": memory.get("future_signal_path_metadata", {}),
-        "dependency_caveat": memory.get("dependency_caveat"),
         "latest_context": row or {},
         "signal_status": "NOT_SIGNAL",
         "direction_authority": "NONE_AUTHORIZED",
@@ -227,7 +220,7 @@ def make_card(memory: Dict[str, Any], row: Dict[str, Any] | None, ev: Dict[str, 
         "display_authority": "DISPLAY_ONLY_BRAIN_CONTEXT_NOT_TRADING_SIGNAL",
         "allowed_user_interpretation": "Historical brain-memory context/watch only.",
         "forbidden_user_interpretation": "Do not read this as buy/sell/hold, trade setup, entry/stop/target, probability, profitability, tradability, or broker execution authorization.",
-        "mandatory_caveat": memory.get("runtime_display_caveat_required") or memory.get("mandatory_caveat"),
+        "mandatory_caveat": memory.get("runtime_display_caveat_required"),
         "forbidden_use": memory.get("forbidden_use", []),
         "visible_action_text_fa": "هیچ دستور معامله‌ای مجاز نیست",
         "visible_action_text_en": "No trading instruction is authorized",
@@ -247,9 +240,9 @@ def build_payload(context_path: Path, registry_path: Path) -> Dict[str, Any]:
     cards.sort(key=lambda c: (0 if c["is_active_match"] else 1, c["sort_rank"]))
 
     return {
-        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_2_MTF_DIRECTIONAL_OPS10",
+        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_1_REQUIRED_FIELDS_PRECHECK",
         "created_utc": utc_now(),
-        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_2_MTF_DIRECTIONAL_OPS10",
+        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_1_REQUIRED_FIELDS_PRECHECK",
         "authority": AUTHORITY,
         "deployment_status": "DISPLAY_ONLY_RUNTIME_BRAIN_MEMORY_MATCHER_NOT_SIGNAL_NOT_BROKER",
         "signal_authorized": False,

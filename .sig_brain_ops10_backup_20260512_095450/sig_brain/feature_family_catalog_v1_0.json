@@ -1,5 +1,5 @@
 {
-  "catalog_version": "SIG_FEATURE_FAMILY_CATALOG_v1_1_MTF_H1_DIRECTIONAL_OPS10",
+  "catalog_version": "SIG_FEATURE_FAMILY_CATALOG_v1_0",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "FEATURE_FAMILY_CATALOG_ONLY_NOT_SIGNAL",
   "families": [
@@ -25,7 +25,7 @@
     },
     {
       "family_id": "direction_alignment",
-      "status": "ACTIVE_CURRENT_MTF_D1_H4_H1",
+      "status": "ACTIVE_CURRENT_PLUS_FUTURE_D1",
       "meaning_fa": "جهت M15/H1/H4/D1 و هم‌راستایی/تعارض",
       "fields": [
         "m15_dir",
@@ -34,11 +34,9 @@
         "d1_dir",
         "conflict_severity",
         "h4_h1_up_context",
-        "h4_h1_down_context",
-        "d1_trend_state",
-        "h4_trend_state"
+        "h4_h1_down_context"
       ],
-      "current_builder_support": "Brain5 supports M15/H1/H4 plus D1/H4 trend_state for OPS10 H1 memories"
+      "current_builder_support": "Brain5 supports M15/H1/H4; D1 future"
     },
     {
       "family_id": "range_chop_volatility",
@@ -114,30 +112,7 @@
         "cost_regime_status"
       ],
       "current_builder_support": "not active"
-    },
-    {
-      "family_id": "precomputed_level_reaction",
-      "status": "ACTIVE_CURRENT_OPS10_H1",
-      "meaning_fa": "واکنش به سطوح precomputed مثل کف/سقف روز قبل و شکست ناموفق",
-      "fields": [
-        "failed_breakout_event_type",
-        "failed_breakout_level_type",
-        "failed_breakout_reference_policy_id"
-      ],
-      "current_builder_support": "Brain5 OPS10 supports prior-day-low failed downside breakout reclaim on EURUSD H1"
-    },
-    {
-      "family_id": "session_reference_range",
-      "status": "ACTIVE_CURRENT_OPS10_H1",
-      "meaning_fa": "رنج‌های مرجع session مثل London morning range و رویدادهای sweep/reject",
-      "fields": [
-        "session_reference_range_type",
-        "session_reference_break_event_type",
-        "session_reference_policy_id"
-      ],
-      "current_builder_support": "Brain5 OPS10 supports London morning low sweep/reject for EURUSD H1"
     }
   ],
-  "professional_rule": "Do not add new one-off fields directly into memory objects. First add/update the context field registry and assign each field to a family/module.",
-  "updated_utc": "2026-05-12T06:25:00Z"
+  "professional_rule": "Do not add new one-off fields directly into memory objects. First add/update the context field registry and assign each field to a family/module."
 }

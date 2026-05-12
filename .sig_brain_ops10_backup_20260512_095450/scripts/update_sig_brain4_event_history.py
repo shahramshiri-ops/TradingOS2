@@ -74,17 +74,10 @@ def is_no_trade(card: Dict[str, Any]) -> bool:
     text = " ".join(str(card.get(k, "")) for k in ["memory_class", "band", "memory_id", "plain_language_summary_fa"]).upper()
     return "NO_TRADE" in text or "AVOID" in text or "AVOID_SHORT" in text
 
-def is_directional_watch(card: Dict[str, Any]) -> bool:
-    text = " ".join(str(card.get(k, "")) for k in ["memory_class", "candidate_type", "brain_state", "memory_id"]).upper()
-    return "DIRECTIONAL" in text
-
 def posture_fa(card: Dict[str, Any]) -> str:
     mid = str(card.get("memory_id", ""))
     if is_no_trade(card):
         return "هشدار احتیاط / اجتناب از short-like context"
-    if is_directional_watch(card):
-        side = str(card.get("direction_side") or "").upper()
-        return "directional watch پژوهشی: LONG-bias context" if side == "LONG" else "directional watch پژوهشی"
     if "PRIOR48" in mid:
         return "watch پژوهشی: prior48 sweep rejection / fade-down context"
     if "SWEEP_REJECTION" in mid:
@@ -95,8 +88,6 @@ def meaning_fa(card: Dict[str, Any]) -> str:
     mid = str(card.get("memory_id", ""))
     if is_no_trade(card):
         return "این context از نظر حافظهٔ تاریخی برای ادامهٔ short-like نامساعدتر از baseline بوده؛ فقط برای احتیاط شخصی."
-    if is_directional_watch(card):
-        return str(card.get("plain_language_summary_fa") or "یک directional watch پژوهشی روی کندل بسته‌شده فعال شده است؛ این دستور خرید/فروش یا نقطه ورود نیست.")
     if "PRIOR48" in mid:
         return "شرط prior48 upside sweep و برگشت داخل سطح روی کندل بسته‌شده فعال شده؛ فقط watch پژوهشی fade-down."
     if "SWEEP_REJECTION" in mid:
@@ -120,8 +111,7 @@ def event_from_card(card: Dict[str, Any], activated_at: datetime, existing: Opti
         "memory_id": card.get("memory_id"),
         "instrument": card.get("instrument"),
         "timeframe": card.get("timeframe"),
-        "event_type": "NO_TRADE_CONTEXT" if is_no_trade(card) else ("DIRECTIONAL_WATCH" if is_directional_watch(card) else "ACTIVE_WATCH"),
-        "direction_side": card.get("direction_side"),
+        "event_type": "NO_TRADE_CONTEXT" if is_no_trade(card) else "ACTIVE_WATCH",
         "posture_fa": posture_fa(card),
         "meaning_fa": meaning_fa(card),
         "display_message_fa": meaning_fa(card),
@@ -187,7 +177,7 @@ def main() -> int:
     active_events = [e for e in events if e.get("status") == "ACTIVE"]
 
     out = {
-        "history_version": "SIG_BRAIN4_OFFICIAL_EVENT_HISTORY_v1_1_MTF_DIRECTIONAL_OPS10",
+        "history_version": "SIG_BRAIN4_OFFICIAL_EVENT_HISTORY_v1_0",
         "created_utc": iso(now),
         "authority": AUTHORITY,
         "signal_authorized": False,

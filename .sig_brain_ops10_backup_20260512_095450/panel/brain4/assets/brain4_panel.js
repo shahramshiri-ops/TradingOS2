@@ -8,7 +8,7 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS10_MTF_DIRECTIONAL_ACTIVE_EVENT_PANEL_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS9_OFFICIAL_SERVER_SIDE_HISTORY_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
@@ -154,17 +154,9 @@ function isNoTrade(c){
   const text = `${c.memory_class||''} ${c.band||''} ${c.memory_id||''} ${c.plain_language_summary_fa||''}`.toUpperCase();
   return text.includes('NO_TRADE') || text.includes('AVOID') || text.includes('AVOID_SHORT');
 }
-function isDirectionalWatch(c){
-  const text = `${c.memory_class||''} ${c.candidate_type||''} ${c.brain_state||''} ${c.memory_id||''}`.toUpperCase();
-  return text.includes('DIRECTIONAL');
-}
 function postureFa(c){
   const id = c.memory_id || '';
   if(isNoTrade(c)) return 'هشدار احتیاط / اجتناب از short-like context';
-  if(isDirectionalWatch(c)){
-    const side = String(c.direction_side || '').toUpperCase();
-    return side === 'LONG' ? 'directional watch پژوهشی: LONG-bias context' : 'directional watch پژوهشی';
-  }
   if(id.includes('PRIOR48')) return 'watch پژوهشی: prior48 sweep rejection / fade-down context';
   if(id.includes('SWEEP_REJECTION')) return 'watch پژوهشی: sweep rejection / fade-down context';
   return 'memory event پژوهشی فعال';
@@ -172,7 +164,6 @@ function postureFa(c){
 function compactMeaningFa(c){
   const id = c.memory_id || '';
   if(isNoTrade(c)) return 'این context از نظر حافظهٔ تاریخی برای ادامهٔ short-like نامساعدتر از baseline بوده؛ فقط برای احتیاط شخصی.';
-  if(isDirectionalWatch(c)) return c.plain_language_summary_fa || 'یک directional watch پژوهشی روی کندل بسته‌شده فعال شده است؛ این دستور خرید/فروش یا نقطه ورود نیست.';
   if(id.includes('PRIOR48')) return 'شرط prior48 upside sweep و برگشت داخل سطح روی کندل بسته‌شده فعال شده؛ فقط watch پژوهشی fade-down.';
   if(id.includes('SWEEP_REJECTION')) return 'شرط sweep سطح بالایی و برگشت داخل سطح روی کندل بسته‌شده فعال شده؛ فقط watch پژوهشی fade-down.';
   return c.plain_language_summary_fa || 'یک memory event روی آخرین context بسته‌شده فعال شده است.';
@@ -193,7 +184,6 @@ function eventFromCard(c, payload, context, refreshStatus, now){
     timeframe:c.timeframe,
     score_not_probability:c.score_not_probability,
     band:c.band,
-    direction_side:c.direction_side || null,
     posture_fa:postureFa(c),
     meaning_fa:compactMeaningFa(c),
     source_bar_open_ts_utc:lc.latest_bar_open_ts_utc || null,
@@ -223,7 +213,6 @@ function normalizeOfficialEvent(e){
     timeframe:e.timeframe,
     score_not_probability:e.score_not_probability,
     band:e.band,
-    direction_side:e.direction_side || e.directional_side || null,
     posture_fa:posture,
     meaning_fa:meaning,
     source_bar_open_ts_utc:e.source_bar_open_ts_utc || null,
