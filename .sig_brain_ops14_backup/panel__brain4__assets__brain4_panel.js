@@ -8,7 +8,7 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS14_UI_DECISION_SURFACE_REFINEMENT_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS11_MEMORY_LIBRARY_AND_THIRD_H1_PATTERN_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
@@ -260,11 +260,11 @@ function officialHistoryMeta(historyPayload){
 }
 
 function memoryRuntimeStatusFa(c){
-  if(c.active_in_runtime === true) return 'در حال پایش';
+  if(c.active_in_runtime === true) return 'فعال در runtime';
   const state = String(c.brain_state || '').toUpperCase();
   const cls = String(c.memory_class || '').toUpperCase();
-  if(state.includes('WEAKENED') || cls.includes('WEAKENED')) return 'آرشیو شده';
-  return 'غیرفعال/آرشیو';
+  if(state.includes('WEAKENED') || cls.includes('WEAKENED')) return 'آرشیو / weak شده';
+  return 'آرشیو / غیرفعال در runtime';
 }
 function memoryLibraryClass(c){
   if(c.active_in_runtime === true) return 'runtime-enabled';
@@ -291,52 +291,23 @@ function memoryShortTypeFa(c){
   if(isParked(c)) return 'archived';
   return 'watch context';
 }
-function plainStatusFa(c){
-  const raw = String(c.brain_state || c.activation_status || '').toUpperCase();
-  if(c.active_in_runtime === true && isInsufficient(c)) return 'نیاز به دادهٔ بیشتر';
-  if(c.active_in_runtime === true) return 'در حال پایش';
-  if(raw.includes('WEAKENED') || raw.includes('PARKED')) return 'آرشیو شده';
-  return 'غیرفعال/آرشیو';
-}
-function libraryOutcomeLabel(c){
-  if(isNoTrade(c)) return 'اگر فعال شود: احتیاط / اجتناب از short-like context برجسته می‌شود.';
-  if(isDirectionalWatch(c)){
-    const side = String(c.direction_side || '').toUpperCase();
-    if(side === 'LONG') return 'اگر فعال شود: سناریوی LONG-like تاریخی نسبت به baseline برجسته‌تر می‌شود.';
-    if(side === 'SHORT') return 'اگر فعال شود: سناریوی SHORT-like تاریخی نسبت به baseline برجسته‌تر می‌شود.';
-    return 'اگر فعال شود: یک directional watch تاریخی برجسته‌تر می‌شود.';
-  }
-  return ifActiveMeaningFa(c);
-}
 function memoryLibraryCard(c){
   const cls = memoryLibraryClass(c);
   const score = c.score_not_probability ?? '—';
-  const searchText = `${c.instrument||''} ${c.timeframe||''} ${c.memory_id||''} ${c.headline_fa||''} ${c.plain_language_label_fa||''} ${ifActiveMeaningFa(c)||''}`.toLowerCase();
-  const statusKey = c.active_in_runtime === true ? 'runtime' : 'archived';
-  const title = c.headline_fa || c.plain_language_label_fa || memoryShortTypeFa(c);
-  const outcome = libraryOutcomeLabel(c);
-  const status = plainStatusFa(c);
-  const muted = cls === 'archived' ? 'این الگو فعلاً فقط برای سابقه نگهداری می‌شود.' : 'اگر شرایط کامل شود، در صفحهٔ رویدادهای فعال نمایش داده می‌شود.';
-  return `<article class="memory-lib-card ${cls}" data-search="${esc(searchText)}" data-status="${esc(statusKey)}">
-    <div class="memory-card-topline">
-      <span class="library-state ${cls}">${esc(status)}</span>
-      <span class="library-type">${esc(memoryShortTypeFa(c))}</span>
+  return `<article class="memory-lib-card ${cls}">
+    <div class="memory-lib-head">
+      <span class="memory-lib-status">${esc(memoryRuntimeStatusFa(c))}</span>
+      <span class="memory-lib-type">${esc(memoryShortTypeFa(c))}</span>
     </div>
-    <div class="memory-card-main">
-      <div class="memory-symbol" dir="ltr">${esc(c.instrument || '—')} <small>${esc(c.timeframe || '—')}</small></div>
-      <h3>${esc(title)}</h3>
-      <p class="memory-outcome">${esc(outcome)}</p>
-      <p class="memory-note">${esc(muted)} بدون buy/sell، entry/stop/target یا probability.</p>
+    <h3>${esc(c.instrument)} <small>${esc(c.timeframe)}</small></h3>
+    <div class="memory-lib-title">${esc(c.headline_fa || c.plain_language_label_fa || c.memory_id)}</div>
+    <p><b>اگر فعال شود:</b> ${esc(ifActiveMeaningFa(c))}</p>
+    <div class="memory-lib-grid">
+      <div><b>memory_id</b><span>${esc(c.memory_id)}</span></div>
+      <div><b>قدرت پژوهشی</b><span>${esc(score)}/100 · نه احتمال</span></div>
+      <div><b>وضعیت</b><span>${esc(c.activation_status || c.brain_state || '—')}</span></div>
     </div>
-    <div class="memory-card-meta">
-      <span><b>قدرت پژوهشی</b>${esc(score)}/100</span>
-      <span><b>وضعیت</b>${esc(status)}</span>
-    </div>
-    <details class="memory-technical">
-      <summary>شناسه و جزئیات فنی</summary>
-      <code>${esc(c.memory_id)}</code>
-      <div>${esc(c.activation_status || c.brain_state || '—')}</div>
-    </details>
+    <div class="memory-lib-footer">بدون buy/sell، بدون entry/stop/target، بدون probability، بدون broker/execution.</div>
   </article>`;
 }
 function renderMemoryLibrary(cards){
@@ -349,26 +320,12 @@ function renderMemoryLibrary(cards){
   const activeCount = sorted.filter(c=>c.active_in_runtime === true).length;
   const archivedCount = sorted.length - activeCount;
   return `<section class="memory-library">
-    <div class="library-header-card">
-      <div>
-        <h2>${esc(sorted.length)} الگو در مغز</h2>
-        <p>این تب فقط کتابخانهٔ سادهٔ الگوهاست. صفحهٔ اصلی فقط رویدادهای فعال معتبر را نشان می‌دهد.</p>
-      </div>
-      <div class="library-stats">
-        <span><b>${esc(activeCount)}</b> در حال پایش</span>
-        <span><b>${esc(archivedCount)}</b> آرشیو/غیرفعال</span>
-      </div>
+    <div class="memory-lib-summary">
+      <b>${esc(sorted.length)} الگو در مغز</b>
+      <span>${esc(activeCount)} فعال در runtime · ${esc(archivedCount)} آرشیو/غیرفعال</span>
+      <p>این تب فقط کتابخانهٔ حافظه‌ها را نشان می‌دهد: اگر هر الگو فعال شود چه سناریوی تاریخی برجسته‌تر می‌شود. این تب هم سیگنال، دستور خرید/فروش یا نقطه ورود تولید نمی‌کند.</p>
     </div>
-    <div class="library-tools" aria-label="فیلتر کتابخانه الگوها">
-      <input id="memorySearch" class="library-search" type="search" placeholder="جستجو: EURUSD، H1، شکست ناموفق، London..." />
-      <select id="memoryStatusFilter" class="library-filter" aria-label="فیلتر وضعیت">
-        <option value="all">همهٔ الگوها</option>
-        <option value="runtime">در حال پایش</option>
-        <option value="archived">آرشیو/غیرفعال</option>
-      </select>
-    </div>
-    <div id="memoryLibraryGrid" class="memory-lib-grid-wrap">${sorted.map(memoryLibraryCard).join('')}</div>
-    <div id="memoryLibraryEmpty" class="library-empty" style="display:none">موردی با این فیلتر پیدا نشد.</div>
+    ${sorted.map(memoryLibraryCard).join('')}
   </section>`;
 }
 
@@ -397,45 +354,36 @@ function notificationPermissionLabel(){
 }
 function renderSummary(info, activeEvents){
   const activeCount = activeEvents.length;
-  const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'فعلاً رویداد فعال نداریم';
-  const refreshText = info.refreshTs ? `${localTimeOnly(info.refreshTs)} · ${humanAgeFa(info.refreshAge)}` : 'نامشخص';
-  const currentText = `${localTimeOnly(info.now)} · ${info.expectedSession}`;
-  return `<div class="status-hero ${esc(info.css)}">
-      <div class="status-pulse" aria-hidden="true"></div>
-      <div class="status-copy">
-        <span class="status-kicker">وضعیت فعلی</span>
-        <b>${esc(msg)}</b>
-        <em>${esc(info.label)}</em>
-      </div>
-      <div class="status-facts">
-        <div><span>آخرین بروزرسانی</span><b>${esc(refreshText)}</b></div>
-        <div><span>دادهٔ خام</span><b>M5 · چندتایم‌فریمی پشت صحنه</b></div>
-        <div><span>زمان / session</span><b>${esc(currentText)}</b></div>
-      </div>
+  const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'هیچ رویداد فعال معتبری در ۱۰ دقیقهٔ اخیر نیست';
+  const refreshText = info.refreshTs ? `${localDateTimeWithZone(info.refreshTs)} · ${humanAgeFa(info.refreshAge)}` : 'نامشخص';
+  const currentText = `${localDateTimeWithZone(info.now)} · ${info.expectedSession}`;
+  return `<div class="status-row ${esc(info.css)}">
+      <div class="status-main"><b>${esc(msg)}</b><span>${esc(info.status)} · ${esc(info.label)}</span></div>
+      <div><b>آخرین بروزرسانی موفق</b><span>${esc(refreshText)}</span></div>
+      <div><b>دادهٔ زنده</b><span>M5 خام؛ هر memory با timeframe خودش ارزیابی می‌شود</span></div>
+      <div><b>زمان محلی / session فعلی</b><span>${esc(currentText)}</span></div>
     </div>
-    <div class="minimal-boundary">صفحهٔ اصلی فقط event فعال معتبر را نشان می‌دهد. کتابخانهٔ الگوها و History رسمی در تب‌های جدا هستند.</div>`;
+    <div class="minimal-boundary">صفحهٔ اصلی فقط eventهای فعال و منقضی‌نشده را نشان می‌دهد. زمان‌ها به وقت همین دستگاه نمایش داده می‌شوند؛ UTC و جزئیات M5/M15/H1/H4/D1 در Diagnostics هستند.</div>`;
 }
 function eventCard(e){
   const cls = e.no_trade ? 'no-trade-event' : 'watch-event';
   const detected = parseUtc(e.detected_at_utc);
   const expires = parseUtc(e.expires_at_utc);
   const sourceClose = parseUtc(e.source_bar_close_ts_utc);
-  const validText = expires ? `${localTimeOnly(expires)} · ${remainingFa(new Date(), expires)}` : 'اعتبار نامشخص';
+  const validText = expires ? `اعتبار تا ${localTimeOnly(expires)} · ${remainingFa(new Date(), expires)}` : 'اعتبار نامشخص';
   return `<article class="event-card ${cls}">
     <div class="event-head">
-      <span class="event-badge">${e.no_trade ? 'احتیاط فعال' : 'watch فعال'}</span>
-      <span class="event-expiry">اعتبار تا ${esc(validText)}</span>
+      <span class="event-badge">${e.no_trade ? 'NO-TRADE CONTEXT' : 'ACTIVE WATCH'}</span>
+      <span class="event-expiry">${esc(validText)}</span>
     </div>
-    <div class="event-title-row">
-      <h2>${esc(e.instrument)} <small>${esc(e.timeframe)}</small></h2>
-      <span class="research-score">${esc(e.score_not_probability)}/100 · نه احتمال</span>
-    </div>
+    <h2>${esc(e.instrument)} <small>${esc(e.timeframe)}</small></h2>
     <div class="event-posture">${esc(e.posture_fa)}</div>
     <p>${esc(e.meaning_fa)}</p>
     <div class="event-grid">
-      <div><b>فعال‌شده</b><span>${esc(localTimeOnly(detected))}</span></div>
-      <div><b>کندل مبنا</b><span>${esc(localTimeOnly(sourceClose))}</span></div>
+      <div><b>فعال‌شده</b><span>${esc(localDateTime(detected))}</span></div>
+      <div><b>کندل مبنای memory</b><span>${esc(localTimeOnly(sourceClose))}</span></div>
       <div><b>session</b><span>${esc(e.session_bucket)}</span></div>
+      <div><b>قدرت پژوهشی</b><span>${esc(e.score_not_probability)}/100 · نه احتمال</span></div>
     </div>
     <div class="event-footer">${esc(e.forbidden)}</div>
   </article>`;
@@ -461,7 +409,7 @@ function historyCard(e){
 function renderHistory(history, historyPayload){
   const meta = officialHistoryMeta(historyPayload);
   if(!history.length) return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">هنوز event رسمی فعالی در history سروری ثبت نشده است. ${esc(historyScopeLabel())}</p></section>`;
-  return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند.</p><p class="muted">${esc(meta)}</p><div class="history-list">${history.slice(0,25).map(historyCard).join('')}</div></section>`;
+  return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند.</p><p class="muted">${esc(meta)}</p>${history.slice(0,25).map(historyCard).join('')}</section>`;
 }
 function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, historyPayload){
   const hiddenInactive = cards.filter(c=>!c.is_active_match).length;
@@ -512,15 +460,14 @@ function maybeNotify(activeEvents){
   }
   safeSave(STORAGE_NOTIFIED_KEY, [...notified].slice(-100));
 }
-function renderControls(activeCount=0, memoryCount=0, historyCount=0){
+function renderControls(){
   return `<div class="tabs" role="tablist" aria-label="SIG Brain tabs">
-    <button id="activeTabBtn" class="tab-btn active" type="button" data-tab="active"><span>رویدادها</span><em>${esc(activeCount)}</em></button>
-    <button id="libraryTabBtn" class="tab-btn" type="button" data-tab="library"><span>کتابخانه الگوها</span><em>${esc(memoryCount)}</em></button>
-    <button id="historyTabBtn" class="tab-btn" type="button" data-tab="history"><span>History رسمی</span><em>${esc(historyCount)}</em></button>
+    <button id="activeTabBtn" class="tab-btn active" type="button" data-tab="active">رویدادهای فعال</button>
+    <button id="libraryTabBtn" class="tab-btn" type="button" data-tab="library">الگوهای مغز</button>
   </div>
   <div class="panel-actions">
-    <button id="refreshBtn" class="ghost-btn" type="button">بروزرسانی</button>
     <button id="notifyBtn" class="notify-btn" type="button">${esc(notificationPermissionLabel())}</button>
+    <button id="refreshBtn" class="ghost-btn" type="button">Refresh panel</button>
   </div>`;
 }
 function attachControls(){
@@ -540,35 +487,9 @@ function attachControls(){
       for(const b of document.querySelectorAll('.tab-btn')) b.classList.toggle('active', b === btn);
       document.getElementById('active-tab')?.classList.toggle('hidden', tab !== 'active');
       document.getElementById('library-tab')?.classList.toggle('hidden', tab !== 'library');
-      document.getElementById('history-tab')?.classList.toggle('hidden', tab !== 'history');
     };
   }
-  attachMemoryLibraryFilters();
 }
-
-function attachMemoryLibraryFilters(){
-  const search = document.getElementById('memorySearch');
-  const status = document.getElementById('memoryStatusFilter');
-  const cards = Array.from(document.querySelectorAll('.memory-lib-card'));
-  const empty = document.getElementById('memoryLibraryEmpty');
-  if(!cards.length) return;
-  const apply = ()=>{
-    const q = String(search?.value || '').trim().toLowerCase();
-    const s = status?.value || 'all';
-    let visible = 0;
-    for(const card of cards){
-      const matchText = !q || String(card.dataset.search || '').includes(q);
-      const matchStatus = s === 'all' || card.dataset.status === s;
-      const ok = matchText && matchStatus;
-      card.style.display = ok ? '' : 'none';
-      if(ok) visible += 1;
-    }
-    if(empty) empty.style.display = visible ? 'none' : '';
-  };
-  if(search) search.oninput = apply;
-  if(status) status.onchange = apply;
-}
-
 
 Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHistory()]).then(([payload, context, refreshStatus, officialHistory])=>{
   const cards = asArray(payload.cards);
@@ -582,8 +503,8 @@ Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHist
   const summaryEl = document.getElementById('summary');
   summaryEl.classList.remove('skeleton');
   summaryEl.innerHTML = renderSummary(info, activeEvents);
-  document.getElementById('context-strip').innerHTML = renderControls(activeEvents.length, cards.length, history.length);
-  document.getElementById('cards').innerHTML = `<section id="active-tab" class="tab-panel">${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}</section><section id="library-tab" class="tab-panel hidden">${renderMemoryLibrary(cards)}</section><section id="history-tab" class="tab-panel hidden">${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}</section>`;
+  document.getElementById('context-strip').innerHTML = renderControls();
+  document.getElementById('cards').innerHTML = `<section id="active-tab" class="tab-panel">${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}</section><section id="library-tab" class="tab-panel hidden">${renderMemoryLibrary(cards)}</section>`;
   attachControls();
   maybeNotify(activeEvents);
 }).catch(err=>{
