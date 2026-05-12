@@ -8,11 +8,7 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-<<<<<<< Updated upstream
 const PANEL_VERSION = 'SIG-BRAIN-OPS11_MEMORY_LIBRARY_AND_THIRD_H1_PATTERN_v1_0';
-=======
-const PANEL_VERSION = 'SIG-BRAIN-OPS12_UI_POLISH_v1_0';
->>>>>>> Stashed changes
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
@@ -298,13 +294,7 @@ function memoryShortTypeFa(c){
 function memoryLibraryCard(c){
   const cls = memoryLibraryClass(c);
   const score = c.score_not_probability ?? '—';
-<<<<<<< Updated upstream
   return `<article class="memory-lib-card ${cls}">
-=======
-  const searchText = `${c.instrument||''} ${c.timeframe||''} ${c.memory_id||''} ${c.headline_fa||''} ${c.plain_language_label_fa||''} ${ifActiveMeaningFa(c)||''}`.toLowerCase();
-  const statusKey = c.active_in_runtime === true ? 'runtime' : 'archived';
-  return `<article class="memory-lib-card ${cls}" data-search="${esc(searchText)}" data-status="${esc(statusKey)}">
->>>>>>> Stashed changes
     <div class="memory-lib-head">
       <span class="memory-lib-status">${esc(memoryRuntimeStatusFa(c))}</span>
       <span class="memory-lib-type">${esc(memoryShortTypeFa(c))}</span>
@@ -333,24 +323,9 @@ function renderMemoryLibrary(cards){
     <div class="memory-lib-summary">
       <b>${esc(sorted.length)} الگو در مغز</b>
       <span>${esc(activeCount)} فعال در runtime · ${esc(archivedCount)} آرشیو/غیرفعال</span>
-<<<<<<< Updated upstream
       <p>این تب فقط کتابخانهٔ حافظه‌ها را نشان می‌دهد: اگر هر الگو فعال شود چه سناریوی تاریخی برجسته‌تر می‌شود. این تب هم سیگنال، دستور خرید/فروش یا نقطه ورود تولید نمی‌کند.</p>
     </div>
     ${sorted.map(memoryLibraryCard).join('')}
-=======
-      <p>این تب کتابخانهٔ سادهٔ حافظه‌هاست: اگر هر الگو فعال شود چه سناریوی تاریخی برجسته‌تر می‌شود. جزئیات خام و شرط‌ها عمداً نمایش داده نمی‌شوند.</p>
-    </div>
-    <div class="library-tools" aria-label="فیلتر کتابخانه الگوها">
-      <input id="memorySearch" class="library-search" type="search" placeholder="جستجو در instrument، timeframe یا نام الگو..." />
-      <select id="memoryStatusFilter" class="library-filter" aria-label="فیلتر وضعیت">
-        <option value="all">همهٔ وضعیت‌ها</option>
-        <option value="runtime">فعال در runtime</option>
-        <option value="archived">آرشیو/غیرفعال</option>
-      </select>
-    </div>
-    <div id="memoryLibraryGrid" class="memory-lib-grid-wrap">${sorted.map(memoryLibraryCard).join('')}</div>
-    <div id="memoryLibraryEmpty" class="library-empty" style="display:none">موردی با این فیلتر پیدا نشد.</div>
->>>>>>> Stashed changes
   </section>`;
 }
 
@@ -379,28 +354,16 @@ function notificationPermissionLabel(){
 }
 function renderSummary(info, activeEvents){
   const activeCount = activeEvents.length;
-<<<<<<< Updated upstream
   const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'هیچ رویداد فعال معتبری در ۱۰ دقیقهٔ اخیر نیست';
   const refreshText = info.refreshTs ? `${localDateTimeWithZone(info.refreshTs)} · ${humanAgeFa(info.refreshAge)}` : 'نامشخص';
   const currentText = `${localDateTimeWithZone(info.now)} · ${info.expectedSession}`;
-=======
-  const msg = activeCount ? `${activeCount} رویداد فعال معتبر` : 'فعلاً رویداد فعال معتبری نداریم';
-  const refreshText = info.refreshTs ? `${humanAgeFa(info.refreshAge)} · ${localTimeOnly(info.refreshTs)}` : 'نامشخص';
-  const currentText = `${localTimeOnly(info.now)} · ${info.expectedSession}`;
->>>>>>> Stashed changes
   return `<div class="status-row ${esc(info.css)}">
       <div class="status-main"><b>${esc(msg)}</b><span>${esc(info.status)} · ${esc(info.label)}</span></div>
       <div><b>آخرین بروزرسانی موفق</b><span>${esc(refreshText)}</span></div>
       <div><b>دادهٔ زنده</b><span>M5 خام؛ هر memory با timeframe خودش ارزیابی می‌شود</span></div>
-<<<<<<< Updated upstream
       <div><b>زمان محلی / session فعلی</b><span>${esc(currentText)}</span></div>
     </div>
     <div class="minimal-boundary">صفحهٔ اصلی فقط eventهای فعال و منقضی‌نشده را نشان می‌دهد. زمان‌ها به وقت همین دستگاه نمایش داده می‌شوند؛ UTC و جزئیات M5/M15/H1/H4/D1 در Diagnostics هستند.</div>`;
-=======
-      <div><b>زمان / session فعلی</b><span>${esc(currentText)}</span></div>
-    </div>
-    <div class="minimal-boundary">صفحهٔ اصلی فقط رویدادهای فعال و منقضی‌نشده را نشان می‌دهد. تاریخچه رسمی و کتابخانهٔ الگوها در تب‌های جدا هستند.</div>`;
->>>>>>> Stashed changes
 }
 function eventCard(e){
   const cls = e.no_trade ? 'no-trade-event' : 'watch-event';
@@ -446,11 +409,7 @@ function historyCard(e){
 function renderHistory(history, historyPayload){
   const meta = officialHistoryMeta(historyPayload);
   if(!history.length) return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">هنوز event رسمی فعالی در history سروری ثبت نشده است. ${esc(historyScopeLabel())}</p></section>`;
-<<<<<<< Updated upstream
   return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند.</p><p class="muted">${esc(meta)}</p>${history.slice(0,25).map(historyCard).join('')}</section>`;
-=======
-  return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند.</p><p class="muted">${esc(meta)}</p><div class="history-list">${history.slice(0,25).map(historyCard).join('')}</div></section>`;
->>>>>>> Stashed changes
 }
 function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, historyPayload){
   const hiddenInactive = cards.filter(c=>!c.is_active_match).length;
@@ -501,7 +460,6 @@ function maybeNotify(activeEvents){
   }
   safeSave(STORAGE_NOTIFIED_KEY, [...notified].slice(-100));
 }
-<<<<<<< Updated upstream
 function renderControls(){
   return `<div class="tabs" role="tablist" aria-label="SIG Brain tabs">
     <button id="activeTabBtn" class="tab-btn active" type="button" data-tab="active">رویدادهای فعال</button>
@@ -510,17 +468,6 @@ function renderControls(){
   <div class="panel-actions">
     <button id="notifyBtn" class="notify-btn" type="button">${esc(notificationPermissionLabel())}</button>
     <button id="refreshBtn" class="ghost-btn" type="button">Refresh panel</button>
-=======
-function renderControls(activeCount=0, memoryCount=0, historyCount=0){
-  return `<div class="tabs" role="tablist" aria-label="SIG Brain tabs">
-    <button id="activeTabBtn" class="tab-btn active" type="button" data-tab="active">رویدادهای فعال <span class="tab-count">${esc(activeCount)}</span></button>
-    <button id="libraryTabBtn" class="tab-btn" type="button" data-tab="library">الگوهای مغز <span class="tab-count">${esc(memoryCount)}</span></button>
-    <button id="historyTabBtn" class="tab-btn" type="button" data-tab="history">History رسمی <span class="tab-count">${esc(historyCount)}</span></button>
-  </div>
-  <div class="panel-actions">
-    <button id="notifyBtn" class="notify-btn" type="button">${esc(notificationPermissionLabel())}</button>
-    <button id="refreshBtn" class="ghost-btn" type="button">بروزرسانی صفحه</button>
->>>>>>> Stashed changes
   </div>`;
 }
 function attachControls(){
@@ -540,43 +487,10 @@ function attachControls(){
       for(const b of document.querySelectorAll('.tab-btn')) b.classList.toggle('active', b === btn);
       document.getElementById('active-tab')?.classList.toggle('hidden', tab !== 'active');
       document.getElementById('library-tab')?.classList.toggle('hidden', tab !== 'library');
-<<<<<<< Updated upstream
     };
   }
 }
 
-=======
-      document.getElementById('history-tab')?.classList.toggle('hidden', tab !== 'history');
-    };
-  }
-  attachMemoryLibraryFilters();
-}
-
-function attachMemoryLibraryFilters(){
-  const search = document.getElementById('memorySearch');
-  const status = document.getElementById('memoryStatusFilter');
-  const cards = Array.from(document.querySelectorAll('.memory-lib-card'));
-  const empty = document.getElementById('memoryLibraryEmpty');
-  if(!cards.length) return;
-  const apply = ()=>{
-    const q = String(search?.value || '').trim().toLowerCase();
-    const s = status?.value || 'all';
-    let visible = 0;
-    for(const card of cards){
-      const matchText = !q || String(card.dataset.search || '').includes(q);
-      const matchStatus = s === 'all' || card.dataset.status === s;
-      const ok = matchText && matchStatus;
-      card.style.display = ok ? '' : 'none';
-      if(ok) visible += 1;
-    }
-    if(empty) empty.style.display = visible ? 'none' : '';
-  };
-  if(search) search.oninput = apply;
-  if(status) status.onchange = apply;
-}
-
-
->>>>>>> Stashed changes
 Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHistory()]).then(([payload, context, refreshStatus, officialHistory])=>{
   const cards = asArray(payload.cards);
   const now = new Date();
@@ -589,13 +503,8 @@ Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHist
   const summaryEl = document.getElementById('summary');
   summaryEl.classList.remove('skeleton');
   summaryEl.innerHTML = renderSummary(info, activeEvents);
-<<<<<<< Updated upstream
   document.getElementById('context-strip').innerHTML = renderControls();
   document.getElementById('cards').innerHTML = `<section id="active-tab" class="tab-panel">${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}</section><section id="library-tab" class="tab-panel hidden">${renderMemoryLibrary(cards)}</section>`;
-=======
-  document.getElementById('context-strip').innerHTML = renderControls(activeEvents.length, cards.length, history.length);
-  document.getElementById('cards').innerHTML = `<section id="active-tab" class="tab-panel">${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}</section><section id="library-tab" class="tab-panel hidden">${renderMemoryLibrary(cards)}</section><section id="history-tab" class="tab-panel hidden">${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}</section>`;
->>>>>>> Stashed changes
   attachControls();
   maybeNotify(activeEvents);
 }).catch(err=>{
