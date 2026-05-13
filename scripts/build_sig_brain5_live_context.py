@@ -13,6 +13,7 @@ PRIOR48_POLICY_UP = "PRIOR48_LEGACY_RESEARCH_192_MIN96_CLOSED_v1_0"
 FAILED_BREAKOUT_POLICY = "PRIOR_DAY_LOW_CLOSED_D1_v1_0"
 SESSION_REF_POLICY = "LONDON_MORNING_RANGE_0700_1159_CLOSED_H1_v1_0"
 TARGETED_LONDON_LOW_POLICY = "SIG_MTF_DIR_W16_TARGETED_EURUSD_H1_FAILED_BREAKOUT_SESSION_SWEEP_v1_0"
+STRICT_LONDON_LOW_RECLAIM_POLICY = "SIG_MTF_DIR_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_D1UP_H4UP_H1_v1_0"
 
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -150,6 +151,80 @@ def london_morning_low_closed_h1(h1: List[Dict[str, Any]], eval_ts: dt.datetime)
             rows.append(b)
     return min((fnum(b["low"]) for b in rows), default=None)
 
+
+def london_morning_range_closed_h1(h1: List[Dict[str, Any]], eval_ts: dt.datetime) -> Dict[str, Any]:
+    """Same-UTC-date London H1 range, using only closed 07:00-11:59 UTC H1 bars.
+
+    This is a read-only reference-range helper for caveated memory matching. It
+    never uses the current/incomplete bar and never creates a trade signal.
+    """
+    rows = []
+    for b in h1:
+        ts = parse_ts(b["bar_open_ts_utc"])
+        if ts.date() == eval_ts.date() and 7 <= ts.hour <= 11 and ts < eval_ts:
+            rows.append(b)
+    if not rows:
+        return {"available": False, "low": None, "high": None, "bar_count": 0}
+    return {
+        "available": len(rows) >= 4,
+        "low": min(fnum(b["low"]) for b in rows),
+        "high": max(fnum(b["high"]) for b in rows),
+        "bar_count": len(rows),
+    }
+
+def h1_atr20_prior_closed(h1: List[Dict[str, Any]]) -> Optional[float]:
+    """20-period H1 ATR from bars before the latest trigger bar.
+
+    Excludes the latest H1 bar so the sweep/reclaim trigger bar does not alter
+    its own threshold. This is a diagnostic/runtime context field only.
+    """
+    if len(h1) < 22:
+        return None
+    prior = h1[:-1]
+    trs = []
+    prev_close = None
+    for b in prior:
+        high, low, close = fnum(b["high"]), fnum(b["low"]), fnum(b["close"])
+        if prev_close is None:
+            tr = high - low
+        else:
+            tr = max(high - low, abs(high - prev_close), abs(low - prev_close))
+        trs.append(tr)
+        prev_close = close
+    if len(trs) < 20:
+        return None
+    return sum(trs[-20:]) / 20.0
+
+def evaluate_strict_london_low_sweep_reclaim(h1: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """OPS17 strict London-low sweep/reclaim fields for EURUSD H1 overlap memory.
+
+    Event rule: same-day closed London H1 range exists; latest closed H1 low <=
+    london_session_low - 0.10 * prior H1 ATR20, and latest closed H1 close >
+    london_session_low. Display-only context; not a signal.
+    """
+    lb = latest(h1)
+    ts = parse_ts(lb["bar_open_ts_utc"])
+    london = london_morning_range_closed_h1(h1, ts)
+    atr = h1_atr20_prior_closed(h1)
+    low, close = fnum(lb["low"]), fnum(lb["close"])
+    available = bool(london["available"] and atr is not None)
+    swept_reclaimed = None
+    if available:
+        swept_reclaimed = bool(low <= london["low"] - 0.10 * atr and close > london["low"])
+    return {
+        "base_timeframe": "H1",
+        "same_utc_date_london_range_available": bool(london["available"]),
+        "london_session_low": london["low"],
+        "london_session_high": london["high"],
+        "london_session_bar_count": london["bar_count"],
+        "h1_quality_tier": "HIGH" if len(h1) >= 24 and atr is not None else "LIMITED",
+        "h1_atr20": atr,
+        "h1_low": low,
+        "h1_close": close,
+        "london_low_swept_and_reclaimed_by_closed_h1": swept_reclaimed,
+        "strict_london_low_reclaim_policy_id": STRICT_LONDON_LOW_RECLAIM_POLICY,
+    }
+
 def prior_window_high_closed(m15: List[Dict[str, Any]], window_bars: int = 192, min_bars: int = 96) -> Tuple[Optional[float], Dict[str, Any]]:
     prior = m15[:-1]
     available = len(prior)
@@ -281,14 +356,16 @@ def eurusd_h1_mtf_context(h1: List[Dict[str, Any]], h4: List[Dict[str, Any]], d1
     failed = evaluate_failed_breakout_prior_day_low(h1, d1)
     session_ref = evaluate_london_low_sweep_reject(h1)
     targeted_failed = evaluate_targeted_london_morning_low_failed_downside(h1)
+    strict_reclaim = evaluate_strict_london_low_sweep_reclaim(h1)
     data_suff = "OK" if len(h1) >= 24 and len(h4) >= 8 and len(d1) >= 5 else "LIMITED_HISTORY"
     if failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or session_ref.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or targeted_failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS":
         # Keep the row evaluable when one family is insufficient only if the active memory family still has fields.
         # Field-level UNKNOWN/NONE prevents false activation; global status stays LIMITED_HISTORY unless all core bars are missing.
         data_suff = "LIMITED_HISTORY" if data_suff == "OK" else data_suff
-    row = {"instrument": "EURUSD", "timeframe": "H1", "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"), "session_bucket": sess, "d1_trend_state": d1_state, "h4_trend_state": h4_state, "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS11", "data_sufficiency_status": data_suff, "signal_authorized": False}
+    row = {"instrument": "EURUSD", "timeframe": "H1", "base_timeframe": "H1", "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"), "session_bucket": sess, "d1_trend_state": d1_state, "h4_trend_state": h4_state, "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS17", "data_sufficiency_status": data_suff, "signal_authorized": False}
     row.update(failed)
     row.update(session_ref)
+    row.update(strict_reclaim)
     # OPS11 targeted London-morning-low failed downside fields are overlaid last.
     # This only changes generic failed_breakout_level_type when the targeted event
     # is actually present; otherwise prior-day fields from OPS10 stay intact.
@@ -313,7 +390,7 @@ def build_context(raw: Dict[str, Any]) -> Dict[str, Any]:
     eur_d1 = find_surface(raw, "EURUSD", "D1")
     if eur_h1 and eur_h4 and eur_d1 and len(eur_h1) >= 5 and len(eur_h4) >= 4 and len(eur_d1) >= 4:
         surfaces.append(eurusd_h1_mtf_context(eur_h1, eur_h4, eur_d1))
-    return {"context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_3_MTF_H1_DIRECTIONAL_OPS11", "created_utc": utc_now(), "source_authority": AUTHORITY, "surfaces": surfaces, "global_boundary": {"signal_authorized": False, "action_surface_authorized": False, "broker_execution_authorized": False, "plain_language": "Read-only multi-timeframe context only. Not a signal."}}
+    return {"context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_4_MTF_H1_DIRECTIONAL_OPS17", "created_utc": utc_now(), "source_authority": AUTHORITY, "surfaces": surfaces, "global_boundary": {"signal_authorized": False, "action_surface_authorized": False, "broker_execution_authorized": False, "plain_language": "Read-only multi-timeframe context only. Not a signal."}}
 
 def main() -> int:
     ap = argparse.ArgumentParser()

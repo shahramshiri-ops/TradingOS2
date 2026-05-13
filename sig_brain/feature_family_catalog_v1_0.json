@@ -1,5 +1,5 @@
 {
-  "catalog_version": "SIG_FEATURE_FAMILY_CATALOG_v1_2_MTF_H1_DIRECTIONAL_OPS11",
+  "catalog_version": "SIG_FEATURE_FAMILY_CATALOG_v1_4_OPS17_STRICT_OVERLAP_RECLAIM",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "FEATURE_FAMILY_CATALOG_ONLY_NOT_SIGNAL",
   "families": [
@@ -9,7 +9,8 @@
       "meaning_fa": "شناسه سطح، ابزار، تایم‌فریم و metadata",
       "fields": [
         "instrument",
-        "timeframe"
+        "timeframe",
+        "base_timeframe"
       ],
       "current_builder_support": "Brain5"
     },
@@ -47,7 +48,8 @@
       "fields": [
         "m15_range_ratio_12",
         "alignment_absent_chop",
-        "compression_state"
+        "compression_state",
+        "h1_atr20"
       ],
       "current_builder_support": "Brain5 supports m15_range_ratio_12 and alignment_absent_chop"
     },
@@ -128,14 +130,19 @@
     },
     {
       "family_id": "session_reference_range",
-      "status": "ACTIVE_CURRENT_OPS10_H1",
+      "status": "ACTIVE_CURRENT_MTF_H1_OPS17",
       "meaning_fa": "رنج‌های مرجع session مثل London morning range و رویدادهای sweep/reject",
       "fields": [
         "session_reference_range_type",
         "session_reference_break_event_type",
-        "session_reference_policy_id"
+        "session_reference_policy_id",
+        "same_utc_date_london_range_available",
+        "london_session_low",
+        "london_session_high",
+        "london_session_bar_count",
+        "london_low_swept_and_reclaimed_by_closed_h1"
       ],
-      "current_builder_support": "Brain5 OPS10 supports London morning low sweep/reject for EURUSD H1"
+      "current_builder_support": "Brain5 supports same-day London H1 range and strict low sweep/reclaim after OPS17"
     },
     {
       "family_id": "failed_breakout_session_sweep",
@@ -154,5 +161,5 @@
     }
   ],
   "professional_rule": "Do not add new one-off fields directly into memory objects. First add/update the context field registry and assign each field to a family/module.",
-  "updated_utc": "2026-05-12T09:00:00Z"
+  "updated_utc": "2026-05-13T12:00:00Z"
 }

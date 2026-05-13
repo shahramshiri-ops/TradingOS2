@@ -1,9 +1,9 @@
 {
-  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_2_MTF_H1_DIRECTIONAL_WATCH_OPS11_MEMORY_LIBRARY",
+  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_5_OPS17_STRICT_OVERLAP_RECLAIM_SUPERSEDE",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "DISPLAY_ONLY_CONTEXT_MEMORY_REGISTRY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_TRADABILITY_CLAIM|NO_BROKER_EXECUTION",
   "design_note": "This registry is file-first and append-only/versioned. New memories are added as objects; the mobile panel and matcher do not hardcode them.",
-  "memory_count": 7,
+  "memory_count": 8,
   "active_runtime_memory_count": 3,
   "memories": [
     {
@@ -710,8 +710,8 @@
       "candidate_type": "directional_watch",
       "direction_side": "LONG",
       "directional_side": "LONG",
-      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_MEMORY_NOT_SIGNAL",
-      "active_in_runtime": true,
+      "activation_status": "ARCHIVED_SUPERSEDED_BY_STRICTER_RECLAIM_CONTRACT_OPS17",
+      "active_in_runtime": false,
       "score_not_probability": 71,
       "band": "CAVEATED_DIRECTIONAL_WATCH_YEAR_CONCENTRATION_CAVEAT",
       "plain_language_label_fa": "EURUSD H1 — LONDON_LOW_SWEEP_REJECT_LONG / لانگ‌-بایاس",
@@ -827,7 +827,193 @@
       "runtime_display_caveat_required": "Caveated H1 directional watch only. Not a signal and not a trade recommendation.",
       "dependency_caveat": "MEDIUM_HIGH correlation risk with adjacent session/reference-range families; do not combine as independent confirmation without separate dependency check.",
       "delivery_pack_source": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_REJECT_LONG_LONG_SESSION_DIRECTIONAL_WATCH_v1_0_BRAIN_DELIVERY_PACK_v1_0",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like بعد از sweep/reject کف London morning در overlap برجسته‌تر می‌شود؛ این فقط context پژوهشی است."
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like بعد از sweep/reject کف London morning در overlap برجسته‌تر می‌شود؛ این فقط context پژوهشی است.",
+      "archive_reason": "Superseded by stricter London-low sweep/reclaim contract from EURUSD_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_CAVEATED_WATCH_DELIVERY_PACK_v1_0.",
+      "superseded_by_memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
+      "runtime_display": "archive_only"
+    },
+    {
+      "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "base_timeframe": "H1",
+      "context_timeframes": [
+        "D1",
+        "H4",
+        "H1",
+        "session_reference_range"
+      ],
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "direction_side": "LONG",
+      "directional_side": "LONG",
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_MEMORY_NOT_SIGNAL",
+      "active_in_runtime": true,
+      "score_not_probability": 73,
+      "band": "CAVEATED_DIRECTIONAL_WATCH_YEAR_CONCENTRATION_CAVEAT",
+      "plain_language_label_fa": "EURUSD H1 — برگشت از sweep کف لندن در overlap، فقط watch صعودی caveated",
+      "plain_language_summary_fa": "وقتی EURUSD در D1 و H4 صعودی است، اگر در بازه London-NY overlap کف رنج لندن همان روز sweep شود و کندل H1 دوباره بالای کف لندن بسته شود، در validation 2015-2019 نسبت به baselineهای دامنه‌همسان رفتار صعودی بهتری نشان داده است. این فقط context-watch است، نه سیگنال خرید.",
+      "mechanism_fa": "جذب نقدینگی فروش زیر کف لندن در زمان تحویل لندن به نیویورک و برگشت داخل رنج در جهت trend بالادستی D1/H4.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like بعد از sweep کف London morning و reclaim در London-NY overlap با D1/H4 صعودی برجسته‌تر می‌شود؛ این فقط context پژوهشی است، نه دستور خرید.",
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "base_timeframe",
+        "latest_bar_open_ts_utc",
+        "session_bucket",
+        "d1_trend_state",
+        "h4_trend_state",
+        "same_utc_date_london_range_available",
+        "h1_quality_tier",
+        "h1_atr20",
+        "london_session_low",
+        "london_session_high",
+        "london_session_bar_count",
+        "h1_low",
+        "h1_close",
+        "london_low_swept_and_reclaimed_by_closed_h1"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "EURUSD"
+          },
+          {
+            "field": "base_timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_state",
+            "op": "eq",
+            "value": "UP"
+          },
+          {
+            "field": "h4_trend_state",
+            "op": "eq",
+            "value": "UP"
+          },
+          {
+            "field": "same_utc_date_london_range_available",
+            "op": "eq",
+            "value": true
+          },
+          {
+            "field": "h1_quality_tier",
+            "op": "eq",
+            "value": "HIGH"
+          },
+          {
+            "field": "london_low_swept_and_reclaimed_by_closed_h1",
+            "op": "eq",
+            "value": true
+          }
+        ],
+        "event_rule_spec": {
+          "reference_range": "same_UTC_date_LONDON_session_H1_range",
+          "source_session_hours_utc": "07:00-12:00",
+          "trigger_session_hours_utc": "12:00-16:00",
+          "min_london_h1_bars": 4,
+          "sweep_side": "LOW",
+          "buffer": "0.10 * h1_atr20",
+          "trigger_condition": "trigger_H1.low <= london_low - buffer AND trigger_H1.close > london_low",
+          "no_lookahead": "London range is built from closed London H1 bars before overlap trigger; validation/holdout separation preserved."
+        }
+      },
+      "evidence_summary": {
+        "discovery_split": "2004-2014",
+        "discovery_rows": 307,
+        "discovery_candidate_avg_rate": 0.43213897937024975,
+        "discovery_baseline1_avg_rate": 0.40175768989328314,
+        "discovery_avg_delta_vs_baseline1": 0.030381289476966628,
+        "discovery_avg_delta_vs_baseline2": 0.030971948006281835,
+        "discovery_avg_delta_vs_baseline3": 0.02875818885702926,
+        "discovery_positive_horizons": "3/3",
+        "discovery_max_year_share": 0.19218241042345277,
+        "validation_split": "2015-2019",
+        "validation_rows": 85,
+        "validation_candidate_avg_rate": 0.4470588235294118,
+        "validation_baseline1_avg_rate": 0.38959212376933894,
+        "validation_avg_delta_vs_baseline1": 0.05746669976007285,
+        "validation_avg_delta_vs_baseline2": 0.06059635425355623,
+        "validation_avg_delta_vs_baseline3": 0.04035211168588141,
+        "validation_positive_horizons": "3/3",
+        "effect_retention_tau_vs_discovery_b1": 1.8915161518618504,
+        "validation_max_year_share": 0.38823529411764707,
+        "validation_status": "CAVEATED_VALIDATION_DIAGNOSTIC_POSITIVE_NEEDS_REVIEW",
+        "main_caveat": "max_year_share_gt_35pct",
+        "holdout_2020_2024_touched": false,
+        "rejected_or_near_miss_validation_touched": false
+      },
+      "future_signal_path_metadata": {
+        "future_setup_candidate": true,
+        "future_trigger_required": true,
+        "memory_layer": "context_watch_only",
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_drift",
+          "correlated_memory_conflict",
+          "session_holiday_dst_policy"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "concurrent_agreement",
+          "recency_stability",
+          "active_caveats"
+        ],
+        "dependency_family": "session_handover_directional_london_low_sweep_reclaim",
+        "supersedes_memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_REJECT_LONG_LONG_SESSION_DIRECTIONAL_WATCH_v1_0"
+      },
+      "runtime_behavior": {
+        "if_required_field_missing": "MEMORY_INPUT_INSUFFICIENT",
+        "display_surface": "context_watch_only",
+        "display_when": "only when closed H1 trigger becomes newly active in latest refresh window",
+        "proposed_expiry": "expire after H1+12 observation horizon or end of UTC day, whichever is earlier; implementation may also keep expired event in history only",
+        "notification_eligible": true,
+        "notification_text_fa": "EURUSD: الگوی watch صعودی caveated فعال شد؛ sweep کف لندن و reclaim در overlap با D1/H4 صعودی. سیگنال معامله نیست."
+      },
+      "runtime_builder_requirements": [
+        "Build same-day London 07:00-11:59 UTC H1 range from closed H1 bars only.",
+        "Use closed H1 bar low/close for trigger and prior closed H1 ATR20 for buffer.",
+        "Use prior-closed/closed D1 and H4 trend context only.",
+        "Emit MEMORY_INPUT_INSUFFICIENT if required runtime fields are unavailable.",
+        "No current/incomplete H1, H4, or D1 candle may be used."
+      ],
+      "allowed_use": [
+        "show as active caveated directional watch when runtime conditions fully match",
+        "use as personal research posture/context only",
+        "retain year-concentration caveat visibly in evidence/diagnostics"
+      ],
+      "forbidden_use": [
+        "buy_signal",
+        "sell_signal",
+        "entry",
+        "stop_loss",
+        "take_profit",
+        "position_size",
+        "probability_claim",
+        "profitability_claim",
+        "tradability_claim",
+        "broker_execution",
+        "shadow_activation_without_separate_review",
+        "holdout_claim"
+      ],
+      "mandatory_caveat": "Caveated H1 directional LONG watch only. Not a buy signal, not an entry instruction, and not a profitability/tradability claim. Caveat: validation max_year_share above 35%.",
+      "runtime_display_caveat_required": "Caveated H1 directional LONG watch only. Not a buy signal, not an entry instruction, and not a profitability/tradability claim.",
+      "dependency_caveat": "Supersedes older overlap London-low sweep/reject memory. Do not count both as independent confirmation.",
+      "delivery_pack_source": "EURUSD_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_CAVEATED_WATCH_DELIVERY_PACK_v1_0",
+      "ops17_integration_note": "Integrated as stricter replacement for earlier London-low sweep/reject memory after review. Original proposed object was review-only; this patch records repo integration decision while preserving no-signal boundaries.",
+      "signal_authorized": false,
+      "action_surface_authorized": false
     },
     {
       "memory_id": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -1023,12 +1209,20 @@
     "clean validated edge claim",
     "automatic execution"
   ],
-  "updated_utc": "2026-05-12T09:00:00Z",
+  "updated_utc": "2026-05-13T12:00:00Z",
   "ops10_policy": "Legacy active M15 memories archived by user decision; new runtime-active memories must come from newer MTF directional delivery packs and supported builder fields.",
   "ops11_policy": {
     "legacy_memory_policy": "three prior active M15 memories remain archived, not hard-deleted",
     "new_memory": "EURUSD H1 targeted London morning low failed downside LONG directional watch integrated",
     "panel_policy": "main tab shows active events only; Memory Library tab shows all registered memories with simple if-active posture text",
     "authority": "display-only personal research posture; not signal"
+  },
+  "ops17_policy": {
+    "decision": "Supersede older EURUSD H1 London-low sweep/reject memory with stricter London-low sweep/reclaim memory.",
+    "old_memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_REJECT_LONG_LONG_SESSION_DIRECTIONAL_WATCH_v1_0",
+    "new_memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
+    "no_hard_delete": true,
+    "signal_authorized": false,
+    "action_surface_authorized": false
   }
 }

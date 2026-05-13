@@ -1,5 +1,5 @@
 {
-  "registry_version": "SIG_CONTEXT_FIELD_REGISTRY_v1_3_MTF_H1_DIRECTIONAL_OPS11",
+  "registry_version": "SIG_CONTEXT_FIELD_REGISTRY_v1_4_OPS17_STRICT_OVERLAP_RECLAIM",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "CONTEXT_FIELD_REGISTRY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
   "purpose": "Canonical catalog of fields that brain memories may require for runtime matching.",
@@ -10,7 +10,7 @@
     "If a required field is missing at runtime, matcher must return MEMORY_INPUT_INSUFFICIENT, not false inactivity.",
     "New memory families should reuse existing fields when possible and add new fields only through a registry patch."
   ],
-  "field_count": 42,
+  "field_count": 52,
   "fields": [
     {
       "field_id": "instrument",
@@ -836,11 +836,186 @@
       "lookahead_risk": "LOW_IF_CLOSED_BAR_POLICY_HELD",
       "current_brain5_support": true,
       "future_module": false
+    },
+    {
+      "field_id": "base_timeframe",
+      "family": "core_identity",
+      "module": "core_surface_identity",
+      "dtype": "string",
+      "allowed_values": [
+        "M5",
+        "M15",
+        "H1",
+        "H4",
+        "D1"
+      ],
+      "meaning_fa": "تایم‌فریم پایه memory/runtime",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "same_utc_date_london_range_available",
+      "family": "session_reference_range",
+      "module": "london_range_builder",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "آیا رنج لندن همان روز از کندل‌های H1 بسته‌شده قابل استفاده است",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "london_session_low",
+      "family": "session_reference_range",
+      "module": "london_range_builder",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "کف رنج London morning همان روز از H1های بسته‌شده",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "london_session_high",
+      "family": "session_reference_range",
+      "module": "london_range_builder",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "سقف رنج London morning همان روز از H1های بسته‌شده",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "london_session_bar_count",
+      "family": "session_reference_range",
+      "module": "london_range_builder",
+      "dtype": "integer",
+      "allowed_values": null,
+      "meaning_fa": "تعداد کندل‌های H1 بسته‌شده در رنج London morning",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h1_quality_tier",
+      "family": "data_quality_freshness",
+      "module": "h1_quality",
+      "dtype": "enum",
+      "allowed_values": [
+        "HIGH",
+        "LIMITED"
+      ],
+      "meaning_fa": "کیفیت/کفایت داده H1 برای محاسبات runtime",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h1_atr20",
+      "family": "range_chop_volatility",
+      "module": "h1_atr",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "ATR20 از H1های بسته‌شده قبل از کندل trigger",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h1_low",
+      "family": "core_price_ohlc",
+      "module": "h1_latest_closed_bar",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "Low آخرین کندل H1 بسته‌شده",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "h1_close",
+      "family": "core_price_ohlc",
+      "module": "h1_latest_closed_bar",
+      "dtype": "float",
+      "allowed_values": null,
+      "meaning_fa": "Close آخرین کندل H1 بسته‌شده",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
+    },
+    {
+      "field_id": "london_low_swept_and_reclaimed_by_closed_h1",
+      "family": "session_reference_range",
+      "module": "london_range_builder",
+      "dtype": "boolean",
+      "allowed_values": [
+        true,
+        false
+      ],
+      "meaning_fa": "آیا آخرین H1 بسته‌شده کف لندن را با buffer sweep کرده و دوباره بالای آن بسته شده است",
+      "required_for_current_runtime": true,
+      "derivation_status": "derived_from_closed_bars",
+      "source_timeframes": [
+        "H1"
+      ],
+      "lookahead_risk": "LOW",
+      "current_brain5_support": true,
+      "future_module": false
     }
   ],
   "global_boundary": [
     "The registry defines context fields only.",
     "It does not authorize signals, entries, stops, targets, profitability, tradability, broker execution, or probability claims."
   ],
-  "updated_utc": "2026-05-12T09:00:00Z"
+  "updated_utc": "2026-05-13T12:00:00Z"
 }
