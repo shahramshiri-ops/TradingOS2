@@ -21,6 +21,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Send SIG Brain test email through Resend
+        id: send_test_email
+        continue-on-error: true
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SIG_ALERT_EMAIL_FROM: ${{ secrets.SIG_ALERT_EMAIL_FROM }}
@@ -29,8 +31,20 @@ jobs:
           SIG_ALERT_EMAIL_ENABLED: ${{ secrets.SIG_ALERT_EMAIL_ENABLED }}
           SIG_ALERT_TEST_NOTE: ${{ inputs.test_note }}
         run: |
-          python scripts/send_sig_brain4_test_email_alert.py --proof proofs/sig_brain4_email_alert_test_result.json
-          cat proofs/sig_brain4_email_alert_test_result.json
+          mkdir -p proofs
+          python3 scripts/send_sig_brain4_test_email_alert.py --proof proofs/sig_brain4_email_alert_test_result.json
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Print test proof to log
+        if: always()
+        run: |
+          echo "--- SIG Brain email alert test proof ---"
+          if [ -f proofs/sig_brain4_email_alert_test_result.json ]; then
+            cat proofs/sig_brain4_email_alert_test_result.json
+          else
+            echo "ERROR: proofs/sig_brain4_email_alert_test_result.json was not created"
+            exit 1
+          fi
 
       - name: Upload test proof artifact
         uses: actions/upload-artifact@v4
@@ -38,4 +52,23 @@ jobs:
         with:
           name: sig-brain-email-alert-test-proof
           path: proofs/sig_brain4_email_alert_test_result.json
-          if-no-files-found: warn
+          if-no-files-found: error
+
+      - name: Fail workflow if test email was not sent
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          from pathlib import Path
+          path = Path('proofs/sig_brain4_email_alert_test_result.json')
+          if not path.exists():
+              print('ERROR: proof file missing')
+              sys.exit(1)
+          proof = json.loads(path.read_text(encoding='utf-8'))
+          if proof.get('email_sent') is True and proof.get('status') == 'test_email_sent':
+              print('PASS: Resend accepted the test email request.')
+              sys.exit(0)
+          print('FAIL: test email was not sent. Proof follows:')
+          print(json.dumps(proof, ensure_ascii=False, indent=2))
+          sys.exit(1)
+          PY

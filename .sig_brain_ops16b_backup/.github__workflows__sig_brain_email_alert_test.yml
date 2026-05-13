@@ -1,0 +1,41 @@
+name: SIG Brain Email Alert Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_note:
+        description: "Optional note shown in the test email"
+        required: false
+        type: string
+        default: "Manual Resend email alert plumbing test"
+
+permissions:
+  contents: read
+
+jobs:
+  send-test-email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Send SIG Brain test email through Resend
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SIG_ALERT_EMAIL_FROM: ${{ secrets.SIG_ALERT_EMAIL_FROM }}
+          SIG_ALERT_EMAIL_TO: ${{ secrets.SIG_ALERT_EMAIL_TO }}
+          SIG_ALERT_EMAIL_REPLY_TO: ${{ secrets.SIG_ALERT_EMAIL_REPLY_TO }}
+          SIG_ALERT_EMAIL_ENABLED: ${{ secrets.SIG_ALERT_EMAIL_ENABLED }}
+          SIG_ALERT_TEST_NOTE: ${{ inputs.test_note }}
+        run: |
+          python scripts/send_sig_brain4_test_email_alert.py --proof proofs/sig_brain4_email_alert_test_result.json
+          cat proofs/sig_brain4_email_alert_test_result.json
+
+      - name: Upload test proof artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sig-brain-email-alert-test-proof
+          path: proofs/sig_brain4_email_alert_test_result.json
+          if-no-files-found: warn

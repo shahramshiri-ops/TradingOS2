@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
-"""SIG-BRAIN-OPS16A — Send a Resend TEST email for alert plumbing only.
+"""SIG-BRAIN-OPS16B — Hard-fail Resend TEST email workflow.
+
+This script sends a clearly marked TEST email so the Resend/GitHub Secrets/email path can be
+verified without waiting for a real active memory event.
+
+Hard-fail policy for dedicated test workflow:
+- if SIG_ALERT_EMAIL_ENABLED is not exactly enabled/true-like, fail
+- if any required secret/config is missing, fail
+- if Resend rejects the request, fail
+- always write a proof JSON before exit
 
 This script intentionally does NOT read or mutate official Brain event history, alert state,
-runtime payloads, or panel files. It sends a clearly marked TEST email so the Resend/GitHub
-Secrets/email path can be verified without waiting for a real active memory event.
+runtime payloads, or panel files.
 
 Display-only boundary: no signal, no buy/sell/hold, no entry/stop/target, no probability claim,
 no broker/execution.
@@ -22,7 +30,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 RESEND_ENDPOINT = "https://api.resend.com/emails"
 AUTHORITY = (
-    "SIG_BRAIN4_EMAIL_ALERT_TEST|TEST_ONLY|NOT_MARKET_EVENT|NOT_SIGNAL|"
+    "SIG_BRAIN4_EMAIL_ALERT_TEST_HARD_FAIL|TEST_ONLY|NOT_MARKET_EVENT|NOT_SIGNAL|"
     "NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_PROBABILITY|NO_BROKER_EXECUTION"
 )
 
@@ -44,7 +52,15 @@ def write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def send_resend(api_key: str, sender: str, recipients: List[str], subject: str, text: str, html_body: str, reply_to: Optional[str]) -> Tuple[bool, int, str]:
+def send_resend(
+    api_key: str,
+    sender: str,
+    recipients: List[str],
+    subject: str,
+    text: str,
+    html_body: str,
+    reply_to: Optional[str],
+) -> Tuple[bool, int, str]:
     payload: Dict[str, Any] = {
         "from": sender,
         "to": recipients,
@@ -54,6 +70,7 @@ def send_resend(api_key: str, sender: str, recipients: List[str], subject: str, 
     }
     if reply_to:
         payload["reply_to"] = reply_to
+
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     req = urllib.request.Request(
         RESEND_ENDPOINT,
@@ -63,7 +80,7 @@ def send_resend(api_key: str, sender: str, recipients: List[str], subject: str, 
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "User-Agent": "TradingOS-SIG-Brain-Email-Alert-Test",
+            "User-Agent": "TradingOS-SIG-Brain-Email-Alert-Test-OPS16B",
         },
     )
     try:
@@ -73,7 +90,7 @@ def send_resend(api_key: str, sender: str, recipients: List[str], subject: str, 
     except urllib.error.HTTPError as e:
         body = e.read().decode("utf-8", errors="replace") if e.fp else ""
         return False, int(e.code), body
-    except Exception as e:
+    except Exception as e:  # network / DNS / TLS / timeout
         return False, 0, repr(e)
 
 
@@ -115,75 +132,118 @@ def build_test_html(note: str, created_utc: str) -> str:
     """
 
 
+def base_proof(created_utc: str) -> Dict[str, Any]:
+    return {
+        "program": "SIG-BRAIN-OPS16B_RESEND_EMAIL_ALERT_TEST_HARD_FAIL",
+        "created_utc": created_utc,
+        "authority": AUTHORITY,
+        "provider": "resend",
+        "test_only": True,
+        "official_history_modified": False,
+        "alert_state_modified": False,
+        "runtime_payload_modified": False,
+        "memory_registry_modified": False,
+        "signal_authorized": False,
+        "action_surface_authorized": False,
+        "broker_execution_authorized": False,
+        "email_sent": False,
+        "status": "initialized",
+        "failures": [],
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--proof", default="proofs/sig_brain4_email_alert_test_result.json")
     args = ap.parse_args()
 
+    proof_path = Path(args.proof)
     created_utc = now_iso()
-    enabled = env_bool(os.environ.get("SIG_ALERT_EMAIL_ENABLED"))
-    proof: Dict[str, Any] = {
-        "program": "SIG-BRAIN-OPS16A_RESEND_EMAIL_ALERT_TEST",
-        "created_utc": created_utc,
-        "authority": AUTHORITY,
-        "enabled": enabled,
-        "provider": "resend",
-        "test_only": True,
-        "official_history_modified": False,
-        "alert_state_modified": False,
-        "signal_authorized": False,
-        "action_surface_authorized": False,
-        "broker_execution_authorized": False,
-        "email_sent": False,
-        "failures": [],
-    }
+    proof = base_proof(created_utc)
 
-    if not enabled:
-        proof["skipped_reason"] = "SIG_ALERT_EMAIL_ENABLED is not true"
-        write_json(Path(args.proof), proof)
+    try:
+        enabled = env_bool(os.environ.get("SIG_ALERT_EMAIL_ENABLED"))
+        proof["enabled"] = enabled
+
+        api_key = os.environ.get("RESEND_API_KEY") or ""
+        sender = os.environ.get("SIG_ALERT_EMAIL_FROM") or ""
+        to_value = os.environ.get("SIG_ALERT_EMAIL_TO") or ""
+        reply_to = os.environ.get("SIG_ALERT_EMAIL_REPLY_TO") or None
+        note = os.environ.get("SIG_ALERT_TEST_NOTE") or "Manual SIG Brain email alert plumbing test"
+        recipients = split_recipients(to_value)
+
+        proof["configuration_seen"] = {
+            "resend_api_key_present": bool(api_key),
+            "from_configured": bool(sender),
+            "to_configured": bool(to_value),
+            "recipients_count": len(recipients),
+            "reply_to_configured": bool(reply_to),
+            "enabled": enabled,
+        }
+
+        if not enabled:
+            proof["status"] = "email_test_failed_disabled"
+            proof["failures"].append({
+                "type": "email_disabled",
+                "message": "SIG_ALERT_EMAIL_ENABLED must be true for the dedicated test workflow.",
+            })
+            write_json(proof_path, proof)
+            print(json.dumps(proof, ensure_ascii=False, indent=2))
+            return 2
+
+        missing = [name for name, value in [
+            ("RESEND_API_KEY", api_key),
+            ("SIG_ALERT_EMAIL_FROM", sender),
+            ("SIG_ALERT_EMAIL_TO", to_value),
+        ] if not value]
+        if not recipients and "SIG_ALERT_EMAIL_TO" not in missing:
+            missing.append("SIG_ALERT_EMAIL_TO_VALID_RECIPIENT")
+
+        if missing:
+            proof["status"] = "email_test_failed_missing_configuration"
+            proof["failures"].append({"type": "missing_email_configuration", "missing": missing})
+            write_json(proof_path, proof)
+            print(json.dumps(proof, ensure_ascii=False, indent=2))
+            return 3
+
+        subject = "SIG Brain TEST alert — no market event"
+        text = build_test_text(note, created_utc)
+        html_body = build_test_html(note, created_utc)
+        ok, status_code, response_body = send_resend(api_key, sender, recipients, subject, text, html_body, reply_to)
+
+        proof["resend_status_code"] = status_code
+        proof["resend_response_excerpt"] = response_body[:1000]
+        proof["subject"] = subject
+        proof["recipients_count"] = len(recipients)
+
+        if ok:
+            proof["email_sent"] = True
+            proof["status"] = "test_email_sent"
+            # Try to expose Resend id without requiring a specific shape.
+            try:
+                proof["resend_response_json"] = json.loads(response_body) if response_body else {}
+            except json.JSONDecodeError:
+                proof["resend_response_json"] = None
+            write_json(proof_path, proof)
+            print(json.dumps(proof, ensure_ascii=False, indent=2))
+            return 0
+
+        proof["status"] = "test_email_failed_resend_rejected"
+        proof["failures"].append({
+            "type": "resend_send_failed",
+            "status_code": status_code,
+            "response_excerpt": response_body[:1000],
+        })
+        write_json(proof_path, proof)
         print(json.dumps(proof, ensure_ascii=False, indent=2))
-        return 0
+        return 4
 
-    api_key = os.environ.get("RESEND_API_KEY") or ""
-    sender = os.environ.get("SIG_ALERT_EMAIL_FROM") or ""
-    to_value = os.environ.get("SIG_ALERT_EMAIL_TO") or ""
-    reply_to = os.environ.get("SIG_ALERT_EMAIL_REPLY_TO") or None
-    note = os.environ.get("SIG_ALERT_TEST_NOTE") or "Manual SIG Brain email alert plumbing test"
-    recipients = split_recipients(to_value)
-
-    missing = [name for name, value in [
-        ("RESEND_API_KEY", api_key),
-        ("SIG_ALERT_EMAIL_FROM", sender),
-        ("SIG_ALERT_EMAIL_TO", to_value),
-    ] if not value]
-    if missing:
-        proof["skipped_reason"] = "missing_email_configuration"
-        proof["failures"].append({"type": "missing_email_configuration", "missing": missing})
-        write_json(Path(args.proof), proof)
+    except Exception as exc:
+        proof["status"] = "email_test_failed_unhandled_exception"
+        proof["failures"].append({"type": "unhandled_exception", "message": repr(exc)})
+        write_json(proof_path, proof)
         print(json.dumps(proof, ensure_ascii=False, indent=2))
-        return 0
-
-    subject = "SIG Brain TEST alert — no market event"
-    text = build_test_text(note, created_utc)
-    html_body = build_test_html(note, created_utc)
-    ok, status_code, response_body = send_resend(api_key, sender, recipients, subject, text, html_body, reply_to)
-    proof["resend_status_code"] = status_code
-    proof["resend_response_excerpt"] = response_body[:500]
-    proof["recipients_count"] = len(recipients)
-    proof["from_configured"] = bool(sender)
-    proof["reply_to_configured"] = bool(reply_to)
-
-    if ok:
-        proof["email_sent"] = True
-        proof["status"] = "test_email_sent"
-    else:
-        proof["status"] = "test_email_failed"
-        proof["failures"].append({"type": "resend_send_failed", "status_code": status_code, "response_excerpt": response_body[:500]})
-
-    write_json(Path(args.proof), proof)
-    print(json.dumps(proof, ensure_ascii=False, indent=2))
-    # Fail the test workflow if Resend rejected the message; this is a dedicated test workflow.
-    return 0 if ok else 1
+        return 9
 
 
 if __name__ == "__main__":
