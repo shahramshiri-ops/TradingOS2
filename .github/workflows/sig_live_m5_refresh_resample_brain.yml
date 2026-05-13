@@ -22,6 +22,11 @@ jobs:
     env:
       LFB_TWELVE_DATA_API_KEY: ${{ secrets.LFB_TWELVE_DATA_API_KEY }}
       TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+      SIG_ALERT_EMAIL_ENABLED: ${{ secrets.SIG_ALERT_EMAIL_ENABLED }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      SIG_ALERT_EMAIL_FROM: ${{ secrets.SIG_ALERT_EMAIL_FROM }}
+      SIG_ALERT_EMAIL_TO: ${{ secrets.SIG_ALERT_EMAIL_TO }}
+      SIG_ALERT_EMAIL_REPLY_TO: ${{ secrets.SIG_ALERT_EMAIL_REPLY_TO }}
     steps:
       - uses: actions/checkout@v4
 
@@ -49,6 +54,7 @@ jobs:
           python scripts/build_sig_live_refresh_status.py
           python scripts/update_sig_brain4_event_history.py
           python scripts/validate_sig_brain4_event_history.py
+          python scripts/send_sig_brain4_event_email_alerts.py
 
       - name: Commit generated read-only data, brain payload, and refresh status
         id: commit_generated
