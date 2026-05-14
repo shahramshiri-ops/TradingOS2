@@ -8,7 +8,7 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS14_UI_DECISION_SURFACE_REFINEMENT_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS19_UI_INTERIOR_MINIMALISM_REFINEMENT_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
@@ -407,13 +407,13 @@ function renderSummary(info, activeEvents){
         <b>${esc(msg)}</b>
         <em>${esc(info.label)}</em>
       </div>
-      <div class="status-facts">
-        <div><span>آخرین بروزرسانی</span><b>${esc(refreshText)}</b></div>
-        <div><span>دادهٔ خام</span><b>M5 · چندتایم‌فریمی پشت صحنه</b></div>
-        <div><span>زمان / session</span><b>${esc(currentText)}</b></div>
+      <div class="status-facts" aria-label="خلاصه وضعیت فعلی">
+        <div class="fact-row"><span>آخرین بروزرسانی</span><b>${esc(refreshText)}</b></div>
+        <div class="fact-row"><span>دادهٔ خام</span><b>M5 · پردازش چندتایم‌فریمی در پشت صحنه</b></div>
+        <div class="fact-row"><span>زمان / session</span><b>${esc(currentText)}</b></div>
       </div>
     </div>
-    <div class="minimal-boundary">صفحهٔ اصلی فقط event فعال معتبر را نشان می‌دهد. کتابخانهٔ الگوها و History رسمی در تب‌های جدا هستند.</div>`;
+    <p class="minimal-boundary"><strong>یادآوری:</strong> صفحهٔ اصلی فقط event فعال معتبر را نشان می‌دهد. کتابخانهٔ الگوها و History رسمی در تب‌های جدا هستند.</p>`;
 }
 function eventCard(e){
   const cls = e.no_trade ? 'no-trade-event' : 'watch-event';
@@ -432,10 +432,10 @@ function eventCard(e){
     </div>
     <div class="event-posture">${esc(e.posture_fa)}</div>
     <p>${esc(e.meaning_fa)}</p>
-    <div class="event-grid">
-      <div><b>فعال‌شده</b><span>${esc(localTimeOnly(detected))}</span></div>
-      <div><b>کندل مبنا</b><span>${esc(localTimeOnly(sourceClose))}</span></div>
-      <div><b>session</b><span>${esc(e.session_bucket)}</span></div>
+    <div class="event-meta-list">
+      <div class="event-meta-row"><b>فعال‌شده</b><span>${esc(localTimeOnly(detected))}</span></div>
+      <div class="event-meta-row"><b>کندل مبنا</b><span>${esc(localTimeOnly(sourceClose))}</span></div>
+      <div class="event-meta-row"><b>session</b><span>${esc(e.session_bucket)}</span></div>
     </div>
     <div class="event-footer">${esc(e.forbidden)}</div>
   </article>`;
@@ -519,8 +519,8 @@ function renderControls(activeCount=0, memoryCount=0, historyCount=0){
     <button id="historyTabBtn" class="tab-btn" type="button" data-tab="history"><span>History رسمی</span><em>${esc(historyCount)}</em></button>
   </div>
   <div class="panel-actions">
-    <button id="refreshBtn" class="ghost-btn" type="button">بروزرسانی</button>
     <button id="notifyBtn" class="notify-btn" type="button">${esc(notificationPermissionLabel())}</button>
+    <button id="refreshBtn" class="ghost-btn" type="button">بروزرسانی</button>
   </div>`;
 }
 function attachControls(){
