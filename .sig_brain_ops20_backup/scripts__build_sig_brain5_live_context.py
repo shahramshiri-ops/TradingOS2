@@ -195,158 +195,6 @@ def h1_atr20_prior_closed(h1: List[Dict[str, Any]]) -> Optional[float]:
         return None
     return sum(trs[-20:]) / 20.0
 
-
-def d1_atr20_prior_closed(d1: List[Dict[str, Any]]) -> Optional[float]:
-    """20-period D1 ATR from closed daily bars only. Display-only context field."""
-    if len(d1) < 21:
-        return None
-    trs = []
-    prev_close = None
-    for b in d1:
-        high, low, close = fnum(b["high"]), fnum(b["low"]), fnum(b["close"])
-        if prev_close is None:
-            tr = high - low
-        else:
-            tr = max(high - low, abs(high - prev_close), abs(low - prev_close))
-        trs.append(tr)
-        prev_close = close
-    if len(trs) < 20:
-        return None
-    return sum(trs[-20:]) / 20.0
-
-def trend_safe(state: str) -> str:
-    return state if state in ("UP", "DOWN") else "NEUTRAL"
-
-def h1_bar_direction_from_bar(b: Dict[str, Any]) -> str:
-    o, c = fnum(b["open"]), fnum(b["close"])
-    if c > o:
-        return "BULLISH"
-    if c < o:
-        return "BEARISH"
-    return "NEUTRAL"
-
-def asian_range_closed_h1(h1: List[Dict[str, Any]], eval_ts: dt.datetime) -> Dict[str, Any]:
-    """Same UTC-date Asia H1 range, using only closed 00:00-06:59 UTC bars."""
-    rows = []
-    for b in h1:
-        ts = parse_ts(b["bar_open_ts_utc"])
-        if ts.date() == eval_ts.date() and 0 <= ts.hour <= 6 and ts < eval_ts:
-            rows.append(b)
-    if not rows:
-        return {"available": False, "high": None, "low": None, "bar_count": 0}
-    return {
-        "available": len(rows) >= 4,
-        "high": max(fnum(b["high"]) for b in rows),
-        "low": min(fnum(b["low"]) for b in rows),
-        "bar_count": len(rows),
-    }
-
-def weekly_open_context_from_h1(h1: List[Dict[str, Any]], eval_ts: dt.datetime) -> Dict[str, Any]:
-    """Current-week open from the first closed H1 bar of the UTC week."""
-    week_start = (eval_ts - dt.timedelta(days=eval_ts.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
-    rows = [b for b in h1 if parse_ts(b["bar_open_ts_utc"]) >= week_start and parse_ts(b["bar_open_ts_utc"]) <= eval_ts]
-    if not rows:
-        return {"weekly_open": None, "weekly_open_ts": None, "is_weekly_open_bar": None}
-    rows = sorted(rows, key=lambda b: b["bar_open_ts_utc"])
-    first = rows[0]
-    return {
-        "weekly_open": fnum(first["open"]),
-        "weekly_open_ts": first.get("bar_open_ts_utc"),
-        "is_weekly_open_bar": parse_ts(first["bar_open_ts_utc"]) == eval_ts,
-    }
-
-def evaluate_generic_h1_wave_context(instrument: str, h1: List[Dict[str, Any]], h4: List[Dict[str, Any]], d1: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """OPS20 generic H1 context for session-open, Asian-range and weekly-open memories.
-
-    Read-only, closed-bar-only context. It does not produce a signal, entry,
-    stop, target, probability, tradability, or broker/execution instruction.
-    """
-    lb = latest(h1)
-    ts = parse_ts(lb["bar_open_ts_utc"])
-    prev = h1[-2] if len(h1) >= 2 else None
-    prior_session = session_bucket(parse_ts(prev["bar_open_ts_utc"])) if prev else "UNKNOWN"
-    sess = session_bucket(ts)
-    d1_state, h4_state = d1_trend_state(d1), h4_trend_state(h4)
-    d1_safe, h4_safe = trend_safe(d1_state), trend_safe(h4_state)
-    direction = h1_bar_direction_from_bar(lb)
-    first_overlap = bool(sess == "LONDON_NY_OVERLAP" and prior_session != "LONDON_NY_OVERLAP")
-    session_open_state = "NONE"
-    if first_overlap and direction == "BULLISH" and d1_safe == "UP":
-        session_open_state = "SESSION_OPEN_TREND_LONG"
-    elif first_overlap and direction == "BEARISH" and d1_safe == "DOWN":
-        session_open_state = "SESSION_OPEN_TREND_SHORT"
-
-    d1_atr = d1_atr20_prior_closed(d1)
-    asian = asian_range_closed_h1(h1, ts)
-    high, low, open_, close = fnum(lb["high"]), fnum(lb["low"]), fnum(lb["open"]), fnum(lb["close"])
-    asian_sweep_reclaim_short = None
-    asian_breakout_cont_long = None
-    if asian["available"] and d1_atr is not None and asian["high"] is not None:
-        threshold = 0.05 * d1_atr
-        asian_sweep_reclaim_short = bool(high >= asian["high"] + threshold and close < asian["high"])
-        asian_breakout_cont_long = bool(close > asian["high"] + threshold)
-
-    weekly = weekly_open_context_from_h1(h1, ts)
-    weekly_reclaim_state = "UNKNOWN"
-    if weekly.get("weekly_open") is not None and d1_atr is not None and weekly.get("is_weekly_open_bar") is not None:
-        threshold = 0.05 * d1_atr
-        if (not weekly["is_weekly_open_bar"]) and high >= weekly["weekly_open"] + threshold and close < weekly["weekly_open"]:
-            weekly_reclaim_state = "WEEKLY_OPEN_RECLAIM_SHORT"
-        else:
-            weekly_reclaim_state = "NONE"
-
-    ranges = [fnum(b["high"]) - fnum(b["low"]) for b in h1]
-    last4 = ranges[-5:-1] if len(ranges) >= 5 else []
-    current_range = ranges[-1] if ranges else None
-    avg4 = sum(last4) / len(last4) if last4 else None
-    contraction = bool(avg4 is not None and d1_atr is not None and avg4 < d1_atr / 4.0)
-    expansion = bool(avg4 is not None and current_range is not None and current_range > 1.5 * avg4)
-    vol_state = "NONE"
-    if contraction and expansion and direction == "BULLISH":
-        vol_state = "VOL_EXPANSION_AFTER_CONTRACTION_UP"
-    elif contraction and expansion and direction == "BEARISH":
-        vol_state = "VOL_EXPANSION_AFTER_CONTRACTION_DOWN"
-
-    return {
-        "instrument": instrument,
-        "timeframe": "H1",
-        "base_timeframe": "H1",
-        "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"),
-        "latest_h1_bar_open_ts_utc": lb.get("bar_open_ts_utc"),
-        "session_bucket": sess,
-        "prior_h1_session": prior_session,
-        "is_first_h1_bar_of_session": first_overlap,
-        "h1_open": open_,
-        "h1_high": high,
-        "h1_low": low,
-        "h1_close": close,
-        "h1_bar_direction": direction,
-        "session_open_trend_trigger_state": session_open_state,
-        "d1_trend_state": d1_state,
-        "h4_trend_state": h4_state,
-        "d1_trend_safe": d1_safe,
-        "h4_trend_safe": h4_safe,
-        "d1_atr20_safe": d1_atr,
-        "same_utc_date_asian_range_available": bool(asian["available"]),
-        "asian_session_high": asian["high"],
-        "asian_session_low": asian["low"],
-        "asian_session_bar_count": asian["bar_count"],
-        "asian_high_swept_and_reclaimed_by_closed_h1": asian_sweep_reclaim_short,
-        "asian_high_breakout_continuation_by_closed_h1": asian_breakout_cont_long,
-        "weekly_open": weekly.get("weekly_open"),
-        "weekly_open_ts": weekly.get("weekly_open_ts"),
-        "is_weekly_open_bar": weekly.get("is_weekly_open_bar"),
-        "weekly_open_reclaim_short_state": weekly_reclaim_state,
-        "last4_h1_ranges": last4,
-        "current_h1_range": current_range,
-        "last4_h1_contraction_flag": contraction,
-        "current_h1_expansion_flag": expansion,
-        "vol_expansion_after_contraction_state": vol_state,
-        "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20",
-        "data_sufficiency_status": "OK" if len(h1) >= 24 and len(h4) >= 8 and len(d1) >= 20 else "LIMITED_HISTORY",
-        "signal_authorized": False,
-    }
-
 def evaluate_strict_london_low_sweep_reclaim(h1: List[Dict[str, Any]]) -> Dict[str, Any]:
     """OPS17 strict London-low sweep/reclaim fields for EURUSD H1 overlap memory.
 
@@ -501,15 +349,20 @@ def usdjpy_context(m15: List[Dict[str, Any]], h1: List[Dict[str, Any]]) -> Dict[
     return {"instrument": "USDJPY", "timeframe": "M15", "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"), "session_bucket": sess, "h1_dir": h1d, "h4_dir": h4d, "m15_dir": m15d, "h4_h1_up_context": up, "h4_h1_down_context": down, "m15_range_ratio_12": rr, "alignment_absent_chop": chop, "upside_sweep_flag": sweep.get("upside_sweep_flag"), "sweep_then_reject_back_inside_up_flag": sweep.get("sweep_then_reject_back_inside_up_flag"), "sweep_reference_type_up": sweep.get("sweep_reference_type_up"), "sweep_reference_policy_up": sweep.get("sweep_reference_policy_up"), "sweep_reference_value_up": sweep.get("sweep_reference_value_up"), "sweep_reference_meta_up": sweep.get("sweep_reference_meta_up"), "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS", "data_sufficiency_status": data_suff, "signal_authorized": False}
 
 def eurusd_h1_mtf_context(h1: List[Dict[str, Any]], h4: List[Dict[str, Any]], d1: List[Dict[str, Any]]) -> Dict[str, Any]:
+    lb, ts = latest(h1), parse_ts(latest(h1)["bar_open_ts_utc"])
+    sess = session_bucket(ts)
+    d1_state = d1_trend_state(d1)
+    h4_state = h4_trend_state(h4)
     failed = evaluate_failed_breakout_prior_day_low(h1, d1)
     session_ref = evaluate_london_low_sweep_reject(h1)
     targeted_failed = evaluate_targeted_london_morning_low_failed_downside(h1)
     strict_reclaim = evaluate_strict_london_low_sweep_reclaim(h1)
-    row = evaluate_generic_h1_wave_context("EURUSD", h1, h4, d1)
-    data_suff = row.get("data_sufficiency_status", "LIMITED_HISTORY")
+    data_suff = "OK" if len(h1) >= 24 and len(h4) >= 8 and len(d1) >= 5 else "LIMITED_HISTORY"
     if failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or session_ref.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS" or targeted_failed.get("data_sufficiency_status") == "MISSING_REQUIRED_BARS":
+        # Keep the row evaluable when one family is insufficient only if the active memory family still has fields.
+        # Field-level UNKNOWN/NONE prevents false activation; global status stays LIMITED_HISTORY unless all core bars are missing.
         data_suff = "LIMITED_HISTORY" if data_suff == "OK" else data_suff
-    row["data_sufficiency_status"] = data_suff
+    row = {"instrument": "EURUSD", "timeframe": "H1", "base_timeframe": "H1", "latest_bar_open_ts_utc": lb.get("bar_open_ts_utc"), "session_bucket": sess, "d1_trend_state": d1_state, "h4_trend_state": h4_state, "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS17", "data_sufficiency_status": data_suff, "signal_authorized": False}
     row.update(failed)
     row.update(session_ref)
     row.update(strict_reclaim)
@@ -531,19 +384,13 @@ def build_context(raw: Dict[str, Any]) -> Dict[str, Any]:
         m15, h1 = find_surface(raw, inst, "M15"), find_surface(raw, inst, "H1")
         if m15 and h1 and len(m15) >= 5 and len(h1) >= 5:
             surfaces.append(builder(m15, h1))
-    # OPS20 consolidated H1 MTF directional-watch context.
+    # OPS10 H1 MTF directional-watch context.
     eur_h1 = find_surface(raw, "EURUSD", "H1")
     eur_h4 = find_surface(raw, "EURUSD", "H4")
     eur_d1 = find_surface(raw, "EURUSD", "D1")
     if eur_h1 and eur_h4 and eur_d1 and len(eur_h1) >= 5 and len(eur_h4) >= 4 and len(eur_d1) >= 4:
         surfaces.append(eurusd_h1_mtf_context(eur_h1, eur_h4, eur_d1))
-    for inst in ("USDJPY", "XAUUSD"):
-        h1 = find_surface(raw, inst, "H1")
-        h4 = find_surface(raw, inst, "H4")
-        d1 = find_surface(raw, inst, "D1")
-        if h1 and h4 and d1 and len(h1) >= 5 and len(h4) >= 4 and len(d1) >= 4:
-            surfaces.append(evaluate_generic_h1_wave_context(inst, h1, h4, d1))
-    return {"context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_5_OPS20_CONSOLIDATED_H1_SESSION_ASIAN_WEEKLY", "created_utc": utc_now(), "source_authority": AUTHORITY, "surfaces": surfaces, "global_boundary": {"signal_authorized": False, "action_surface_authorized": False, "broker_execution_authorized": False, "plain_language": "Read-only multi-timeframe context only. Not a signal."}}
+    return {"context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_4_MTF_H1_DIRECTIONAL_OPS17", "created_utc": utc_now(), "source_authority": AUTHORITY, "surfaces": surfaces, "global_boundary": {"signal_authorized": False, "action_surface_authorized": False, "broker_execution_authorized": False, "plain_language": "Read-only multi-timeframe context only. Not a signal."}}
 
 def main() -> int:
     ap = argparse.ArgumentParser()

@@ -1,10 +1,10 @@
 {
-  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_5_OPS17_STRICT_OVERLAP_RECLAIM_SUPERSEDE",
+  "registry_version": "SIG_BRAIN_MEMORY_REGISTRY_v1_6_OPS20_CONSOLIDATED_WAVE3_WAVE4",
   "created_utc": "2026-05-11T08:30:00Z",
   "authority": "DISPLAY_ONLY_CONTEXT_MEMORY_REGISTRY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_TRADABILITY_CLAIM|NO_BROKER_EXECUTION",
   "design_note": "This registry is file-first and append-only/versioned. New memories are added as objects; the mobile panel and matcher do not hardcode them.",
-  "memory_count": 8,
-  "active_runtime_memory_count": 3,
+  "memory_count": 19,
+  "active_runtime_memory_count": 11,
   "memories": [
     {
       "memory_id": "EURUSD_NY_UP_EXTENSION_UPPER_REJECTION_FADE_DOWN_v1_0",
@@ -1196,6 +1196,2195 @@
       "dependency_caveat": "Potential correlation with adjacent session/reference-range failed-breakout families; do not treat as independent confirmation without dependency review.",
       "delivery_pack_source": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0_BRAIN_DELIVERY_PACK_v1_0",
       "ops11_integration_note": "Integrated from W16 delivery pack. Runtime contract uses closed H1 London morning low failed downside/reclaim fields added by OPS11. score_not_probability is a conservative display score, not probability."
+    },
+    {
+      "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-14T05:20:49+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "EURUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "session_open_with_d1_trend",
+        "directional_side": "LONG",
+        "d1_trend_state": "UP",
+        "h4_trend_state": [
+          "UP",
+          "DOWN",
+          "NEUTRAL"
+        ],
+        "mechanism_hypothesis_fa": "در پنجره‌ی overlap لندن-نیویورک (peak liquidity روزانه)، اولین کندل H1 که هم‌جهت با D1 trend (UP) بسته شد، احتمالاً نشان‌دهنده‌ی پذیرش جهت توسط participants عمده است. این الگو روی هر سه ابزار EURUSD, USDJPY, XAUUSD کار می‌کند که evidence قوی برای mechanism ساختاری (liquidity transition + position building) دارد، نه coincidence یک ابزار."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "prior_h1_session",
+        "is_first_h1_bar_of_session",
+        "h1_open",
+        "h1_close",
+        "h1_bar_direction",
+        "session_open_trend_trigger_state",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "EURUSD"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "is_first_h1_bar_of_session",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "prior_h1_session",
+            "op": "not_eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "UP"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "h1_bar_direction",
+            "op": "eq",
+            "value": "BULLISH"
+          },
+          {
+            "field": "session_open_trend_trigger_state",
+            "op": "eq",
+            "value": "SESSION_OPEN_TREND_LONG"
+          }
+        ]
+      },
+      "plain_language_label_fa": "EURUSD در بازشدن همپوشانی لندن-نیویورک، کندل اول هم‌جهت با روند D1=UP؛ تمایل LONG-bias",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی EURUSD، session LONDON_NY_OVERLAP، با context D1=UP, H4=['UP', 'DOWN', 'NEUTRAL'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت LONG متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 611,
+        "validation_rows": 227,
+        "discovery_avg_delta": 0.06118197808060546,
+        "validation_avg_delta": 0.08469131211421961,
+        "delta_h3": 0.07771945382077541,
+        "delta_h6": 0.08837509773633123,
+        "delta_h12": 0.08797938478555217,
+        "fav_rate_h3": 0.20704845814977973,
+        "fav_rate_h6": 0.2599118942731278,
+        "fav_rate_h12": 0.29955947136563876,
+        "fav_rate_h3_ci95": [
+          0.15418502202643172,
+          0.2599118942731278
+        ],
+        "fav_rate_h6_ci95": [
+          0.2026431718061674,
+          0.31718061674008813
+        ],
+        "fav_rate_h12_ci95": [
+          0.23788546255506607,
+          0.3568281938325991
+        ],
+        "baseline_h3": 0.12932900432900432,
+        "baseline_h6": 0.17153679653679654,
+        "baseline_h12": 0.2115800865800866,
+        "positive_horizons": 3,
+        "tau": 1.3842525980876477,
+        "max_year_share": 0.3964757709251101,
+        "year_distribution": {
+          "2017": 0.396,
+          "2016": 0.247,
+          "2018": 0.128,
+          "2015": 0.123,
+          "2019": 0.106
+        },
+        "effect_size_proxy": 0.22503488178169473,
+        "evidence_index": 11.602709759648087,
+        "historical_directional_favorable_rate": 0.2555066079295154
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.03061702214883075,
+          "mfe_atr_p50": 0.2219584569732985,
+          "mfe_atr_p75": 0.4271877832332553,
+          "mae_atr_p25": 0.07034139878137319,
+          "mae_atr_p50": 0.25745682888541477,
+          "mae_atr_p75": 0.4364873194579976,
+          "mfe_mae_p50_ratio": 0.8621191286096537
+        },
+        "H6": {
+          "mfe_atr_p25": 0.07446773891919073,
+          "mfe_atr_p50": 0.2786908675146353,
+          "mfe_atr_p75": 0.5242261439464063,
+          "mae_atr_p25": 0.10019701022150189,
+          "mae_atr_p50": 0.3151705213641808,
+          "mae_atr_p75": 0.47995343648162725,
+          "mfe_mae_p50_ratio": 0.8842542326241447
+        },
+        "H12": {
+          "mfe_atr_p25": 0.10936735585493328,
+          "mfe_atr_p50": 0.3041462084015206,
+          "mfe_atr_p75": 0.550339744100806,
+          "mae_atr_p25": 0.1261585717652284,
+          "mae_atr_p50": 0.3366696997270478,
+          "mae_atr_p75": 0.5164650435906598,
+          "mfe_mae_p50_ratio": 0.9033964406304003
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "year_concentration_max=0.40",
+        "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend. Year concentration caveat: validation max_year_share near 0.396."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 72,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "LONG",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend. Year concentration caveat: validation max_year_share near 0.396.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست."
+    },
+    {
+      "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-14T05:20:50+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "EURUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "session_open_with_d1_trend",
+        "directional_side": "SHORT",
+        "d1_trend_state": "DOWN",
+        "h4_trend_state": [
+          "UP",
+          "DOWN",
+          "NEUTRAL"
+        ],
+        "mechanism_hypothesis_fa": "آینهٔ نسخه LONG. در overlap لندن-نیویورک با D1=DOWN، اولین H1 کندل bearish نشانهٔ continuation است. تأیید روی سه ابزار = mechanism ساختاری معتبر."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "prior_h1_session",
+        "is_first_h1_bar_of_session",
+        "h1_open",
+        "h1_close",
+        "h1_bar_direction",
+        "session_open_trend_trigger_state",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "EURUSD"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "is_first_h1_bar_of_session",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "prior_h1_session",
+            "op": "not_eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "DOWN"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "h1_bar_direction",
+            "op": "eq",
+            "value": "BEARISH"
+          },
+          {
+            "field": "session_open_trend_trigger_state",
+            "op": "eq",
+            "value": "SESSION_OPEN_TREND_SHORT"
+          }
+        ]
+      },
+      "plain_language_label_fa": "EURUSD در بازشدن همپوشانی لندن-نیویورک، کندل اول هم‌جهت با روند D1=DOWN؛ تمایل SHORT-bias",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی EURUSD، session LONDON_NY_OVERLAP، با context D1=DOWN, H4=['UP', 'DOWN', 'NEUTRAL'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 523,
+        "validation_rows": 272,
+        "discovery_avg_delta": 0.061873811325742344,
+        "validation_avg_delta": 0.061692186237791,
+        "delta_h3": 0.06128827935668649,
+        "delta_h6": 0.06701641330689581,
+        "delta_h12": 0.056771866049790704,
+        "fav_rate_h3": 0.20220588235294118,
+        "fav_rate_h6": 0.24632352941176472,
+        "fav_rate_h12": 0.26838235294117646,
+        "fav_rate_h3_ci95": [
+          0.15441176470588236,
+          0.25
+        ],
+        "fav_rate_h6_ci95": [
+          0.19852941176470587,
+          0.2977941176470588
+        ],
+        "fav_rate_h12_ci95": [
+          0.21691176470588236,
+          0.3199448529411759
+        ],
+        "baseline_h3": 0.1409176029962547,
+        "baseline_h6": 0.1793071161048689,
+        "baseline_h12": 0.21161048689138576,
+        "positive_horizons": 3,
+        "tau": 0.9970645886513252,
+        "max_year_share": 0.23529411764705882,
+        "year_distribution": {
+          "2015": 0.235,
+          "2019": 0.235,
+          "2016": 0.228,
+          "2018": 0.224,
+          "2017": 0.077
+        },
+        "effect_size_proxy": 0.16153840765819324,
+        "evidence_index": 12.831974737460525,
+        "historical_directional_favorable_rate": 0.23897058823529413
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.03190246793542219,
+          "mfe_atr_p50": 0.18139948609706266,
+          "mfe_atr_p75": 0.42150803608995024,
+          "mae_atr_p25": 0.09233057315104005,
+          "mae_atr_p50": 0.26656053514092576,
+          "mae_atr_p75": 0.471713624599409,
+          "mfe_mae_p50_ratio": 0.680518914779189
+        },
+        "H6": {
+          "mfe_atr_p25": 0.05857749127261009,
+          "mfe_atr_p50": 0.22391961977887442,
+          "mfe_atr_p75": 0.4997173783759711,
+          "mae_atr_p25": 0.12301622042472966,
+          "mae_atr_p50": 0.28882611408797426,
+          "mae_atr_p75": 0.5757248336999548,
+          "mfe_mae_p50_ratio": 0.7752748413554814
+        },
+        "H12": {
+          "mfe_atr_p25": 0.08684286840023836,
+          "mfe_atr_p50": 0.2812003889498872,
+          "mfe_atr_p75": 0.5393216809660951,
+          "mae_atr_p25": 0.14491400338734461,
+          "mae_atr_p50": 0.3386298972916847,
+          "mae_atr_p75": 0.6251302389766686,
+          "mfe_mae_p50_ratio": 0.8304062671337918
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "no_critical_caveats_observed",
+        "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 73,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "SHORT",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
+    },
+    {
+      "memory_id": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-13T18:51:54+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "USDJPY",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "session_open_with_d1_trend",
+        "directional_side": "LONG",
+        "d1_trend_state": "UP",
+        "h4_trend_state": [
+          "UP",
+          "DOWN",
+          "NEUTRAL"
+        ],
+        "mechanism_hypothesis_fa": "در شروع overlap لندن-نیویورک، اولین کندل H1 که در جهت D1 trend (UP) بسته شده، اغلب momentum از طریق رشد liquidity در ساعت‌های فعال‌ترین peak ادامه پیدا می‌کند. سفارش‌های نگه‌داشته‌شده از Tokyo + London در این پنجره executive می‌شوند و قیمت در جهت trend غالب hold می‌کند."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "prior_h1_session",
+        "is_first_h1_bar_of_session",
+        "h1_open",
+        "h1_close",
+        "h1_bar_direction",
+        "session_open_trend_trigger_state",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "USDJPY"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "is_first_h1_bar_of_session",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "prior_h1_session",
+            "op": "not_eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "UP"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "h1_bar_direction",
+            "op": "eq",
+            "value": "BULLISH"
+          },
+          {
+            "field": "session_open_trend_trigger_state",
+            "op": "eq",
+            "value": "SESSION_OPEN_TREND_LONG"
+          }
+        ]
+      },
+      "plain_language_label_fa": "USDJPY در بازشدن همپوشانی لندن-نیویورک، کندل اول هم‌جهت با روند D1=UP؛ تمایل LONG-bias در ۳ تا ۱۲ ساعت آینده",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی USDJPY، session LONDON_NY_OVERLAP، با context D1=UP, H4=['UP', 'DOWN', 'NEUTRAL'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت LONG متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 504,
+        "validation_rows": 245,
+        "discovery_avg_delta": 0.03959022529768228,
+        "validation_avg_delta": 0.04446218233593648,
+        "delta_h3": 0.028368641325451957,
+        "delta_h6": 0.07059584933339086,
+        "delta_h12": 0.03442205634896664,
+        "fav_rate_h3": 0.12244897959183673,
+        "fav_rate_h6": 0.21224489795918366,
+        "fav_rate_h12": 0.27755102040816326,
+        "fav_rate_h3_ci95": [
+          0.08163265306122448,
+          0.16326530612244897
+        ],
+        "fav_rate_h6_ci95": [
+          0.16326530612244897,
+          0.2653061224489796
+        ],
+        "fav_rate_h12_ci95": [
+          0.22448979591836735,
+          0.3346938775510204
+        ],
+        "baseline_h3": 0.09408033826638477,
+        "baseline_h6": 0.1416490486257928,
+        "baseline_h12": 0.24312896405919662,
+        "positive_horizons": 3,
+        "tau": 1.1230595936653944,
+        "max_year_share": 0.24081632653061225,
+        "year_distribution": {
+          "2018": 0.241,
+          "2015": 0.216,
+          "2019": 0.208,
+          "2017": 0.184,
+          "2016": 0.151
+        },
+        "effect_size_proxy": 0.12139753650359138,
+        "evidence_index": 8.269965914484185,
+        "historical_directional_favorable_rate": 0.20408163265306123
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.031673896577836695,
+          "mfe_atr_p50": 0.16728097533313716,
+          "mfe_atr_p75": 0.3865434559400778,
+          "mae_atr_p25": 0.0336619379658584,
+          "mae_atr_p50": 0.2188954585482538,
+          "mae_atr_p75": 0.47874191079256123,
+          "mfe_mae_p50_ratio": 0.7642048694960082
+        },
+        "H6": {
+          "mfe_atr_p25": 0.06059354127934573,
+          "mfe_atr_p50": 0.2107331011697384,
+          "mfe_atr_p75": 0.4631423563059155,
+          "mae_atr_p25": 0.07265311324963636,
+          "mae_atr_p50": 0.2546643061419203,
+          "mae_atr_p75": 0.5774647887323955,
+          "mfe_mae_p50_ratio": 0.8274936694595129
+        },
+        "H12": {
+          "mfe_atr_p25": 0.0875752599890523,
+          "mfe_atr_p50": 0.30144353240870964,
+          "mfe_atr_p75": 0.5311871227363996,
+          "mae_atr_p25": 0.11447020839448628,
+          "mae_atr_p50": 0.3449495842915402,
+          "mae_atr_p75": 0.7044756826627567,
+          "mfe_mae_p50_ratio": 0.873877071131471
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "CI_lower_bound_overlaps_baseline_at_some_horizon",
+        "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 68,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "LONG",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست."
+    },
+    {
+      "memory_id": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-13T18:51:54+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "USDJPY",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "session_open_with_d1_trend",
+        "directional_side": "SHORT",
+        "d1_trend_state": "DOWN",
+        "h4_trend_state": [
+          "UP",
+          "DOWN",
+          "NEUTRAL"
+        ],
+        "mechanism_hypothesis_fa": "آینه‌ی نسخهٔ LONG. در overlap لندن-نیویورک، اولین کندل H1 که در جهت D1 trend (DOWN) بسته شده، نشانهٔ ادامه توسط معامله‌گران macro و positioning است."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "prior_h1_session",
+        "is_first_h1_bar_of_session",
+        "h1_open",
+        "h1_close",
+        "h1_bar_direction",
+        "session_open_trend_trigger_state",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "USDJPY"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "is_first_h1_bar_of_session",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "prior_h1_session",
+            "op": "not_eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "DOWN"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "h1_bar_direction",
+            "op": "eq",
+            "value": "BEARISH"
+          },
+          {
+            "field": "session_open_trend_trigger_state",
+            "op": "eq",
+            "value": "SESSION_OPEN_TREND_SHORT"
+          }
+        ]
+      },
+      "plain_language_label_fa": "USDJPY در بازشدن همپوشانی لندن-نیویورک، کندل اول هم‌جهت با روند D1=DOWN؛ تمایل SHORT-bias",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی USDJPY، session LONDON_NY_OVERLAP، با context D1=DOWN, H4=['UP', 'DOWN', 'NEUTRAL'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 538,
+        "validation_rows": 239,
+        "discovery_avg_delta": 0.0391089954899955,
+        "validation_avg_delta": 0.046003399931665294,
+        "delta_h3": 0.03935196854363057,
+        "delta_h6": 0.05342079615533263,
+        "delta_h12": 0.045237435096032674,
+        "fav_rate_h3": 0.16736401673640167,
+        "fav_rate_h6": 0.24267782426778242,
+        "fav_rate_h12": 0.3389121338912134,
+        "fav_rate_h3_ci95": [
+          0.12133891213389121,
+          0.2175732217573222
+        ],
+        "fav_rate_h6_ci95": [
+          0.19246861924686193,
+          0.29707112970711297
+        ],
+        "fav_rate_h12_ci95": [
+          0.2803347280334728,
+          0.39759414225941364
+        ],
+        "baseline_h3": 0.1280120481927711,
+        "baseline_h6": 0.1892570281124498,
+        "baseline_h12": 0.2936746987951807,
+        "positive_horizons": 3,
+        "tau": 1.1762869221080723,
+        "max_year_share": 0.33472803347280333,
+        "year_distribution": {
+          "2016": 0.335,
+          "2017": 0.222,
+          "2019": 0.184,
+          "2015": 0.134,
+          "2018": 0.126
+        },
+        "effect_size_proxy": 0.1142345242062299,
+        "evidence_index": 7.314540589134783,
+        "historical_directional_favorable_rate": 0.2496513249651325
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.05412543236779711,
+          "mfe_atr_p50": 0.19991620278925218,
+          "mfe_atr_p75": 0.4235823967258373,
+          "mae_atr_p25": 0.05903583416831325,
+          "mae_atr_p50": 0.19618628529519505,
+          "mae_atr_p75": 0.34871254517177486,
+          "mfe_mae_p50_ratio": 1.0190121215070913
+        },
+        "H6": {
+          "mfe_atr_p25": 0.08607111449906496,
+          "mfe_atr_p50": 0.2564102564102548,
+          "mfe_atr_p75": 0.4900714866754703,
+          "mae_atr_p25": 0.08477621594427809,
+          "mae_atr_p50": 0.24782360043209456,
+          "mae_atr_p75": 0.4396873610999711,
+          "mfe_mae_p50_ratio": 1.034648257725208
+        },
+        "H12": {
+          "mfe_atr_p25": 0.12562485253850436,
+          "mfe_atr_p50": 0.37114117238986966,
+          "mfe_atr_p75": 0.6487366329411526,
+          "mae_atr_p25": 0.1359693854726728,
+          "mae_atr_p50": 0.31829113028716116,
+          "mae_atr_p75": 0.5626744426417419,
+          "mfe_mae_p50_ratio": 1.1660430878329138
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "year_concentration_max=0.33",
+        "CI_lower_bound_overlaps_baseline_at_some_horizon",
+        "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 67,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "SHORT",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
+    },
+    {
+      "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-13T18:51:54+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "XAUUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "session_open_with_d1_trend",
+        "directional_side": "LONG",
+        "d1_trend_state": "UP",
+        "h4_trend_state": [
+          "UP",
+          "DOWN",
+          "NEUTRAL"
+        ],
+        "mechanism_hypothesis_fa": "طلا در overlap لندن-نیویورک فعال‌ترین session خود را تجربه می‌کند. کندل اول H1 که هم‌جهت با D1 trend (UP) بسته شد، نشان‌دهندهٔ pricing توسط institutional flow در پنجرهٔ likuidity peak است. continuation در 3-12 ساعت بعدی نسبت به baseline domain-matched قابل تشخیص است."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "prior_h1_session",
+        "is_first_h1_bar_of_session",
+        "h1_open",
+        "h1_close",
+        "h1_bar_direction",
+        "session_open_trend_trigger_state",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "XAUUSD"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "is_first_h1_bar_of_session",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "prior_h1_session",
+            "op": "not_eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "UP"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "h1_bar_direction",
+            "op": "eq",
+            "value": "BULLISH"
+          },
+          {
+            "field": "session_open_trend_trigger_state",
+            "op": "eq",
+            "value": "SESSION_OPEN_TREND_LONG"
+          }
+        ]
+      },
+      "plain_language_label_fa": "XAUUSD در بازشدن همپوشانی لندن-نیویورک، کندل اول هم‌جهت با روند D1=UP؛ تمایل LONG-bias قوی",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session LONDON_NY_OVERLAP، با context D1=UP, H4=['UP', 'DOWN', 'NEUTRAL'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت LONG متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 669,
+        "validation_rows": 274,
+        "discovery_avg_delta": 0.07870852017937217,
+        "validation_avg_delta": 0.07293812674807283,
+        "delta_h3": 0.057094617641039624,
+        "delta_h6": 0.0714100552561566,
+        "delta_h12": 0.09030970734702226,
+        "fav_rate_h3": 0.20802919708029197,
+        "fav_rate_h6": 0.291970802919708,
+        "fav_rate_h12": 0.3795620437956204,
+        "fav_rate_h3_ci95": [
+          0.16058394160583941,
+          0.25547445255474455
+        ],
+        "fav_rate_h6_ci95": [
+          0.24087591240875914,
+          0.3467153284671533
+        ],
+        "fav_rate_h12_ci95": [
+          0.3247262773722628,
+          0.43795620437956206
+        ],
+        "baseline_h3": 0.15093457943925234,
+        "baseline_h6": 0.2205607476635514,
+        "baseline_h12": 0.28925233644859816,
+        "positive_horizons": 3,
+        "tau": 0.9266865465371608,
+        "max_year_share": 0.291970802919708,
+        "year_distribution": {
+          "2016": 0.292,
+          "2019": 0.219,
+          "2017": 0.186,
+          "2018": 0.168,
+          "2015": 0.135
+        },
+        "effect_size_proxy": 0.17600277120845143,
+        "evidence_index": 14.149996589126129,
+        "historical_directional_favorable_rate": 0.29318734793187345
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.08487294065497795,
+          "mfe_atr_p50": 0.22896086499402934,
+          "mfe_atr_p75": 0.45044549209789553,
+          "mae_atr_p25": 0.05614437723732768,
+          "mae_atr_p50": 0.23047503964608534,
+          "mae_atr_p75": 0.4384309852958015,
+          "mfe_mae_p50_ratio": 0.993430201142904
+        },
+        "H6": {
+          "mfe_atr_p25": 0.10648115872317165,
+          "mfe_atr_p50": 0.29700903278940083,
+          "mfe_atr_p75": 0.5799850713452451,
+          "mae_atr_p25": 0.09759086052649905,
+          "mae_atr_p50": 0.2819496544510697,
+          "mae_atr_p75": 0.5395947216888887,
+          "mfe_mae_p50_ratio": 1.0534115864325153
+        },
+        "H12": {
+          "mfe_atr_p25": 0.11751383854253955,
+          "mfe_atr_p50": 0.33783344862196585,
+          "mfe_atr_p75": 0.7315756069872357,
+          "mae_atr_p25": 0.1093735432379476,
+          "mae_atr_p50": 0.3414084177532814,
+          "mae_atr_p75": 0.6423584254969987,
+          "mfe_mae_p50_ratio": 0.9895287610222341
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "no_critical_caveats_observed",
+        "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 74,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "LONG",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست."
+    },
+    {
+      "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-13T18:51:55+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "XAUUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "session_open_with_d1_trend",
+        "directional_side": "SHORT",
+        "d1_trend_state": "DOWN",
+        "h4_trend_state": [
+          "UP",
+          "DOWN",
+          "NEUTRAL"
+        ],
+        "mechanism_hypothesis_fa": "آینهٔ نسخه LONG. طلا در overlap با D1 trend = DOWN، اولین کندل H1 bearish، continuation به مدت 3-12 ساعت قابل مشاهده است."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "prior_h1_session",
+        "is_first_h1_bar_of_session",
+        "h1_open",
+        "h1_close",
+        "h1_bar_direction",
+        "session_open_trend_trigger_state",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "XAUUSD"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "is_first_h1_bar_of_session",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "prior_h1_session",
+            "op": "not_eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "DOWN"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "h1_bar_direction",
+            "op": "eq",
+            "value": "BEARISH"
+          },
+          {
+            "field": "session_open_trend_trigger_state",
+            "op": "eq",
+            "value": "SESSION_OPEN_TREND_SHORT"
+          }
+        ]
+      },
+      "plain_language_label_fa": "XAUUSD در بازشدن همپوشانی لندن-نیویورک، کندل اول هم‌جهت با روند D1=DOWN؛ تمایل SHORT-bias قوی",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session LONDON_NY_OVERLAP، با context D1=DOWN, H4=['UP', 'DOWN', 'NEUTRAL'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 427,
+        "validation_rows": 241,
+        "discovery_avg_delta": 0.06452669950421291,
+        "validation_avg_delta": 0.06557477226117231,
+        "delta_h3": 0.05940585205322649,
+        "delta_h6": 0.06808914007726427,
+        "delta_h12": 0.06922932465302617,
+        "fav_rate_h3": 0.1908713692946058,
+        "fav_rate_h6": 0.24481327800829875,
+        "fav_rate_h12": 0.2987551867219917,
+        "fav_rate_h3_ci95": [
+          0.14107883817427386,
+          0.24066390041493776
+        ],
+        "fav_rate_h6_ci95": [
+          0.1908713692946058,
+          0.2987551867219917
+        ],
+        "fav_rate_h12_ci95": [
+          0.24066390041493776,
+          0.35684647302904565
+        ],
+        "baseline_h3": 0.1314655172413793,
+        "baseline_h6": 0.17672413793103448,
+        "baseline_h12": 0.22952586206896552,
+        "positive_horizons": 3,
+        "tau": 1.0162424665295482,
+        "max_year_share": 0.2821576763485477,
+        "year_distribution": {
+          "2015": 0.282,
+          "2016": 0.22,
+          "2018": 0.216,
+          "2019": 0.17,
+          "2017": 0.112
+        },
+        "effect_size_proxy": 0.17096714007097674,
+        "evidence_index": 11.344435601182811,
+        "historical_directional_favorable_rate": 0.24481327800829877
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.02824038846222456,
+          "mfe_atr_p50": 0.19015614114175147,
+          "mfe_atr_p75": 0.42242048286267203,
+          "mae_atr_p25": 0.054860486734425944,
+          "mae_atr_p50": 0.2201214581863825,
+          "mae_atr_p75": 0.4734588241572178,
+          "mfe_mae_p50_ratio": 0.8638691689055656
+        },
+        "H6": {
+          "mfe_atr_p25": 0.06849803103787361,
+          "mfe_atr_p50": 0.24836819840380833,
+          "mfe_atr_p75": 0.5151788710493127,
+          "mae_atr_p25": 0.08153697192072029,
+          "mae_atr_p50": 0.2688570779029579,
+          "mae_atr_p75": 0.5361127422196001,
+          "mfe_mae_p50_ratio": 0.9237926720807965
+        },
+        "H12": {
+          "mfe_atr_p25": 0.08407582018240645,
+          "mfe_atr_p50": 0.29920451875543547,
+          "mfe_atr_p75": 0.5597574384433525,
+          "mae_atr_p25": 0.11302587668908619,
+          "mae_atr_p50": 0.3534851242117631,
+          "mae_atr_p75": 0.6521343187722397,
+          "mfe_mae_p50_ratio": 0.8464416131304874
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "no_critical_caveats_observed",
+        "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 72,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "SHORT",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
+    },
+    {
+      "memory_id": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-14T05:26:29+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "EURUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON",
+        "trigger_family": "asian_high_sweep_reclaim",
+        "directional_side": "SHORT",
+        "d1_trend_state": [
+          "DOWN"
+        ],
+        "h4_trend_state": [
+          "UP",
+          "NEUTRAL",
+          "DOWN"
+        ],
+        "mechanism_hypothesis_fa": "در ساعات اول London (07:00-12:00 UTC)، اگر قیمت بالای high range آسیایی همان روز (00:00-06:59 UTC) نفوذ کند ولی کندل H1 با close پایین‌تر از asia_high بسته شود، این یک sweep+rejection کلاسیک است. mechanism: stops معامله‌گرانی که در Asia خرید کرده‌اند توسط London در بالا trigger می‌شود، سپس flow اصلی بازار (که در جهت D1=DOWN است) دوباره غالب می‌شود. این memory EURUSD-specific است؛ روی USDJPY و XAUUSD در این run signal مشابه ندید (یافته‌ی منفی هم informative)."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe",
+        "h1_high",
+        "h1_close",
+        "same_utc_date_asian_range_available",
+        "asian_session_high",
+        "asian_high_swept_and_reclaimed_by_closed_h1"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "EURUSD"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "DOWN"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "same_utc_date_asian_range_available",
+            "op": "bool_eq",
+            "value": true
+          },
+          {
+            "field": "asian_high_swept_and_reclaimed_by_closed_h1",
+            "op": "bool_eq",
+            "value": true
+          }
+        ]
+      },
+      "plain_language_label_fa": "EURUSD در London: قیمت بالای high آسیایی همان روز نفوذ کرد ولی H1 با close پایین برگشت، در D1=DOWN؛ SHORT-bias",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی EURUSD، session LONDON، با context D1=['DOWN'], H4=['UP', 'NEUTRAL', 'DOWN'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 389,
+        "validation_rows": 223,
+        "discovery_avg_delta": -0.0026006855184233144,
+        "validation_avg_delta": 0.059352446415050164,
+        "delta_h3": 0.06214469828042796,
+        "delta_h6": 0.07448452351527812,
+        "delta_h12": 0.04142811744944441,
+        "fav_rate_h3": 0.25112107623318386,
+        "fav_rate_h6": 0.3721973094170404,
+        "fav_rate_h12": 0.3901345291479821,
+        "fav_rate_h3_ci95": [
+          0.19730941704035873,
+          0.3094170403587444
+        ],
+        "fav_rate_h6_ci95": [
+          0.3094170403587444,
+          0.4349775784753363
+        ],
+        "fav_rate_h12_ci95": [
+          0.3273542600896861,
+          0.452914798206278
+        ],
+        "baseline_h3": 0.1889763779527559,
+        "baseline_h6": 0.29771278590176226,
+        "baseline_h12": 0.34870641169853767,
+        "positive_horizons": 3,
+        "tau": null,
+        "max_year_share": 0.273542600896861,
+        "year_distribution": {
+          "2018": 0.274,
+          "2019": 0.242,
+          "2016": 0.233,
+          "2015": 0.206,
+          "2017": 0.045
+        },
+        "effect_size_proxy": 0.13241113949705305,
+        "evidence_index": 9.615096319238127,
+        "historical_directional_favorable_rate": 0.33781763826606875
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.07370224159589622,
+          "mfe_atr_p50": 0.24634570172748918,
+          "mfe_atr_p75": 0.4942423993858359,
+          "mae_atr_p25": 0.06507612051095621,
+          "mae_atr_p50": 0.21553477023181344,
+          "mae_atr_p75": 0.3617501427386239,
+          "mfe_mae_p50_ratio": 1.1429510953733253
+        },
+        "H6": {
+          "mfe_atr_p25": 0.1499582901418985,
+          "mfe_atr_p50": 0.35455571329765395,
+          "mfe_atr_p75": 0.6294408037729401,
+          "mae_atr_p25": 0.09884207810737178,
+          "mae_atr_p50": 0.2938278240616461,
+          "mae_atr_p75": 0.5393058040625336,
+          "mfe_mae_p50_ratio": 1.206678484006562
+        },
+        "H12": {
+          "mfe_atr_p25": 0.1732196537300702,
+          "mfe_atr_p50": 0.3812220890970311,
+          "mfe_atr_p75": 0.7094709353347717,
+          "mae_atr_p25": 0.12628504567752566,
+          "mae_atr_p50": 0.3278509966234574,
+          "mae_atr_p75": 0.629395892673656,
+          "mfe_mae_p50_ratio": 1.1627906976743807
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "CI_lower_bound_overlaps_baseline_at_some_horizon",
+        "Validation-led evidence caveat: discovery average delta was near flat/slightly negative while validation was positive."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 70,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "SHORT",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Validation-led evidence caveat: discovery average delta was near flat/slightly negative while validation was positive.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
+    },
+    {
+      "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "caveated_directional_watch_memory_not_signal",
+      "candidate_type": "directional_watch",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": true,
+      "created_utc": "2026-05-14T05:26:30+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "XAUUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "MULTI",
+        "trigger_family": "weekly_open_reclaim",
+        "directional_side": "SHORT",
+        "d1_trend_state": [
+          "DOWN"
+        ],
+        "h4_trend_state": [
+          "UP",
+          "NEUTRAL",
+          "DOWN"
+        ],
+        "mechanism_hypothesis_fa": "weekly_open در طلا یک سطح precomputed مهم است که از باز شدن هفته (Monday/Sunday session) ثابت می‌ماند. اگر در طول هفته high قیمت بالای این سطح نفوذ کند ولی H1 با close پایین آن برگردد، این یک rejection معنادار است در context D1=DOWN. mechanism: positioning هفتگی macro flow + level attention از participants. این memory session-agnostic است (در هر ساعت قابل trigger). نکته: نسخه LONG (D1=UP) برای طلا fail کرد — این یافته‌ی asymmetric ارزشمند است."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe",
+        "h1_high",
+        "h1_close",
+        "weekly_open",
+        "weekly_open_ts",
+        "is_weekly_open_bar",
+        "weekly_open_reclaim_short_state"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "XAUUSD"
+          },
+          {
+            "field": "timeframe",
+            "op": "eq",
+            "value": "H1"
+          },
+          {
+            "field": "d1_trend_safe",
+            "op": "eq",
+            "value": "DOWN"
+          },
+          {
+            "field": "h4_trend_safe",
+            "op": "in",
+            "value": [
+              "UP",
+              "DOWN",
+              "NEUTRAL"
+            ]
+          },
+          {
+            "field": "is_weekly_open_bar",
+            "op": "bool_eq",
+            "value": false
+          },
+          {
+            "field": "weekly_open_reclaim_short_state",
+            "op": "eq",
+            "value": "WEEKLY_OPEN_RECLAIM_SHORT"
+          }
+        ]
+      },
+      "plain_language_label_fa": "XAUUSD: قیمت بالای weekly_open نفوذ کرد ولی H1 با close پایین برگشت، در D1=DOWN؛ SHORT-bias (هر session)",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session MULTI، با context D1=['DOWN'], H4=['UP', 'NEUTRAL', 'DOWN'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 572,
+        "validation_rows": 286,
+        "discovery_avg_delta": -0.0016587412587412604,
+        "validation_avg_delta": 0.057472727272727266,
+        "delta_h3": 0.07054965034965034,
+        "delta_h6": 0.06827972027972029,
+        "delta_h12": 0.033588811188811185,
+        "fav_rate_h3": 0.15034965034965034,
+        "fav_rate_h6": 0.2202797202797203,
+        "fav_rate_h12": 0.3111888111888112,
+        "fav_rate_h3_ci95": [
+          0.10839160839160839,
+          0.19230769230769232
+        ],
+        "fav_rate_h6_ci95": [
+          0.17482517482517482,
+          0.2692307692307692
+        ],
+        "fav_rate_h12_ci95": [
+          0.25874125874125875,
+          0.36713286713286714
+        ],
+        "baseline_h3": 0.0798,
+        "baseline_h6": 0.152,
+        "baseline_h12": 0.2776,
+        "positive_horizons": 3,
+        "tau": null,
+        "max_year_share": 0.34615384615384615,
+        "year_distribution": {
+          "2018": 0.346,
+          "2015": 0.231,
+          "2019": 0.196,
+          "2016": 0.168,
+          "2017": 0.059
+        },
+        "effect_size_proxy": 0.15307405918146563,
+        "evidence_index": 10.747399999999999,
+        "historical_directional_favorable_rate": 0.2272727272727273
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.07460613059919043,
+          "mfe_atr_p50": 0.17189090392858614,
+          "mfe_atr_p75": 0.32168525255326025,
+          "mae_atr_p25": 0.021205769925544286,
+          "mae_atr_p50": 0.11873507013383028,
+          "mae_atr_p75": 0.26368933147324514,
+          "mfe_mae_p50_ratio": 1.447684359261692
+        },
+        "H6": {
+          "mfe_atr_p25": 0.10417324096737438,
+          "mfe_atr_p50": 0.26317688772504944,
+          "mfe_atr_p75": 0.45666399309364364,
+          "mae_atr_p25": 0.052914170762886154,
+          "mae_atr_p50": 0.1781351473196468,
+          "mae_atr_p75": 0.37553917194631353,
+          "mfe_mae_p50_ratio": 1.477400118309068
+        },
+        "H12": {
+          "mfe_atr_p25": 0.14881658986070728,
+          "mfe_atr_p50": 0.3318646284140615,
+          "mfe_atr_p75": 0.6101896306570389,
+          "mae_atr_p25": 0.1067583525545003,
+          "mae_atr_p50": 0.27076211245970216,
+          "mae_atr_p75": 0.4847497845683528,
+          "mfe_mae_p50_ratio": 1.2256686336182034
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "year_concentration_max=0.35",
+        "CI_lower_bound_overlaps_baseline_at_some_horizon",
+        "XAU-specific weekly-open memory; validation-led with max_year_share near 0.346."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": true,
+      "activation_status": "ACTIVE_CAVEATED_DIRECTIONAL_WATCH_NOT_SIGNAL",
+      "score_not_probability": 71,
+      "band": "CAVEATED_DIRECTIONAL_WATCH",
+      "direction_side": "SHORT",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "XAU-specific weekly-open memory; validation-led with max_year_share near 0.346.",
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
+    },
+    {
+      "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_UP_LONG_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "extended_observation_directional_watch_not_runtime",
+      "candidate_type": "directional_watch",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": false,
+      "created_utc": "2026-05-13T18:51:55+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "XAUUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "vol_expansion_after_contraction",
+        "directional_side": "LONG",
+        "d1_trend_state": "UP",
+        "h4_trend_state": "UP",
+        "mechanism_hypothesis_fa": "بعد از چهار کندل H1 با range کوچک (consolidation در overlap)، یک کندل expansion bullish در جهت D1+H4 = UP، احتمالاً break از positioning و آغاز موج جدید جهت‌دار است. mechanism: order absorption کامل شده و breakout واقعی است نه noise."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe",
+        "h1_close",
+        "h1_open",
+        "prior_h1_session",
+        "last4_h1_ranges",
+        "current_h1_range",
+        "last4_h1_contraction_flag",
+        "current_h1_expansion_flag",
+        "vol_expansion_after_contraction_state"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "XAUUSD"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "vol_expansion_after_contraction_state",
+            "op": "eq",
+            "value": "VOL_EXPANSION_AFTER_CONTRACTION_UP"
+          }
+        ]
+      },
+      "plain_language_label_fa": "XAUUSD در همپوشانی لندن-نیویورک: انقباض ۴ کندلی → کندل bullish بزرگ هم‌جهت D1+H4=UP؛ LONG-bias",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session LONDON_NY_OVERLAP، با context D1=UP, H4=UP)، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت LONG متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 119,
+        "validation_rows": 66,
+        "discovery_avg_delta": -0.04067174420200357,
+        "validation_avg_delta": 0.04565241971958389,
+        "delta_h3": 0.04327792853912257,
+        "delta_h6": 0.02739145183175032,
+        "delta_h12": 0.06628787878787878,
+        "fav_rate_h3": 0.21212121212121213,
+        "fav_rate_h6": 0.2727272727272727,
+        "fav_rate_h12": 0.3787878787878788,
+        "fav_rate_h3_ci95": [
+          0.12121212121212122,
+          0.3181818181818182
+        ],
+        "fav_rate_h6_ci95": [
+          0.16666666666666666,
+          0.3787878787878788
+        ],
+        "fav_rate_h12_ci95": [
+          0.25757575757575757,
+          0.5
+        ],
+        "baseline_h3": 0.16884328358208955,
+        "baseline_h6": 0.2453358208955224,
+        "baseline_h12": 0.3125,
+        "positive_horizons": 3,
+        "tau": null,
+        "max_year_share": 0.30303030303030304,
+        "year_distribution": {
+          "2019": 0.303,
+          "2017": 0.288,
+          "2016": 0.197,
+          "2015": 0.121,
+          "2018": 0.091
+        },
+        "effect_size_proxy": 0.10655733446695666,
+        "evidence_index": 2.1000113071008593,
+        "historical_directional_favorable_rate": 0.2878787878787879
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.06315332833046666,
+          "mfe_atr_p50": 0.22249714291499267,
+          "mfe_atr_p75": 0.44465293235141845,
+          "mae_atr_p25": 0.02541220670456474,
+          "mae_atr_p50": 0.12745377584630466,
+          "mae_atr_p75": 0.466756103885085,
+          "mfe_mae_p50_ratio": 1.745708524032273
+        },
+        "H6": {
+          "mfe_atr_p25": 0.10948546472048305,
+          "mfe_atr_p50": 0.28354855914504257,
+          "mfe_atr_p75": 0.5424223385775071,
+          "mae_atr_p25": 0.05321881911902298,
+          "mae_atr_p50": 0.2791983278567283,
+          "mae_atr_p75": 0.6290349709980879,
+          "mfe_mae_p50_ratio": 1.0155811509392225
+        },
+        "H12": {
+          "mfe_atr_p25": 0.11297542056994421,
+          "mfe_atr_p50": 0.31773519540548645,
+          "mfe_atr_p75": 0.6835479309098836,
+          "mae_atr_p25": 0.09777658148087078,
+          "mae_atr_p50": 0.3500204665183035,
+          "mae_atr_p75": 0.6897273361693197,
+          "mfe_mae_p50_ratio": 0.9077617619507722
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "validation_sample_modest_n=66",
+        "year_concentration_max=0.30",
+        "CI_lower_bound_overlaps_baseline_at_some_horizon",
+        "Parked by OPS20: discovery negative / validation positive instability; not runtime active."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": false,
+      "activation_status": "PARKED_EXTENDED_OBSERVATION_NOT_RUNTIME_ACTIVE",
+      "score_not_probability": 58,
+      "band": "EXTENDED_OBSERVATION_REVIEW_NOT_RUNTIME",
+      "direction_side": "LONG",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_UP_LONG_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Parked by OPS20: discovery negative / validation positive instability; not runtime active.",
+      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد."
+    },
+    {
+      "memory_id": "USDJPY_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_DOWN_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "extended_observation_directional_watch_not_runtime",
+      "candidate_type": "directional_watch",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "activation_status_proposed": "REGULAR_DIRECTIONAL_WATCH",
+      "active_in_runtime_proposed": false,
+      "created_utc": "2026-05-13T18:51:55+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "USDJPY",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "vol_expansion_after_contraction",
+        "directional_side": "SHORT",
+        "d1_trend_state": "DOWN",
+        "h4_trend_state": "DOWN",
+        "mechanism_hypothesis_fa": "بعد از انقباض ۴ کندلی H1 در overlap، یک کندل bearish بزرگ هم‌جهت D1+H4=DOWN، breakout positional با follow-through احتمالی است."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe",
+        "h1_close",
+        "h1_open",
+        "prior_h1_session",
+        "last4_h1_ranges",
+        "current_h1_range",
+        "last4_h1_contraction_flag",
+        "current_h1_expansion_flag",
+        "vol_expansion_after_contraction_state"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "USDJPY"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "vol_expansion_after_contraction_state",
+            "op": "eq",
+            "value": "VOL_EXPANSION_AFTER_CONTRACTION_DOWN"
+          }
+        ]
+      },
+      "plain_language_label_fa": "USDJPY در همپوشانی: انقباض ۴ کندلی → کندل bearish بزرگ هم‌جهت D1+H4=DOWN؛ SHORT-bias",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی USDJPY، session LONDON_NY_OVERLAP، با context D1=DOWN, H4=DOWN)، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 100,
+        "validation_rows": 53,
+        "discovery_avg_delta": -0.03951837769328263,
+        "validation_avg_delta": 0.045048525265669055,
+        "delta_h3": 0.00654684450227716,
+        "delta_h6": 0.01628578399479505,
+        "delta_h12": 0.11231294729993496,
+        "fav_rate_h3": 0.1509433962264151,
+        "fav_rate_h6": 0.22641509433962265,
+        "fav_rate_h12": 0.4528301886792453,
+        "fav_rate_h3_ci95": [
+          0.05660377358490566,
+          0.2641509433962264
+        ],
+        "fav_rate_h6_ci95": [
+          0.11320754716981132,
+          0.33962264150943394
+        ],
+        "fav_rate_h12_ci95": [
+          0.32075471698113206,
+          0.5849056603773585
+        ],
+        "baseline_h3": 0.14439655172413793,
+        "baseline_h6": 0.2101293103448276,
+        "baseline_h12": 0.34051724137931033,
+        "positive_horizons": 3,
+        "tau": null,
+        "max_year_share": 0.39622641509433965,
+        "year_distribution": {
+          "2016": 0.396,
+          "2017": 0.226,
+          "2019": 0.17,
+          "2018": 0.132,
+          "2015": 0.075
+        },
+        "effect_size_proxy": 0.10677376566731109,
+        "evidence_index": 1.4415528085014098,
+        "historical_directional_favorable_rate": 0.27672955974842767
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.10998552821997572,
+          "mfe_atr_p50": 0.28506487356757404,
+          "mfe_atr_p75": 0.3884314967278967,
+          "mae_atr_p25": 0.0,
+          "mae_atr_p50": 0.11998114581994312,
+          "mae_atr_p75": 0.2821818181818214,
+          "mfe_mae_p50_ratio": 2.375913912302302
+        },
+        "H6": {
+          "mfe_atr_p25": 0.1208381540043632,
+          "mfe_atr_p50": 0.32271822576057674,
+          "mfe_atr_p75": 0.45550540395047256,
+          "mae_atr_p25": 0.06991205799021145,
+          "mae_atr_p50": 0.19673521305914735,
+          "mae_atr_p75": 0.3551267576721783,
+          "mfe_mae_p50_ratio": 1.640368395380004
+        },
+        "H12": {
+          "mfe_atr_p25": 0.22930396316691526,
+          "mfe_atr_p50": 0.4384142463430115,
+          "mfe_atr_p75": 0.7595267095876026,
+          "mae_atr_p25": 0.11473720371006636,
+          "mae_atr_p50": 0.25391275391274803,
+          "mae_atr_p75": 0.445436666135117,
+          "mfe_mae_p50_ratio": 1.7266334187122545
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "validation_sample_modest_n=53",
+        "year_concentration_max=0.40",
+        "CI_lower_bound_overlaps_baseline_at_some_horizon",
+        "Parked by OPS20: discovery negative / validation positive instability; not runtime active."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": false,
+      "activation_status": "PARKED_EXTENDED_OBSERVATION_NOT_RUNTIME_ACTIVE",
+      "score_not_probability": 56,
+      "band": "EXTENDED_OBSERVATION_REVIEW_NOT_RUNTIME",
+      "direction_side": "SHORT",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "USDJPY_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_DOWN_SHORT_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Parked by OPS20: discovery negative / validation positive instability; not runtime active.",
+      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد."
+    },
+    {
+      "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_DIRECTIONAL_WATCH_v1_0",
+      "memory_class": "extended_observation_directional_watch_not_runtime",
+      "candidate_type": "directional_watch",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "activation_status_proposed": "EXTENDED_OBSERVATION_WATCH",
+      "active_in_runtime_proposed": false,
+      "created_utc": "2026-05-14T05:26:30+00:00",
+      "discovered_via": "SIG_BRAIN_DISCOVERY_v0_1_DIRECT_RUN_2026_05_13",
+      "validity_domain": {
+        "instrument": "XAUUSD",
+        "base_timeframe": "H1",
+        "context_timeframes": [
+          "D1",
+          "H4",
+          "H1"
+        ],
+        "session_bucket": "LONDON_NY_OVERLAP",
+        "trigger_family": "asian_high_breakout_continuation",
+        "directional_side": "LONG",
+        "d1_trend_state": [
+          "UP"
+        ],
+        "h4_trend_state": [
+          "UP",
+          "NEUTRAL",
+          "DOWN"
+        ],
+        "mechanism_hypothesis_fa": "در overlap لندن-نیویورک، اگر H1 close بالای high range آسیایی همان روز نفوذ کرد (به اندازه‌ی حداقل 0.1 ATR)، در حالی که D1=UP، این breakout continuation است نه sweep. sample بزرگ (506 trigger در validation) و delta بالا (+6.7%) با p بسیار pequeño. این یک نسخه‌ی متفاوت از session_open_with_trend است: trigger با خاص بودن Asian-anchored. classification EXTENDED بود نه REGULAR چون tau محاسبه نشد (discovery delta cancelled)."
+      },
+      "required_context_fields": [
+        "instrument",
+        "timeframe",
+        "latest_h1_bar_open_ts_utc",
+        "session_bucket",
+        "d1_trend_safe",
+        "h4_trend_safe",
+        "d1_atr20_safe",
+        "h1_close",
+        "h1_open",
+        "prior_h1_session",
+        "same_utc_date_asian_range_available",
+        "asian_session_high",
+        "asian_high_breakout_continuation_by_closed_h1"
+      ],
+      "matching_rule": {
+        "required_all": [
+          {
+            "field": "instrument",
+            "op": "eq",
+            "value": "XAUUSD"
+          },
+          {
+            "field": "session_bucket",
+            "op": "eq",
+            "value": "LONDON_NY_OVERLAP"
+          },
+          {
+            "field": "asian_high_breakout_continuation_by_closed_h1",
+            "op": "bool_eq",
+            "value": true
+          }
+        ]
+      },
+      "plain_language_label_fa": "XAUUSD در overlap: H1 close بالای high آسیایی همان روز با D1=UP؛ LONG-bias قوی (EXTENDED)",
+      "plain_language_summary_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session LONDON_NY_OVERLAP، با context D1=['UP'], H4=['UP', 'NEUTRAL', 'DOWN'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت LONG متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
+      "evidence_summary": {
+        "discovery_window": "2004-2014",
+        "validation_window": "2015-2019 diagnostic only",
+        "holdout_window": "UNTOUCHED",
+        "discovery_rows": 1368,
+        "validation_rows": 506,
+        "discovery_avg_delta": 0.006115009746588684,
+        "validation_avg_delta": 0.0669708051666605,
+        "delta_h3": 0.048670163643751624,
+        "delta_h6": 0.06797680174356321,
+        "delta_h12": 0.08426545011266667,
+        "fav_rate_h3": 0.19960474308300397,
+        "fav_rate_h6": 0.2885375494071146,
+        "fav_rate_h12": 0.37351778656126483,
+        "fav_rate_h3_ci95": [
+          0.16403162055335968,
+          0.23517786561264822
+        ],
+        "fav_rate_h6_ci95": [
+          0.2490118577075099,
+          0.3300395256916996
+        ],
+        "fav_rate_h12_ci95": [
+          0.33201581027667987,
+          0.4209486166007905
+        ],
+        "baseline_h3": 0.15093457943925234,
+        "baseline_h6": 0.2205607476635514,
+        "baseline_h12": 0.28925233644859816,
+        "positive_horizons": 3,
+        "tau": 10.951872186961074,
+        "max_year_share": 0.24110671936758893,
+        "year_distribution": {
+          "2016": 0.241,
+          "2019": 0.229,
+          "2017": 0.213,
+          "2018": 0.194,
+          "2015": 0.123
+        },
+        "effect_size_proxy": 0.16160337295343222,
+        "evidence_index": 25.716789183997633,
+        "historical_directional_favorable_rate": 0.2872200263504611
+      },
+      "mfe_mae_summary": {
+        "H3": {
+          "mfe_atr_p25": 0.06455475018326949,
+          "mfe_atr_p50": 0.21288905839212174,
+          "mfe_atr_p75": 0.428711734617381,
+          "mae_atr_p25": 0.03933048332084985,
+          "mae_atr_p50": 0.17548680565476205,
+          "mae_atr_p75": 0.36821727855411346,
+          "mfe_mae_p50_ratio": 1.2131342729603372
+        },
+        "H6": {
+          "mfe_atr_p25": 0.0885458959603746,
+          "mfe_atr_p50": 0.28752583459583614,
+          "mfe_atr_p75": 0.5596576832764784,
+          "mae_atr_p25": 0.06814576777260609,
+          "mae_atr_p50": 0.23082902903140823,
+          "mae_atr_p75": 0.4467692200831118,
+          "mfe_mae_p50_ratio": 1.2456225103156906
+        },
+        "H12": {
+          "mfe_atr_p25": 0.10881548829185594,
+          "mfe_atr_p50": 0.36107785054229924,
+          "mfe_atr_p75": 0.6982616494158258,
+          "mae_atr_p25": 0.09594666884998827,
+          "mae_atr_p50": 0.2721982936942535,
+          "mae_atr_p75": 0.5282956295869701,
+          "mfe_mae_p50_ratio": 1.3265250330624025
+        }
+      },
+      "no_lookahead_proof_fa": "تمام feature ها forward-only هستند: d1_trend و h4_trend از MA(50) و MA(20) با rolling شیب ساخته شده و سپس با shift(1) به state 'safe' تبدیل می‌شوند تا فقط state قبل از باز شدن کندل جاری استفاده شود. ATR(20) D1 نیز با shift(1) ایمن می‌شود. session bucket صرفاً از ساعت UTC bar_open تعیین می‌شود. trigger fully مکانیکی است: open, close, high, low بار جاری و بارهای قبلی. هیچ centered MA یا smoothing دوطرفه. هیچ swing-high/low retrospective.",
+      "active_caveats": [
+        "tau_inflated=10.95_validation_stronger_than_discovery",
+        "Extended observation only: breakout continuation posture may become signal-like; requires shadow observation before runtime activation."
+      ],
+      "future_signal_path_metadata": {
+        "memory_layer": "context_watch_only",
+        "future_setup_candidate": true,
+        "blocker_dependencies": [
+          "event_risk",
+          "spread_cost",
+          "regime_mismatch"
+        ],
+        "confidence_vector_inputs": [
+          "evidence_strength",
+          "context_fit",
+          "recency_stability",
+          "active_caveats",
+          "concurrent_agreement"
+        ]
+      },
+      "forbidden_use": [
+        "No buy/sell/hold instruction.",
+        "No entry/stop/target.",
+        "No position sizing.",
+        "No probability, profitability, tradability, or broker/execution claim."
+      ],
+      "active_in_runtime": false,
+      "activation_status": "EXTENDED_OBSERVATION_NOT_REGULAR_RUNTIME_ACTIVE",
+      "score_not_probability": 66,
+      "band": "EXTENDED_OBSERVATION_REVIEW_NOT_RUNTIME",
+      "direction_side": "LONG",
+      "runtime_display_caveat_required": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "mandatory_caveat": "Display-only historical directional watch. Not buy/sell, not entry/stop/target, not probability, not broker/execution.",
+      "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_DIRECTIONAL_WATCH_v1_0.json",
+      "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
+      "dependency_caveat": "Extended observation only: breakout continuation posture may become signal-like; requires shadow observation before runtime activation.",
+      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد."
     }
   ],
   "global_forbidden": [
@@ -1209,7 +3398,7 @@
     "clean validated edge claim",
     "automatic execution"
   ],
-  "updated_utc": "2026-05-13T12:00:00Z",
+  "updated_utc": "2026-05-14T00:00:00Z",
   "ops10_policy": "Legacy active M15 memories archived by user decision; new runtime-active memories must come from newer MTF directional delivery packs and supported builder fields.",
   "ops11_policy": {
     "legacy_memory_policy": "three prior active M15 memories remain archived, not hard-deleted",
@@ -1224,5 +3413,19 @@
     "no_hard_delete": true,
     "signal_authorized": false,
     "action_surface_authorized": false
+  },
+  "ops20_policy": {
+    "status": "CONSOLIDATED_WAVE3_WAVE4_APPLIED",
+    "active_runtime_added": [
+      "6 session-open trend memories",
+      "EURUSD Asian-high sweep/reclaim short",
+      "XAUUSD weekly-open reclaim short"
+    ],
+    "parked_not_runtime": [
+      "XAUUSD vol-expansion long",
+      "USDJPY vol-expansion short",
+      "XAUUSD Asian-high breakout continuation long"
+    ],
+    "boundary": "NOT_SIGNAL_NO_BUY_SELL_NO_ENTRY_STOP_TARGET_NO_PROBABILITY_NO_BROKER_EXECUTION"
   }
 }
