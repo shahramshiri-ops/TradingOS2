@@ -8,8 +8,8 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS21_EVENT_LIFECYCLE_POLICY_v1_0';
-const ACTIVE_EVENT_WINDOW_MIN = 60; // fallback only; official events use per-memory lifecycle policy
+const PANEL_VERSION = 'SIG-BRAIN-OPS19_UI_INTERIOR_MINIMALISM_REFINEMENT_v1_0';
+const ACTIVE_EVENT_WINDOW_MIN = 10;
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
 const STORAGE_HISTORY_KEY = 'sigBrain4.activeEventHistory.deprecated.v2';
@@ -69,7 +69,7 @@ function localDateTimeWithZone(d){
 function remainingFa(now, expires){
   const m = minutesBetween(expires, now);
   if(m === null || m === undefined || Number.isNaN(m)) return 'نامشخص';
-  if(m <= 0) return 'از بازهٔ اعتبار پژوهشی خارج شده';
+  if(m <= 0) return 'منقضی شده';
   if(m < 60) return `${m} دقیقه باقی‌مانده`;
   const h = Math.floor(m/60), r = m % 60;
   return r ? `${h} ساعت و ${r} دقیقه باقی‌مانده` : `${h} ساعت باقی‌مانده`;
@@ -91,37 +91,6 @@ function timeframeMinutes(tf){
   if(m[1] === 'H') return n*60;
   if(m[1] === 'D') return n*1440;
   return 15;
-}
-
-function sessionCapDate(cap, basis){
-  if(!cap || !basis) return null;
-  const c = String(cap).toUpperCase();
-  const hourMap = {ASIA_END_UTC:7, LONDON_END_UTC:12, LONDON_NY_OVERLAP_END_UTC:16, NEW_YORK_END_UTC:21};
-  let out = null;
-  if(c === 'UTC_DAY_END'){
-    out = new Date(Date.UTC(basis.getUTCFullYear(), basis.getUTCMonth(), basis.getUTCDate()+1, 0, 0, 0));
-  }else if(Object.prototype.hasOwnProperty.call(hourMap, c)){
-    out = new Date(Date.UTC(basis.getUTCFullYear(), basis.getUTCMonth(), basis.getUTCDate(), hourMap[c], 0, 0));
-  }
-  return out && out.getTime() > basis.getTime() ? out : null;
-}
-function lifecyclePolicy(card){
-  return card && typeof card.event_lifecycle_policy === 'object' && card.event_lifecycle_policy ? card.event_lifecycle_policy : {};
-}
-function computeDisplayExpiry(card, sourceBarClose, detected){
-  const policy = lifecyclePolicy(card);
-  const display = policy.display_validity_policy && typeof policy.display_validity_policy === 'object' ? policy.display_validity_policy : {};
-  const tfMin = timeframeMinutes(card?.timeframe || 'M15');
-  const bars = Number(display.validity_bars || 0);
-  const maxMin = Number(display.max_validity_minutes || 0);
-  let duration = bars > 0 ? bars * tfMin : (maxMin > 0 ? maxMin : ACTIVE_EVENT_WINDOW_MIN);
-  if(maxMin > 0) duration = Math.min(duration, maxMin);
-  const base = sourceBarClose || detected || new Date();
-  let expires = addMinutes(base, duration);
-  const cap = sessionCapDate(display.session_cap, base);
-  if(cap && cap.getTime() < expires.getTime()) expires = cap;
-  if(detected && expires.getTime() <= detected.getTime()) expires = addMinutes(detected, Math.max(15, Math.min(duration, ACTIVE_EVENT_WINDOW_MIN)));
-  return {expires, label: display.expiry_label_fa || 'از بازهٔ اعتبار پژوهشی خارج شده', expiryIsInvalidation:false, policyVersion:policy.lifecycle_version || 'fallback'};
 }
 function sessionFromUtcDate(d){
   if(!d) return '—';
@@ -214,9 +183,8 @@ function eventFromCard(c, payload, context, refreshStatus, now){
   const barOpen = parseUtc(lc.latest_bar_open_ts_utc);
   const barClose = barOpen ? addMinutes(barOpen, timeframeMinutes(c.timeframe)) : null;
   const detected = parseUtc(refreshStatus?.last_successful_refresh_utc || refreshStatus?.created_utc || context?.created_utc || payload?.source_context_summary?.context_created_utc || payload?.created_utc) || now;
-  const expiry = computeDisplayExpiry(c, barClose, detected);
-  const expires = expiry.expires;
-  const eventId = `${c.memory_id || 'memory'}::${lc.latest_bar_open_ts_utc || lc.latest_h1_bar_open_ts_utc || isoMinute(detected)}`;
+  const expires = addMinutes(detected, ACTIVE_EVENT_WINDOW_MIN);
+  const eventId = `${c.memory_id || 'memory'}::${lc.latest_bar_open_ts_utc || isoMinute(detected)}`;
   const expired = expires ? now.getTime() > expires.getTime() : false;
   return {
     event_id:eventId,
@@ -232,9 +200,6 @@ function eventFromCard(c, payload, context, refreshStatus, now){
     source_bar_close_ts_utc:isoMinute(barClose),
     detected_at_utc:isoMinute(detected),
     expires_at_utc:isoMinute(expires),
-    expiry_label_fa: expiry.label,
-    expiry_is_invalidation: false,
-    event_lifecycle_policy_applied: {policy_version: expiry.policyVersion, fallback_event: true},
     session_bucket:lc.session_bucket || '—',
     status:expired ? 'EXPIRED' : 'ACTIVE_NOW',
     expired,
@@ -250,9 +215,7 @@ function normalizeOfficialEvent(e){
   const expires = e.expires_at_utc || null;
   const posture = e.posture_fa || e.simple_posture_fa || e.event_type_fa || e.event_type || 'memory event پژوهشی فعال';
   const meaning = e.meaning_fa || e.display_message_fa || e.simple_message_fa || e.plain_language_summary_fa || 'یک memory event رسمی فعال شده است.';
-  const statusRaw = String(e.status || '').toUpperCase();
-  const invalidated = statusRaw === 'INVALIDATED' || Boolean(e.invalidated_at_utc);
-  const expired = !invalidated && (statusRaw === 'EXPIRED' || (parseUtc(expires) && new Date().getTime() > parseUtc(expires).getTime()));
+  const expired = String(e.status || '').toUpperCase() === 'EXPIRED' || (parseUtc(expires) && new Date().getTime() > parseUtc(expires).getTime());
   return {
     event_id:e.event_id,
     memory_id:e.memory_id,
@@ -269,13 +232,8 @@ function normalizeOfficialEvent(e){
     activated_at_utc:activated,
     expires_at_utc:expires,
     session_bucket:e.session_bucket || e.session || '—',
-    status: invalidated ? 'INVALIDATED' : (expired ? 'EXPIRED' : (e.status || 'ACTIVE_NOW')),
+    status:expired ? 'EXPIRED' : (e.status || 'ACTIVE_NOW'),
     expired,
-    invalidated,
-    invalidated_at_utc:e.invalidated_at_utc || null,
-    invalidation_label_fa:e.invalidation_label_fa || null,
-    expiry_label_fa:e.expiry_label_fa || 'از بازهٔ اعتبار پژوهشی خارج شده',
-    expiry_is_invalidation:Boolean(e.expiry_is_invalidation),
     no_trade:Boolean(e.no_trade || String(e.event_type || '').toUpperCase().includes('NO_TRADE') || String(e.posture_fa || '').includes('اجتناب') || String(e.posture_fa || '').includes('احتیاط')),
     forbidden:e.forbidden || e.forbidden_use || 'بدون buy/sell، بدون entry/stop/target، بدون probability، بدون broker/execution.',
     sort_ts:parseUtc(activated)?.getTime() || parseUtc(expires)?.getTime() || 0,
@@ -290,7 +248,7 @@ function officialEvents(historyPayload){
 function officialActiveEvents(historyPayload, now){
   return officialEvents(historyPayload).filter(e=>{
     const expires = parseUtc(e.expires_at_utc);
-    return !e.expired && !e.invalidated && String(e.status || '').toUpperCase() !== 'INVALIDATED' && expires && now.getTime() <= expires.getTime();
+    return !e.expired && expires && now.getTime() <= expires.getTime();
   });
 }
 function officialHistoryMeta(historyPayload){
@@ -466,7 +424,7 @@ function eventCard(e){
   return `<article class="event-card ${cls}">
     <div class="event-head">
       <span class="event-badge">${e.no_trade ? 'احتیاط فعال' : 'watch فعال'}</span>
-      <span class="event-expiry">اعتبار پژوهشی تا ${esc(validText)}</span>
+      <span class="event-expiry">اعتبار تا ${esc(validText)}</span>
     </div>
     <div class="event-title-row">
       <h2>${esc(e.instrument)} <small>${esc(e.timeframe)}</small></h2>
@@ -486,24 +444,15 @@ function emptyActive(){
   return `<section class="empty-active">
     <div class="empty-icon">●</div>
     <h2>فعلاً رویداد فعال نداریم</h2>
-    <p>هیچ memory event معتبر و فعال در بازهٔ اعتبار پژوهشی خودش وجود ندارد. فعال نبودن یعنی شرایط live فعلاً match نیست یا رویداد قبلی از بازهٔ اعتبار پژوهشی خارج شده است.</p>
+    <p>هیچ memory event منقضی‌نشده‌ای در پنجرهٔ ۱۰ دقیقهٔ اخیر فعال نشده است. با بروزرسانی بعدی دوباره چک کن.</p>
   </section>`;
 }
 function historyCard(e){
   const expires = parseUtc(e.expires_at_utc);
-  const detected = parseUtc(e.detected_at_utc || e.activated_at_utc);
-  const invalidated = e.invalidated || String(e.status || '').toUpperCase() === 'INVALIDATED';
-  const expired = !invalidated && expires && new Date().getTime() > expires.getTime();
-  let statusText = `هنوز در بازهٔ اعتبار پژوهشی · تا ${localTimeOnly(expires)}`;
-  let cls = 'live';
-  if(invalidated){
-    statusText = `${e.invalidation_label_fa || 'context توسط شرط lifecycle نقض شده'} · ${localTimeOnly(parseUtc(e.invalidated_at_utc))}`;
-    cls = 'invalidated';
-  }else if(expired){
-    statusText = `${e.expiry_label_fa || 'از بازهٔ اعتبار پژوهشی خارج شده'} · تا ${localTimeOnly(expires)}`;
-    cls = 'expired';
-  }
-  return `<div class="history-item ${cls}">
+  const detected = parseUtc(e.detected_at_utc);
+  const expired = expires && new Date().getTime() > expires.getTime();
+  const statusText = expired ? `منقضی شده · تا ${localTimeOnly(expires)}` : `هنوز معتبر · تا ${localTimeOnly(expires)}`;
+  return `<div class="history-item ${expired ? 'expired' : 'live'}">
     <b>${esc(e.instrument)} ${esc(e.timeframe)}</b>
     <span>${esc(e.posture_fa)}</span>
     <em>${esc(statusText)} · فعال‌شده ${esc(localTimeOnly(detected))}</em>
@@ -512,7 +461,7 @@ function historyCard(e){
 function renderHistory(history, historyPayload){
   const meta = officialHistoryMeta(historyPayload);
   if(!history.length) return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">هنوز event رسمی فعالی در history سروری ثبت نشده است. ${esc(historyScopeLabel())}</p></section>`;
-  return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند. خروج از بازهٔ اعتبار پژوهشی به معنی invalidation، شکست تحلیل یا دستور خروج نیست.</p><p class="muted">${esc(meta)}</p><div class="history-list">${history.slice(0,25).map(historyCard).join('')}</div></section>`;
+  return `<section class="history official-history"><h2>History رسمی</h2><p class="muted">${esc(historyScopeLabel())}. فقط ACTIVE_MEMORY_EVENTهای واقعی ثبت می‌شوند؛ watchهای ناقص، inactiveها و archiveها وارد تاریخچه رسمی نمی‌شوند.</p><p class="muted">${esc(meta)}</p><div class="history-list">${history.slice(0,25).map(historyCard).join('')}</div></section>`;
 }
 function renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, historyPayload){
   const hiddenInactive = cards.filter(c=>!c.is_active_match).length;

@@ -223,7 +223,6 @@ def make_card(memory: Dict[str, Any], row: Dict[str, Any] | None, ev: Dict[str, 
         "evidence_summary": memory.get("evidence_summary", {}),
         "future_signal_path_metadata": memory.get("future_signal_path_metadata", {}),
         "dependency_caveat": memory.get("dependency_caveat"),
-        "event_lifecycle_policy": memory.get("event_lifecycle_policy", {}),
         "latest_context": row or {},
         "signal_status": "NOT_SIGNAL",
         "direction_authority": "NONE_AUTHORIZED",
@@ -251,9 +250,9 @@ def build_payload(context_path: Path, registry_path: Path) -> Dict[str, Any]:
     cards.sort(key=lambda c: (0 if c["is_active_match"] else 1, c["sort_rank"]))
 
     return {
-        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_4_EVENT_LIFECYCLE_OPS21",
+        "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_3_MTF_DIRECTIONAL_OPS11",
         "created_utc": utc_now(),
-        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_4_EVENT_LIFECYCLE_OPS21",
+        "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_3_MTF_DIRECTIONAL_OPS11",
         "authority": AUTHORITY,
         "deployment_status": "DISPLAY_ONLY_RUNTIME_BRAIN_MEMORY_MATCHER_NOT_SIGNAL_NOT_BROKER",
         "signal_authorized": False,

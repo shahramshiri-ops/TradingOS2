@@ -38,18 +38,7 @@
         "profitability",
         "tradability"
       ],
-      "runtime_display_caveat_required": "Weakened/parked memory only. Not active, not signal.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "runtime_display_caveat_required": "Weakened/parked memory only. Not active, not signal."
     },
     {
       "memory_id": "EURUSD_SESSION_UPSIDE_SWEEP_REJECTION_FADE_DOWN_CAVEATED_WATCH_v1_0",
@@ -148,18 +137,7 @@
         "automatic holdout opening"
       ],
       "runtime_display_caveat_required": "Archived legacy memory only. Not active in runtime, not signal.",
-      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed."
     },
     {
       "memory_id": "USDJPY_ALIGNMENT_ABSENT_CHOP_AVOID_SHORT_CONTEXT_CAVEATED_WATCH_v1_0",
@@ -264,18 +242,7 @@
         "automatic holdout opening"
       ],
       "runtime_display_caveat_required": "Archived legacy memory only. Not active in runtime, not signal.",
-      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed."
     },
     {
       "created_utc": "2026-05-11T07:24:10Z",
@@ -607,18 +574,7 @@
       ],
       "installed_by": "SIG-BRAIN-OPS1_REPO_PATCH_OPERATOR_REVIEW",
       "installed_utc": "2026-05-11T08:30:00Z",
-      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "archive_reason": "Archived by user decision in SIG-BRAIN-OPS10 to standardize runtime brain on newer MTF directional-watch delivery packs. Evidence retained; hard delete not performed."
     },
     {
       "memory_id": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -738,36 +694,7 @@
       "runtime_display_caveat_required": "Caveated H1 directional LONG watch only. Not a buy signal, not an entry instruction, and not a profitability/tradability claim.",
       "delivery_pack_source": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0_BRAIN_DELIVERY_PACK_v1_0",
       "ops10_integration_note": "matching_rule contract was formalized from hypothesis_registry_row and threshold_decision_and_validation_summary because proposed object declared fields but not a complete runtime matching_rule.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like بعد از reclaim کف روز قبل در زمینه D1/H4 نزولی برجسته‌تر می‌شود؛ این فقط context پژوهشی است.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 4,
-          "max_validity_minutes": 240,
-          "session_cap": null,
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "این prior-day low failed-breakout memory تا ۴ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره زیر سطح مرجع prior-day low بسته شود."
-        },
-        "invalidation_policy": {
-          "enabled": true,
-          "invalidation_is_not_trade_stop": true,
-          "rules": [
-            {
-              "type": "h1_close_back_through_reference_level",
-              "reference_field": "failed_breakout_reference_value",
-              "memory_direction": "LONG",
-              "evaluation_timeframe": "H1",
-              "buffer_policy": "NO_ADDITIONAL_BUFFER_IN_OPS21",
-              "plain_language_fa": "اگر H1 close دوباره از سطح مرجع در خلاف جهت memory عبور کند، context از نظر lifecycle نقض شده محسوب می‌شود؛ این stop-loss یا دستور معامله نیست."
-            }
-          ],
-          "invalidated_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
-          "plain_language_fa": "Invalidation در این سیستم به معنی نقض context پژوهشی است، نه stop-loss، شکست معامله یا دستور خروج."
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like بعد از reclaim کف روز قبل در زمینه D1/H4 نزولی برجسته‌تر می‌شود؛ این فقط context پژوهشی است."
     },
     {
       "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_REJECT_LONG_LONG_SESSION_DIRECTIONAL_WATCH_v1_0",
@@ -903,18 +830,7 @@
       "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like بعد از sweep/reject کف London morning در overlap برجسته‌تر می‌شود؛ این فقط context پژوهشی است.",
       "archive_reason": "Superseded by stricter London-low sweep/reclaim contract from EURUSD_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_CAVEATED_WATCH_DELIVERY_PACK_v1_0.",
       "superseded_by_memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
-      "runtime_display": "archive_only",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "runtime_display": "archive_only"
     },
     {
       "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
@@ -1097,36 +1013,7 @@
       "delivery_pack_source": "EURUSD_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_CAVEATED_WATCH_DELIVERY_PACK_v1_0",
       "ops17_integration_note": "Integrated as stricter replacement for earlier London-low sweep/reject memory after review. Original proposed object was review-only; this patch records repo integration decision while preserving no-signal boundaries.",
       "signal_authorized": false,
-      "action_surface_authorized": false,
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 4,
-          "max_validity_minutes": 240,
-          "session_cap": null,
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "این London-low reclaim memory تا ۴ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره زیر London low مرجع بسته شود."
-        },
-        "invalidation_policy": {
-          "enabled": true,
-          "invalidation_is_not_trade_stop": true,
-          "rules": [
-            {
-              "type": "h1_close_back_through_reference_level",
-              "reference_field": "london_session_low",
-              "memory_direction": "LONG",
-              "evaluation_timeframe": "H1",
-              "buffer_policy": "NO_ADDITIONAL_BUFFER_IN_OPS21",
-              "plain_language_fa": "اگر H1 close دوباره از سطح مرجع در خلاف جهت memory عبور کند، context از نظر lifecycle نقض شده محسوب می‌شود؛ این stop-loss یا دستور معامله نیست."
-            }
-          ],
-          "invalidated_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
-          "plain_language_fa": "Invalidation در این سیستم به معنی نقض context پژوهشی است، نه stop-loss، شکست معامله یا دستور خروج."
-        }
-      }
+      "action_surface_authorized": false
     },
     {
       "memory_id": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -1308,36 +1195,7 @@
       "runtime_display_caveat_required": "Caveated H1 directional LONG watch only. Not a buy signal, not an entry instruction, and not a profitability/tradability claim.",
       "dependency_caveat": "Potential correlation with adjacent session/reference-range failed-breakout families; do not treat as independent confirmation without dependency review.",
       "delivery_pack_source": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0_BRAIN_DELIVERY_PACK_v1_0",
-      "ops11_integration_note": "Integrated from W16 delivery pack. Runtime contract uses closed H1 London morning low failed downside/reclaim fields added by OPS11. score_not_probability is a conservative display score, not probability.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 4,
-          "max_validity_minutes": 240,
-          "session_cap": null,
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "این targeted London-morning-low failed-downside memory تا ۴ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره زیر سطح مرجع بسته شود."
-        },
-        "invalidation_policy": {
-          "enabled": true,
-          "invalidation_is_not_trade_stop": true,
-          "rules": [
-            {
-              "type": "h1_close_back_through_reference_level",
-              "reference_field": "targeted_london_morning_low_reference_value",
-              "memory_direction": "LONG",
-              "evaluation_timeframe": "H1",
-              "buffer_policy": "NO_ADDITIONAL_BUFFER_IN_OPS21",
-              "plain_language_fa": "اگر H1 close دوباره از سطح مرجع در خلاف جهت memory عبور کند، context از نظر lifecycle نقض شده محسوب می‌شود؛ این stop-loss یا دستور معامله نیست."
-            }
-          ],
-          "invalidated_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
-          "plain_language_fa": "Invalidation در این سیستم به معنی نقض context پژوهشی است، نه stop-loss، شکست معامله یا دستور خروج."
-        }
-      }
+      "ops11_integration_note": "Integrated from W16 delivery pack. Runtime contract uses closed H1 London morning low failed downside/reclaim fields added by OPS11. score_not_probability is a conservative display score, not probability."
     },
     {
       "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -1547,25 +1405,7 @@
       "delivery_pack_source": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend. Year concentration caveat: validation max_year_share near 0.396.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 3,
-          "max_validity_minutes": 180,
-          "session_cap": "LONDON_NY_OVERLAP_END_UTC",
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "برای memoryهای session-open، رویداد تا ۳ کندل H1 یا پایان London-NY overlap، هرکدام زودتر باشد، در صفحه اصلی معتبر نمایش داده می‌شود."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Session-open trend memories currently use time/session display expiry only; no hard runtime invalidation is asserted.",
-          "invalidation_is_not_trade_stop": true
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست."
     },
     {
       "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -1775,25 +1615,7 @@
       "delivery_pack_source": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 3,
-          "max_validity_minutes": 180,
-          "session_cap": "LONDON_NY_OVERLAP_END_UTC",
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "برای memoryهای session-open، رویداد تا ۳ کندل H1 یا پایان London-NY overlap، هرکدام زودتر باشد، در صفحه اصلی معتبر نمایش داده می‌شود."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Session-open trend memories currently use time/session display expiry only; no hard runtime invalidation is asserted.",
-          "invalidation_is_not_trade_stop": true
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
     },
     {
       "memory_id": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -2003,25 +1825,7 @@
       "delivery_pack_source": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 3,
-          "max_validity_minutes": 180,
-          "session_cap": "LONDON_NY_OVERLAP_END_UTC",
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "برای memoryهای session-open، رویداد تا ۳ کندل H1 یا پایان London-NY overlap، هرکدام زودتر باشد، در صفحه اصلی معتبر نمایش داده می‌شود."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Session-open trend memories currently use time/session display expiry only; no hard runtime invalidation is asserted.",
-          "invalidation_is_not_trade_stop": true
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست."
     },
     {
       "memory_id": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -2232,25 +2036,7 @@
       "delivery_pack_source": "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 3,
-          "max_validity_minutes": 180,
-          "session_cap": "LONDON_NY_OVERLAP_END_UTC",
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "برای memoryهای session-open، رویداد تا ۳ کندل H1 یا پایان London-NY overlap، هرکدام زودتر باشد، در صفحه اصلی معتبر نمایش داده می‌شود."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Session-open trend memories currently use time/session display expiry only; no hard runtime invalidation is asserted.",
-          "invalidation_is_not_trade_stop": true
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
     },
     {
       "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -2460,25 +2246,7 @@
       "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 3,
-          "max_validity_minutes": 180,
-          "session_cap": "LONDON_NY_OVERLAP_END_UTC",
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "برای memoryهای session-open، رویداد تا ۳ کندل H1 یا پایان London-NY overlap، هرکدام زودتر باشد، در صفحه اصلی معتبر نمایش داده می‌شود."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Session-open trend memories currently use time/session display expiry only; no hard runtime invalidation is asserted.",
-          "invalidation_is_not_trade_stop": true
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی LONG-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور خرید نیست."
     },
     {
       "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -2688,25 +2456,7 @@
       "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Session-open contract hardened in OPS20; active only on first closed H1 overlap bar with matching candle direction and D1 trend.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 3,
-          "max_validity_minutes": 180,
-          "session_cap": "LONDON_NY_OVERLAP_END_UTC",
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "برای memoryهای session-open، رویداد تا ۳ کندل H1 یا پایان London-NY overlap، هرکدام زودتر باشد، در صفحه اصلی معتبر نمایش داده می‌شود."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Session-open trend memories currently use time/session display expiry only; no hard runtime invalidation is asserted.",
-          "invalidation_is_not_trade_stop": true
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
     },
     {
       "memory_id": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -2907,36 +2657,7 @@
       "delivery_pack_source": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Validation-led evidence caveat: discovery average delta was near flat/slightly negative while validation was positive.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 4,
-          "max_validity_minutes": 240,
-          "session_cap": null,
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "این Asian-high sweep/reclaim SHORT memory تا ۴ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره بالای Asian high مرجع بسته شود."
-        },
-        "invalidation_policy": {
-          "enabled": true,
-          "invalidation_is_not_trade_stop": true,
-          "rules": [
-            {
-              "type": "h1_close_back_through_reference_level",
-              "reference_field": "asian_session_high",
-              "memory_direction": "SHORT",
-              "evaluation_timeframe": "H1",
-              "buffer_policy": "NO_ADDITIONAL_BUFFER_IN_OPS21",
-              "plain_language_fa": "اگر H1 close دوباره از سطح مرجع در خلاف جهت memory عبور کند، context از نظر lifecycle نقض شده محسوب می‌شود؛ این stop-loss یا دستور معامله نیست."
-            }
-          ],
-          "invalidated_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
-          "plain_language_fa": "Invalidation در این سیستم به معنی نقض context پژوهشی است، نه stop-loss، شکست معامله یا دستور خروج."
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
     },
     {
       "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -3133,36 +2854,7 @@
       "delivery_pack_source": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "XAU-specific weekly-open memory; validation-led with max_year_share near 0.346.",
-      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": true,
-          "basis": "source_bar_close_plus_trigger_timeframe_bars",
-          "validity_bars": 6,
-          "max_validity_minutes": 360,
-          "session_cap": null,
-          "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-          "expiry_is_invalidation": false,
-          "plain_language_fa": "این weekly-open reclaim SHORT memory تا ۶ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره بالای weekly open بسته شود."
-        },
-        "invalidation_policy": {
-          "enabled": true,
-          "invalidation_is_not_trade_stop": true,
-          "rules": [
-            {
-              "type": "h1_close_back_through_reference_level",
-              "reference_field": "weekly_open",
-              "memory_direction": "SHORT",
-              "evaluation_timeframe": "H1",
-              "buffer_policy": "NO_ADDITIONAL_BUFFER_IN_OPS21",
-              "plain_language_fa": "اگر H1 close دوباره از سطح مرجع در خلاف جهت memory عبور کند، context از نظر lifecycle نقض شده محسوب می‌شود؛ این stop-loss یا دستور معامله نیست."
-            }
-          ],
-          "invalidated_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
-          "plain_language_fa": "Invalidation در این سیستم به معنی نقض context پژوهشی است، نه stop-loss، شکست معامله یا دستور خروج."
-        }
-      }
+      "if_active_historical_posture_fa": "اگر فعال شود، سناریوی تاریخی SHORT-like نسبت به baseline برجسته‌تر می‌شود؛ این دستور فروش نیست."
     },
     {
       "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_UP_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -3338,18 +3030,7 @@
       "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_UP_LONG_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Parked by OPS20: discovery negative / validation positive instability; not runtime active.",
-      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد."
     },
     {
       "memory_id": "USDJPY_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_DOWN_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -3525,18 +3206,7 @@
       "delivery_pack_source": "USDJPY_H1_LONDON_NY_OVERLAP_VOL_EXPANSION_DOWN_SHORT_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Parked by OPS20: discovery negative / validation positive instability; not runtime active.",
-      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد."
     },
     {
       "memory_id": "XAUUSD_H1_LONDON_NY_OVERLAP_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -3714,18 +3384,7 @@
       "delivery_pack_source": "XAUUSD_H1_LONDON_NY_OVERLAP_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_DIRECTIONAL_WATCH_v1_0.json",
       "ops20_integration_policy": "SIG-BRAIN-OPS20_CONSOLIDATED_WAVE3_WAVE4",
       "dependency_caveat": "Extended observation only: breakout continuation posture may become signal-like; requires shadow observation before runtime activation.",
-      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد.",
-      "event_lifecycle_policy": {
-        "lifecycle_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "display_validity_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime; no active-event lifecycle applies."
-        },
-        "invalidation_policy": {
-          "enabled": false,
-          "reason": "Memory is not active in runtime."
-        }
-      }
+      "if_active_historical_posture_fa": "این الگو فعلاً فقط برای review/extended observation در کتابخانه نگهداری می‌شود و runtime alert فعال ندارد."
     }
   ],
   "global_forbidden": [
@@ -3768,11 +3427,5 @@
       "XAUUSD Asian-high breakout continuation long"
     ],
     "boundary": "NOT_SIGNAL_NO_BUY_SELL_NO_ENTRY_STOP_TARGET_NO_PROBABILITY_NO_BROKER_EXECUTION"
-  },
-  "ops21_policy": {
-    "program": "SIG-BRAIN-OPS21 — Per-Memory Event Lifecycle Policy",
-    "created_utc": "2026-05-19T00:00:00Z",
-    "scope": "event_lifecycle_policy_only_no_signal_no_trade",
-    "summary": "Adds per-memory display validity windows and separates expiry from invalidation. Expiry is not a trading invalidation. Invalidation rules are context-lifecycle only for selected level-based memories."
   }
 }
