@@ -1,0 +1,36 @@
+{
+  "policy_version": "SHADOW_READY_01_POLICY_v1_0",
+  "purpose": "Live shadow readiness hardening before multi-month live observation.",
+  "authority": "SHADOW_READY_01|NOT_SIGNAL|NO_BROKER_EXECUTION|NO_AUTO_LEARNING",
+  "signal_authorized": false,
+  "trade_instruction_authorized": false,
+  "broker_execution_authorized": false,
+  "action_surface_authorized": false,
+  "auto_learning_authorized": false,
+  "rule_rewrite_authorized": false,
+  "cohort_policy": {
+    "cohort_changes_on_version_signature_change": true,
+    "instrumentation_changes_do_not_invalidate_prior_cohorts": true,
+    "setup_trigger_blocker_rule_changes_create_new_cohort": true,
+    "automatic_rule_rewrite_forbidden": true
+  },
+  "review_thresholds": {
+    "sanity_only_candidate_count_lt": 10,
+    "early_diagnostic_candidate_count_min": 10,
+    "pilot_review_candidate_count_min": 30,
+    "medium_review_candidate_count_min": 50,
+    "strong_review_candidate_count_min": 100,
+    "near_miss_diagnostic_review_min": 30
+  },
+  "outputs": [
+    "near_miss_ledger_current.json",
+    "blocker_diagnostic_ledger_current.json",
+    "shadow_health_summary_current.json",
+    "shadow_cohort_current.json",
+    "shadow_observation_completion_current.json",
+    "shadow_daily_summary_current.json",
+    "shadow_weekly_summary_current.json",
+    "shadow_panel_status_current.json",
+    "shadow_review_queue_current.json"
+  ]
+}
