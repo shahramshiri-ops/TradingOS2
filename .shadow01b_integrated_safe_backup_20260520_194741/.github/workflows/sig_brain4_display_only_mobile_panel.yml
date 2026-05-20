@@ -27,13 +27,12 @@ jobs:
         run: |
           python scripts/build_sig_brain4_runtime_payload.py
           python scripts/validate_sig_brain4_outputs.py
-          python scripts/run_sig_shadow_01b_integrated.py
       - name: Commit generated display-only payload
         id: commit_generated
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add runtime/sig_brain/sig_brain4_runtime_payload_current.json panel/brain4/sig_brain4_runtime_payload_current.json proofs/sig_brain4_validation_result.json runtime/sig_signal_candidates runtime/sig_shadow
+          git add runtime/sig_brain/sig_brain4_runtime_payload_current.json panel/brain4/sig_brain4_runtime_payload_current.json proofs/sig_brain4_validation_result.json
           if git diff --cached --quiet; then
             echo "No generated changes"
             echo "changed=false" >> "$GITHUB_OUTPUT"

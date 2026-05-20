@@ -1,0 +1,27 @@
+{
+  "policy_id": "SIG_SHADOW_OBSERVATION_POLICY_v1_0",
+  "authority": "FORWARD_SHADOW_OBSERVATION_ONLY|NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION",
+  "timeframe": "H1",
+  "horizons": [
+    "H1+1",
+    "H1+2",
+    "H1+4",
+    "H1+8"
+  ],
+  "metrics": [
+    "favorable_excursion_price_units",
+    "adverse_excursion_price_units",
+    "directional_close_move_price_units",
+    "directional_close_move_pct"
+  ],
+  "not_metrics": [
+    "PnL",
+    "win_rate",
+    "expectancy",
+    "profitability",
+    "tradability"
+  ],
+  "reference_price_policy": "Use closed H1 bar close from candidate/latest_context when available; observation reference only, not entry.",
+  "pending_behavior": "If enough future H1 bars are not yet available, keep candidate in PENDING_OBSERVATION.",
+  "missing_data_behavior": "Do not fabricate results; mark OBSERVATION_DATA_UNAVAILABLE."
+}

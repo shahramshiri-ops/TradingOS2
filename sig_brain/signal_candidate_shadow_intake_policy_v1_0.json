@@ -1,0 +1,81 @@
+{
+  "policy_id": "SIG_SHADOW_01B_INTEGRATED_SAFE_POLICY_v1_0",
+  "authority": "SHADOW_ONLY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION",
+  "source_programs": [
+    "SETUP-01",
+    "TRIG-01",
+    "BLOCK-01",
+    "QVEC-01",
+    "SIGCAND-01",
+    "SHADOW-01"
+  ],
+  "core_memory_map": {
+    "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "candidate_contract": "SIGCAND_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_CANDIDATE_v1_0",
+      "direction": "LONG_BIAS",
+      "sample_grade": "CAVEATED"
+    },
+    "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "candidate_contract": "SIGCAND_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_CANDIDATE_v1_0",
+      "direction": "LONG_BIAS",
+      "sample_grade": "ADEQUATE"
+    },
+    "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "candidate_contract": "SIGCAND_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_CANDIDATE_v1_0",
+      "direction": "LONG_BIAS",
+      "sample_grade": "ADEQUATE"
+    },
+    "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_contract": "SIGCAND_H1_LONDON_NY_SESSION_OPEN_TREND_DIRECTIONAL_CANDIDATE_v1_0",
+      "direction": "LONG_BIAS",
+      "sample_grade": "ADEQUATE"
+    },
+    "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_contract": "SIGCAND_H1_LONDON_NY_SESSION_OPEN_TREND_DIRECTIONAL_CANDIDATE_v1_0",
+      "direction": "SHORT_BIAS",
+      "sample_grade": "STRONG"
+    },
+    "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_contract": "SIGCAND_H1_LONDON_NY_SESSION_OPEN_TREND_DIRECTIONAL_CANDIDATE_v1_0",
+      "direction": "LONG_BIAS",
+      "sample_grade": "STRONG"
+    },
+    "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_contract": "SIGCAND_H1_LONDON_NY_SESSION_OPEN_TREND_DIRECTIONAL_CANDIDATE_v1_0",
+      "direction": "SHORT_BIAS",
+      "sample_grade": "STRONG"
+    },
+    "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_contract": "SIGCAND_H1_LONDON_NY_SESSION_OPEN_TREND_DIRECTIONAL_CANDIDATE_v1_0",
+      "direction": "LONG_BIAS",
+      "sample_grade": "STRONG"
+    },
+    "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0": {
+      "cluster": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_contract": "SIGCAND_H1_LONDON_NY_SESSION_OPEN_TREND_DIRECTIONAL_CANDIDATE_v1_0",
+      "direction": "SHORT_BIAS",
+      "sample_grade": "STRONG"
+    }
+  },
+  "excluded_memory_map": {
+    "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0": "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW",
+    "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0": "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW"
+  },
+  "horizons_h1": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "candidate_intake_rule": "Only active Brain4 cards for core_memory_map are converted into shadow-only signal-candidate records.",
+  "dedupe_rule": "One candidate per setup_cluster_id/instrument/timeframe/directional_bias/trigger_bar_open_ts_utc.",
+  "holdout_or_live_outcome_boundary": "Forward shadow observation only; no profitability, tradability, entry, stop, target, or broker execution authority."
+}
