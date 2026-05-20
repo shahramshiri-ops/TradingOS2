@@ -1,6 +1,6 @@
 {
   "payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_4_EVENT_LIFECYCLE_OPS21",
-  "created_utc": "2026-05-20T23:37:13Z",
+  "created_utc": "2026-05-20T23:47:17Z",
   "adapter_version": "SIG_BRAIN4_RUNTIME_MATCHER_v1_4_EVENT_LIFECYCLE_OPS21",
   "authority": "SIG_BRAIN4_RUNTIME_MEMORY_MATCHER|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_PROFITABILITY_TRADABILITY_CLAIM|NO_BROKER_EXECUTION",
   "deployment_status": "DISPLAY_ONLY_RUNTIME_BRAIN_MEMORY_MATCHER_NOT_SIGNAL_NOT_BROKER",
@@ -11,7 +11,7 @@
   "source_context_summary": {
     "input_file": "inputs/sig_brain4_live_context_latest.json",
     "context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_5_OPS20_CONSOLIDATED_H1_SESSION_ASIAN_WEEKLY",
-    "context_created_utc": "2026-05-20T23:37:13Z",
+    "context_created_utc": "2026-05-20T23:47:17Z",
     "source_authority": "SIG_BRAIN5_UPSTREAM_CONTEXT_BUILDER|READ_ONLY_DERIVED_CONTEXT|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION"
   },
   "registry_summary": {
@@ -2039,12 +2039,12 @@
         "instrument eq XAUUSD observed=XAUUSD",
         "timeframe eq H1 observed=H1",
         "prior_h1_session not_eq LONDON_NY_OVERLAP observed=ROLLOVER_THIN",
+        "d1_trend_safe eq UP observed=UP",
         "h4_trend_safe in ['UP', 'DOWN', 'NEUTRAL'] observed=UP"
       ],
       "failed_conditions": [
         "session_bucket eq LONDON_NY_OVERLAP observed=ROLLOVER_THIN",
         "is_first_h1_bar_of_session bool_eq True observed=False",
-        "d1_trend_safe eq UP observed=NEUTRAL",
         "h1_bar_direction eq BULLISH observed=BEARISH",
         "session_open_trend_trigger_state eq SESSION_OPEN_TREND_LONG observed=NONE"
       ],
@@ -2142,9 +2142,9 @@
         "h1_close": 4539.88016,
         "h1_bar_direction": "BEARISH",
         "session_open_trend_trigger_state": "NONE",
-        "d1_trend_state": "FLAT",
+        "d1_trend_state": "UP",
         "h4_trend_state": "UP",
-        "d1_trend_safe": "NEUTRAL",
+        "d1_trend_safe": "UP",
         "h4_trend_safe": "UP",
         "d1_atr20_safe": 93.53387149999995,
         "same_utc_date_asian_range_available": true,
@@ -2218,7 +2218,7 @@
       "failed_conditions": [
         "session_bucket eq LONDON_NY_OVERLAP observed=ROLLOVER_THIN",
         "is_first_h1_bar_of_session bool_eq True observed=False",
-        "d1_trend_safe eq DOWN observed=NEUTRAL",
+        "d1_trend_safe eq DOWN observed=UP",
         "session_open_trend_trigger_state eq SESSION_OPEN_TREND_SHORT observed=NONE"
       ],
       "missing_inputs": [],
@@ -2315,9 +2315,9 @@
         "h1_close": 4539.88016,
         "h1_bar_direction": "BEARISH",
         "session_open_trend_trigger_state": "NONE",
-        "d1_trend_state": "FLAT",
+        "d1_trend_state": "UP",
         "h4_trend_state": "UP",
-        "d1_trend_safe": "NEUTRAL",
+        "d1_trend_safe": "UP",
         "h4_trend_safe": "UP",
         "d1_atr20_safe": 93.53387149999995,
         "same_utc_date_asian_range_available": true,
@@ -2591,7 +2591,7 @@
         "is_weekly_open_bar bool_eq False observed=False"
       ],
       "failed_conditions": [
-        "d1_trend_safe eq DOWN observed=NEUTRAL",
+        "d1_trend_safe eq DOWN observed=UP",
         "weekly_open_reclaim_short_state eq WEEKLY_OPEN_RECLAIM_SHORT observed=NONE"
       ],
       "missing_inputs": [],
@@ -2699,9 +2699,9 @@
         "h1_close": 4539.88016,
         "h1_bar_direction": "BEARISH",
         "session_open_trend_trigger_state": "NONE",
-        "d1_trend_state": "FLAT",
+        "d1_trend_state": "UP",
         "h4_trend_state": "UP",
-        "d1_trend_safe": "NEUTRAL",
+        "d1_trend_safe": "UP",
         "h4_trend_safe": "UP",
         "d1_atr20_safe": 93.53387149999995,
         "same_utc_date_asian_range_available": true,
@@ -2854,9 +2854,9 @@
         "h1_close": 4539.88016,
         "h1_bar_direction": "BEARISH",
         "session_open_trend_trigger_state": "NONE",
-        "d1_trend_state": "FLAT",
+        "d1_trend_state": "UP",
         "h4_trend_state": "UP",
-        "d1_trend_safe": "NEUTRAL",
+        "d1_trend_safe": "UP",
         "h4_trend_safe": "UP",
         "d1_atr20_safe": 93.53387149999995,
         "same_utc_date_asian_range_available": true,
@@ -3164,9 +3164,9 @@
         "h1_close": 4539.88016,
         "h1_bar_direction": "BEARISH",
         "session_open_trend_trigger_state": "NONE",
-        "d1_trend_state": "FLAT",
+        "d1_trend_state": "UP",
         "h4_trend_state": "UP",
-        "d1_trend_safe": "NEUTRAL",
+        "d1_trend_safe": "UP",
         "h4_trend_safe": "UP",
         "d1_atr20_safe": 93.53387149999995,
         "same_utc_date_asian_range_available": true,
