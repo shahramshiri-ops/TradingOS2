@@ -1,0 +1,32 @@
+{
+  "policy_id": "SHADOW_DIAG_POLICY_v1_0",
+  "created_utc": "2026-05-20T18:55:19Z",
+  "purpose": "Explain why active watches / near-misses / blocked items do or do not become shadow candidates.",
+  "authority": "DIAGNOSTIC_ONLY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+  "core_shadow_memory_policy": {
+    "core_memory_count": 9,
+    "extended_observation_only_memory_ids": [
+      "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0"
+    ],
+    "reason": "Excluded from core shadow because validation was positive while discovery delta was negative/flat; split-stability review required."
+  },
+  "diagnostic_statuses": [
+    "ACTIVE_WATCH_CORE_ELIGIBLE",
+    "ACTIVE_WATCH_EXTENDED_OBSERVATION_ONLY",
+    "ACTIVE_WATCH_NOT_SHADOW_ELIGIBLE",
+    "CORE_WATCH_EXPIRED_BEFORE_CANDIDATE",
+    "CORE_WATCH_INVALIDATED_BEFORE_CANDIDATE",
+    "SHADOW_CANDIDATE_LOGGED",
+    "BLOCKED_PRE_CANDIDATE"
+  ],
+  "forbidden": [
+    "signal_generation",
+    "buy_sell_instruction",
+    "entry_stop_target",
+    "position_sizing",
+    "broker_execution",
+    "auto_learning",
+    "automatic_rule_rewrite"
+  ]
+}
