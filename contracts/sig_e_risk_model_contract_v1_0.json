@@ -1,0 +1,36 @@
+{
+  "contract_id": "SIG_E_RISK_MODEL_CONTRACT_v1_0",
+  "object_type": "manual_risk_draft",
+  "status": "CONTRACT_ONLY_FUTURE_GATE_NOT_ACTIVE",
+  "definition": "A future risk model may suggest a risk tier/risk cap for manual review, but never creates or routes an order.",
+  "required_fields_future": [
+    "risk_model_id",
+    "trade_plan_draft_id",
+    "risk_tier",
+    "max_risk_percent_draft",
+    "position_size_draft_if_enabled",
+    "account_value_source",
+    "manual_review_required",
+    "non_execution_statement"
+  ],
+  "allowed_risk_tier_future": [
+    "NO_TRADE",
+    "OBSERVE_ONLY",
+    "LOW",
+    "LOW_MEDIUM",
+    "MEDIUM",
+    "HIGH_RISK_REQUIRES_EXTRA_REVIEW"
+  ],
+  "hard_rules_future": [
+    "no_position_size_without_human_review",
+    "no_account_credentials",
+    "no_broker_credentials",
+    "no_auto_execution",
+    "risk_cap_is_a_draft_not_an_order"
+  ],
+  "current_runtime_authorized": false,
+  "boundary": {
+    "position_sizing_execution_authorized": false,
+    "manual_review_required": true
+  }
+}

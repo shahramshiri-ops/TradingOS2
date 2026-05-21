@@ -54,6 +54,8 @@ FORBIDDEN_PATTERNS = [
 
 ALLOWED_GLOBS = [
     "panel/brain4/*.json",
+    "runtime/sig_e/*current.json",
+    "panel/brain4/sig_e*.json",
     "state/live_observation/*.json",
     "runtime/sig_live_observation/*.json",
     "panel/brain4/live_observation_*.json",

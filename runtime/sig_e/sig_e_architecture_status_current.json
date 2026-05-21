@@ -1,0 +1,56 @@
+{
+  "status_id": "SIG_E_ARCHITECTURE_STATUS_CURRENT",
+  "created_utc": "2026-05-21T20:14:35Z",
+  "program": "SIG-E-ARCH1",
+  "architecture_status": "TARGET_E_CONTRACT_ACTIVE_CURRENT_RUNTIME_NOT_SIGNAL",
+  "target_architecture": "E_MANUAL_SEMI_AUTOMATED_TRADING_DECISION_SYSTEM",
+  "current_runtime_posture": "DISPLAY_ONLY_RESEARCH_AND_FORWARD_SHADOW_NOT_SIGNAL",
+  "contract_id": "SIG_E_ARCHITECTURE_CONTRACT_v1_0",
+  "layer_count": 12,
+  "phase_gate_sequence": [
+    "SIG_E_ARCH1_CONTRACT_ONLY",
+    "SIG_E_SETUP1_SETUP_LAYER_NO_SIGNAL",
+    "SIG_E_TRIGGER1_TRIGGER_LAYER_NO_TRADE_PLAN",
+    "SIG_E_BLOCKER1_VETO_LAYER",
+    "SIG_E_QV1_QUALITY_VECTOR",
+    "SIG_E_SC1_SIGNAL_CANDIDATE_NO_ENTRY_STOP_TARGET",
+    "SIG_E_TP1_TRADE_PLAN_DRAFT_MANUAL_REVIEW_ONLY",
+    "SIG_E_RISK1_RISK_POSITION_SIZE_DRAFT_NO_EXECUTION",
+    "SIG_E_SHADOW_TRADE1_FORWARD_SHADOW_TRADE_PLAN_EVALUATION",
+    "BROKER_EXECUTION_FORBIDDEN_UNTIL_SEPARATE_F_AUTHORIZATION"
+  ],
+  "non_authority_laws": [
+    "memory_is_not_a_trade",
+    "setup_is_not_a_trade",
+    "trigger_alone_is_not_a_trade",
+    "signal_candidate_is_not_execution",
+    "trade_plan_draft_requires_manual_review",
+    "risk_size_is_never_order_size_until_explicit_human_approval",
+    "no_auto_execution",
+    "no_broker_integration",
+    "no_self_learning_deployment",
+    "no_live_profitability_claim"
+  ],
+  "boundary": {
+    "current_runtime_signal_authorized": false,
+    "current_runtime_trade_proposal_authorized": false,
+    "current_runtime_entry_stop_target_authorized": false,
+    "broker_integration_authorized": false,
+    "auto_execution_authorized": false,
+    "self_learning_deployment_authorized": false,
+    "automatic_position_opening_authorized": false,
+    "manual_review_required_for_any_future_trade_plan": true,
+    "human_final_decision_required": true,
+    "not_live_profitability_claim": true
+  },
+  "panel_policy": {
+    "main_panel_should_not_show_signal_candidate_or_trade_plan_until_explicit_future_gate": true,
+    "sig_e_status_can_be_debug_or_research_metadata_only": true
+  },
+  "next_recommended_gate": "SIG-E-SETUP1_SETUP_LAYER_NO_SIGNAL",
+  "notes": [
+    "This payload is metadata/research/debug only.",
+    "No signal candidate runtime is active in ARCH1.",
+    "No trade plan, entry, stop, target, risk sizing, broker integration, or execution is authorized."
+  ]
+}

@@ -47,6 +47,12 @@ jobs:
           print("numpy", np.__version__)
           PY
 
+      # SIG-E-ARCH1 — target E architecture contract validation (NOT_SIGNAL / NO_EXECUTION)
+      - name: Validate SIG-E-ARCH1 decision architecture contracts
+        run: |
+          python scripts/build_sig_e_arch1_status.py
+          python scripts/validate_sig_e_arch1_contracts.py
+
       - name: Run read-only M5 refresh + internal resampling + brain payload + refresh status
         run: |
           python scripts/run_live_m5_refresh_pipeline.py --fetch-live

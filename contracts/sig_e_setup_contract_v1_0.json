@@ -1,0 +1,48 @@
+{
+  "contract_id": "SIG_E_SETUP_CONTRACT_v1_0",
+  "object_type": "setup_candidate",
+  "status": "CONTRACT_ONLY_NOT_RUNTIME_ACTIVE",
+  "definition": "A setup is a pre-trigger market condition that may become reviewable later; it is never an instruction to trade.",
+  "allowed_setup_families_initial": [
+    "failed_breakout_trap",
+    "sweep_reclaim",
+    "pullback_continuation",
+    "range_rejection",
+    "trend_continuation",
+    "session_handover",
+    "volatility_transition"
+  ],
+  "required_fields": [
+    "setup_id",
+    "instrument",
+    "timeframe",
+    "setup_family",
+    "observed_ts_utc",
+    "valid_until_ts_utc",
+    "supporting_market_state",
+    "memory_support_refs",
+    "status",
+    "non_authority_statement"
+  ],
+  "allowed_status": [
+    "WATCH_ONLY",
+    "SETUP_FORMING",
+    "SETUP_VALID_BUT_TRIGGER_WAIT",
+    "BLOCKED",
+    "EXPIRED",
+    "INVALIDATED",
+    "INSUFFICIENT_DATA"
+  ],
+  "forbidden_fields_before_future_gate": [
+    "entry_price",
+    "stop_price",
+    "target_price",
+    "position_size",
+    "order_type"
+  ],
+  "boundary": {
+    "setup_is_not_a_trade": true,
+    "signal_authorized": false,
+    "trade_plan_authorized": false
+  }
+}

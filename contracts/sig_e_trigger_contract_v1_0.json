@@ -1,0 +1,48 @@
+{
+  "contract_id": "SIG_E_TRIGGER_CONTRACT_v1_0",
+  "object_type": "trigger_candidate",
+  "status": "CONTRACT_ONLY_NOT_RUNTIME_ACTIVE",
+  "definition": "A trigger is a price-behavior/timing confirmation that can upgrade a setup to review readiness only after blockers and quality vector checks.",
+  "allowed_trigger_families_initial": [
+    "m15_close_confirmation",
+    "h1_close_confirmation",
+    "reclaim_close",
+    "failed_break_close",
+    "momentum_shift",
+    "micro_structure_break",
+    "rejection_candle",
+    "continuation_close"
+  ],
+  "required_fields": [
+    "trigger_id",
+    "setup_id",
+    "instrument",
+    "timeframe",
+    "trigger_family",
+    "trigger_bar_open_ts_utc",
+    "trigger_bar_close_ts_utc",
+    "closed_bar_confirmed",
+    "no_lookahead_confirmed",
+    "status",
+    "non_authority_statement"
+  ],
+  "allowed_status": [
+    "TRIGGER_WAIT",
+    "TRIGGER_CANDIDATE",
+    "TRIGGER_CONFIRMED_FOR_REVIEW",
+    "TRIGGER_FAILED",
+    "EXPIRED",
+    "INSUFFICIENT_DATA"
+  ],
+  "hard_rules": [
+    "closed_bar_only",
+    "no_current_unclosed_higher_timeframe",
+    "no_centered_indicators",
+    "no_entry_stop_target_output"
+  ],
+  "boundary": {
+    "trigger_alone_is_not_a_trade": true,
+    "signal_authorized": false,
+    "trade_plan_authorized": false
+  }
+}

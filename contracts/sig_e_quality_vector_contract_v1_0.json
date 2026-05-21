@@ -1,0 +1,47 @@
+{
+  "contract_id": "SIG_E_QUALITY_VECTOR_CONTRACT_v1_0",
+  "object_type": "quality_vector",
+  "status": "CONTRACT_ONLY_NOT_RUNTIME_ACTIVE",
+  "definition": "Quality is a multi-dimensional vector, not a probability and not a win-rate claim.",
+  "dimensions_initial": [
+    "data_freshness",
+    "regime_fit",
+    "memory_support",
+    "setup_clarity",
+    "trigger_quality",
+    "blocker_cleanliness",
+    "cost_sensitivity",
+    "conflict_level",
+    "live_shadow_support",
+    "historical_validation_support",
+    "execution_complexity"
+  ],
+  "required_fields": [
+    "quality_vector_id",
+    "candidate_or_setup_id",
+    "evaluated_ts_utc",
+    "dimension_scores",
+    "dimension_labels",
+    "overall_band",
+    "caveats",
+    "non_probability_statement"
+  ],
+  "allowed_overall_band": [
+    "LOW",
+    "LOW_MEDIUM",
+    "MEDIUM",
+    "MEDIUM_HIGH",
+    "HIGH",
+    "INSUFFICIENT_DATA"
+  ],
+  "forbidden": [
+    "probability_of_profit",
+    "guaranteed_win_rate",
+    "trade_recommendation",
+    "position_size"
+  ],
+  "boundary": {
+    "quality_vector_is_not_probability": true,
+    "quality_vector_is_not_trade_authority": true
+  }
+}

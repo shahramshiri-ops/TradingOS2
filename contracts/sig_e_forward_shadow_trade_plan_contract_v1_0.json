@@ -1,0 +1,38 @@
+{
+  "contract_id": "SIG_E_FORWARD_SHADOW_TRADE_PLAN_CONTRACT_v1_0",
+  "object_type": "forward_shadow_trade_plan_observation",
+  "status": "CONTRACT_ONLY_FUTURE_GATE_NOT_ACTIVE",
+  "definition": "A future forward-shadow layer evaluates frozen trade-plan drafts without live orders, broker routing, or PnL claims.",
+  "required_fields_future": [
+    "shadow_trade_plan_id",
+    "trade_plan_draft_id",
+    "frozen_at_utc",
+    "horizons",
+    "entry_logic_frozen",
+    "invalidation_logic_frozen",
+    "target_logic_frozen",
+    "outcome_status",
+    "baseline_comparison",
+    "non_execution_statement"
+  ],
+  "horizons_initial_future": [
+    "H1",
+    "H4",
+    "H8",
+    "H16"
+  ],
+  "hard_rules_future": [
+    "precommitted_plan_only",
+    "no_posthoc_entry_adjustment",
+    "no_live_order",
+    "outcome_not_profit_claim",
+    "baseline_required",
+    "failure_logged"
+  ],
+  "current_runtime_authorized": false,
+  "boundary": {
+    "forward_shadow_only": true,
+    "execution_authorized": false,
+    "profitability_claim_authorized": false
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "contract_id": "SIG_E_ARCHITECTURE_CONTRACT_v1_0",
+  "program": "SIG-E-ARCH1",
+  "contract_type": "target_architecture_contract",
+  "status": "ACTIVE_CONTRACT_ONLY",
+  "current_runtime_authority": "DISPLAY_ONLY_RESEARCH_SHADOW_NOT_SIGNAL",
+  "target_architecture": "E_MANUAL_SEMI_AUTOMATED_TRADING_DECISION_SYSTEM",
+  "layers": [
+    {
+      "layer": 0,
+      "name": "data_truth",
+      "purpose": "freshness, provider health, resampling completeness, closed-bar discipline",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 1,
+      "name": "market_state_regime",
+      "purpose": "trend/range/volatility/session/liquidity/event context",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 2,
+      "name": "memory_engine",
+      "purpose": "historical watch/context support; memory is an input, not a trade",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 3,
+      "name": "setup_engine",
+      "purpose": "detect market condition that may become actionable after trigger and blocker checks",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 4,
+      "name": "trigger_engine",
+      "purpose": "detect price-behavior confirmation/timing; trigger alone is not a trade",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 5,
+      "name": "blocker_engine",
+      "purpose": "independent veto/no-trade checks",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 6,
+      "name": "quality_vector",
+      "purpose": "multi-dimensional quality/fit vector; not a probability claim",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 7,
+      "name": "signal_candidate",
+      "purpose": "manual-review candidate object; not execution and not a trade instruction",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 8,
+      "name": "trade_plan_draft",
+      "purpose": "entry/invalidation/target draft after future gate; manual review only",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 9,
+      "name": "risk_model_draft",
+      "purpose": "risk tier and position-size draft after future gate; never order execution",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 10,
+      "name": "forward_shadow_trade_plan",
+      "purpose": "evaluate frozen manual-review trade-plan drafts without live execution",
+      "may_authorize_trade": false
+    },
+    {
+      "layer": 11,
+      "name": "broker_execution",
+      "purpose": "explicitly out of scope for E; requires separate F authorization",
+      "may_authorize_trade": false,
+      "authorized": false
+    }
+  ],
+  "hard_boundaries": {
+    "current_runtime_signal_authorized": false,
+    "current_runtime_trade_proposal_authorized": false,
+    "current_runtime_entry_stop_target_authorized": false,
+    "broker_integration_authorized": false,
+    "auto_execution_authorized": false,
+    "self_learning_deployment_authorized": false,
+    "automatic_position_opening_authorized": false,
+    "manual_review_required_for_any_future_trade_plan": true,
+    "human_final_decision_required": true,
+    "not_live_profitability_claim": true
+  },
+  "required_future_gates_before_trade_plan": [
+    "setup_contract_implemented",
+    "trigger_contract_implemented",
+    "blocker_contract_implemented",
+    "quality_vector_contract_implemented",
+    "signal_candidate_contract_implemented",
+    "forward_shadow_path_defined"
+  ],
+  "forbidden_in_current_runtime": [
+    "buy",
+    "sell",
+    "entry",
+    "stop",
+    "target",
+    "position_size",
+    "broker_order",
+    "auto_execution",
+    "live_profit_claim"
+  ],
+  "allowed_now": [
+    "architecture_contract",
+    "schema_definition",
+    "validation",
+    "research_shadow",
+    "forward_evidence_logging",
+    "manual_review_design"
+  ]
+}

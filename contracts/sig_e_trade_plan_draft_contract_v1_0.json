@@ -1,0 +1,42 @@
+{
+  "contract_id": "SIG_E_TRADE_PLAN_DRAFT_CONTRACT_v1_0",
+  "object_type": "trade_plan_draft",
+  "status": "CONTRACT_ONLY_FUTURE_GATE_NOT_ACTIVE",
+  "definition": "A trade plan draft may later express entry/invalidation/target logic, but only after explicit SIG-E-TP1 authorization and always for manual review, not execution.",
+  "required_fields_future": [
+    "trade_plan_draft_id",
+    "signal_candidate_id",
+    "instrument",
+    "direction_bias",
+    "entry_zone_logic",
+    "invalidation_logic",
+    "stop_logic",
+    "target_logic",
+    "risk_tier",
+    "manual_review_required",
+    "expires_at_utc",
+    "non_execution_statement"
+  ],
+  "allowed_plan_status_future": [
+    "DRAFT_REVIEW_ONLY",
+    "BLOCKED",
+    "EXPIRED",
+    "FORWARD_SHADOW_ONLY",
+    "MANUALLY_REJECTED",
+    "MANUALLY_ACCEPTED_OUTSIDE_SYSTEM"
+  ],
+  "hard_rules_future": [
+    "no_broker_route",
+    "no_order_payload",
+    "no_automatic_position_opening",
+    "manual_review_required",
+    "draft_must_include_invalidation_logic",
+    "draft_must_include_expiry"
+  ],
+  "current_runtime_authorized": false,
+  "boundary": {
+    "trade_plan_is_draft_only": true,
+    "manual_review_required": true,
+    "execution_authorized": false
+  }
+}

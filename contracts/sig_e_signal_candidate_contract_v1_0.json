@@ -1,0 +1,47 @@
+{
+  "contract_id": "SIG_E_SIGNAL_CANDIDATE_CONTRACT_v1_0",
+  "object_type": "signal_candidate",
+  "status": "CONTRACT_ONLY_NOT_RUNTIME_ACTIVE",
+  "definition": "A signal candidate is a manual-review decision object after setup, trigger, blocker, and quality checks. It is not execution and does not place orders.",
+  "required_fields": [
+    "signal_candidate_id",
+    "instrument",
+    "direction_bias",
+    "setup_type",
+    "trigger_type",
+    "memory_support",
+    "regime_support",
+    "blocker_status",
+    "quality_vector_id",
+    "candidate_status",
+    "manual_review_required",
+    "non_execution_statement"
+  ],
+  "allowed_direction_bias": [
+    "LONG_BIAS",
+    "SHORT_BIAS",
+    "AVOID",
+    "NEUTRAL_CONTEXT"
+  ],
+  "allowed_candidate_status": [
+    "WATCH_ONLY",
+    "SETUP_FORMING",
+    "TRIGGER_WAIT",
+    "SIGNAL_CANDIDATE_REVIEW_ONLY",
+    "BLOCKED",
+    "EXPIRED",
+    "SHADOW_LOGGED"
+  ],
+  "forbidden_fields_before_TP_gate": [
+    "entry_zone",
+    "stop_level",
+    "target_level",
+    "position_size",
+    "order_instruction"
+  ],
+  "boundary": {
+    "signal_candidate_is_not_execution": true,
+    "manual_review_required": true,
+    "broker_execution_authorized": false
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "contract_id": "SIG_E_BLOCKER_CONTRACT_v1_0",
+  "object_type": "blocker_veto_report",
+  "status": "CONTRACT_ONLY_NOT_RUNTIME_ACTIVE",
+  "definition": "A blocker is an independent veto/no-trade context that can prevent signal-candidate or trade-plan progression.",
+  "blocker_families_initial": [
+    "data_stale",
+    "provider_unhealthy",
+    "spread_cost_bad",
+    "news_event_risk",
+    "late_move",
+    "opposite_htf_pressure",
+    "high_conflict",
+    "thin_liquidity",
+    "volatility_shock",
+    "too_close_to_major_level",
+    "insufficient_context"
+  ],
+  "required_fields": [
+    "blocker_report_id",
+    "candidate_or_setup_id",
+    "evaluated_ts_utc",
+    "blocker_status",
+    "active_blockers",
+    "veto_authorized",
+    "reason_codes",
+    "non_authority_statement"
+  ],
+  "allowed_blocker_status": [
+    "NO_BLOCKER",
+    "SOFT_BLOCKER",
+    "HARD_BLOCKER_VETO",
+    "INSUFFICIENT_DATA"
+  ],
+  "hard_rules": [
+    "blockers_must_be_logged_even_when_no_candidate_progresses",
+    "hard_blocker_veto_prevents_signal_candidate_progression",
+    "blocker_layer_is_independent_from_pattern_recognition"
+  ],
+  "boundary": {
+    "blocker_can_veto": true,
+    "blocker_cannot_create_trade": true
+  }
+}
