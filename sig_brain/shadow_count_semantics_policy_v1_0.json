@@ -1,0 +1,22 @@
+{
+  "policy_id": "SHADOW_COUNT_SEMANTICS_POLICY_v1_0",
+  "created_utc": "2026-05-21T07:18:20Z",
+  "purpose": "Prevent confusing diagnostic near-miss counts with actual market opportunities.",
+  "count_definitions": {
+    "candidate_count": "Complete shadow candidate logged for observation.",
+    "diagnostic_record_count": "All rows explaining why something did not become a candidate.",
+    "unique_market_near_miss_event_count": "Unique live/runtime market events that are truly near a candidate path.",
+    "blocker_diagnostic_record_count": "Rows about blocker or policy veto diagnostics.",
+    "eligibility_record_count": "Rows about core/non-core/extended-only eligibility.",
+    "instrumentation_gap_record_count": "Rows where upstream did not emit a precise reason."
+  },
+  "boundary": [
+    "NOT_SIGNAL",
+    "NO_BUY_SELL",
+    "NO_ENTRY_STOP_TARGET",
+    "NO_POSITION_SIZE",
+    "NO_BROKER_EXECUTION",
+    "NO_AUTO_LEARNING",
+    "NO_RULE_REWRITE"
+  ]
+}

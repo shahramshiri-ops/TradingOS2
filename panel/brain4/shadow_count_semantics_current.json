@@ -1,24 +1,58 @@
 {
-  "payload_version": "REASON_UPSTREAM_01_COMPAT_NEAR_MISS_REASON_ENRICHED_v1_0",
-  "created_utc": "2026-05-21T07:35:32Z",
-  "authority": "REASON_UPSTREAM_01|DIAG_02_NEAR_MISS_REASON_QUALITY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
-  "near_miss_count": 17,
-  "near_miss_high_count": 9,
+  "payload_version": "COUNT_NORMALIZE_01_SHADOW_COUNT_SEMANTICS_v1_0",
+  "created_utc": "2026-05-21T07:35:33Z",
+  "authority": "COUNT_NORMALIZE_01|SHADOW_COUNT_SEMANTICS|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+  "count_policy": {
+    "near_miss_is_not_trade_opportunity": true,
+    "near_miss_panel_label_should_be": "diagnostic records",
+    "candidate_definition": "A core-eligible memory that passes setup/trigger/blocker policy and is logged for shadow observation.",
+    "market_near_miss_event_definition": "A unique live/runtime market state that appears one step from a candidate or fails a setup/trigger/input/session condition.",
+    "diagnostic_record_definition": "Any row explaining why a watch/blocker/eligibility/lifecycle item did not become a candidate."
+  },
+  "candidate_count": 0,
+  "blocked_candidate_count_from_payload": 0,
+  "raw_near_miss_count_from_ops": 11,
+  "raw_near_miss_high_count_from_ops": 1,
+  "raw_near_miss_count_from_shadow_status": 11,
+  "diagnostic_record_count_last_run": 23,
+  "unique_market_near_miss_event_count_last_run": 0,
+  "unique_memory_involved_count_last_run": 11,
+  "blocker_diagnostic_record_count_last_run": 12,
+  "eligibility_record_count_last_run": 2,
+  "lifecycle_record_count_last_run": 0,
+  "instrumentation_gap_record_count_last_run": 9,
+  "unclassified_diagnostic_record_count_last_run": 0,
+  "active_watch_count": 0,
+  "active_core_eligible_watch_count": 0,
+  "active_extended_only_watch_count": 0,
+  "active_non_core_watch_count": 0,
+  "record_class_breakdown": {
+    "BLOCKER_DIAGNOSTIC_RECORD": 12,
+    "INSTRUMENTATION_GAP_RECORD": 9,
+    "ELIGIBILITY_RECORD": 2
+  },
   "reason_breakdown": {
+    "BLOCKER_LEDGER_REASON_UNKNOWN": 10,
     "UPSTREAM_REASON_NOT_EMITTED": 9,
-    "BLOCKER_LEDGER_REASON_UNKNOWN": 5,
-    "OUT_OF_CORE_SPLIT_STABILITY_CAVEAT": 2,
-    "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW": 1
+    "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW": 2,
+    "OUT_OF_CORE_SPLIT_STABILITY_CAVEAT": 2
   },
-  "stage_breakdown": {
-    "UPSTREAM_INSTRUMENTATION_GAP": 9,
-    "BLOCKER_LEDGER_REASON_UNKNOWN": 5,
-    "ELIGIBILITY_OUT_OF_CORE": 2,
-    "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW": 1
+  "source_breakdown": {
+    "blocker_reason_breakdown_current": 12,
+    "near_miss_detail_ledger_current": 11
   },
-  "reason_confidence_breakdown": {
-    "LOW": 9,
-    "HIGH": 8
+  "memory_breakdown": {
+    "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0": 5,
+    "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0": 3,
+    "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0": 3,
+    "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0": 3,
+    "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0": 3,
+    "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0": 1,
+    "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0": 1,
+    "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0": 1,
+    "USDJPY_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0": 1,
+    "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_LONG_DIRECTIONAL_WATCH_v1_0": 1,
+    "XAUUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0": 1
   },
   "records": [
     {
@@ -150,7 +184,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_a485fb3318e5e1f6b9fc",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_ced8c1a2625fbc38",
@@ -275,7 +312,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_4d7284b96d917709b230",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_a86aae96c9858fbf",
@@ -400,7 +440,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_2d2343d582a715971bc5",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_c484b5770445a56a",
@@ -533,7 +576,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_cd8a03548f2ae51e2ee6",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_d5177ca9db7282d3",
@@ -665,7 +711,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_ef6694ceaebe395d8dc5",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_8c4d4e69c1185793",
@@ -776,7 +825,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_62b464bb0bc5a7dd663a",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_b7cad429c3e430a3",
@@ -888,7 +940,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_7589806245298edc0f49",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_d09b4f2b8f9b2a11",
@@ -1000,7 +1055,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_f0473f93961ab7ddc49d",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_5e31b4e3baee564b",
@@ -1111,7 +1169,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "HIGH",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_cb9d046f4c6a6e9b5e76",
+      "count_class": "INSTRUMENTATION_GAP_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_e6dd05dfd45bdedf",
@@ -1242,7 +1303,10 @@
       "extended_observation_only": true,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_824e962b9a7dab393e53",
+      "count_class": "ELIGIBILITY_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "near_miss_id": "NM_aae6964261bbb8f9",
@@ -1349,7 +1413,10 @@
       "extended_observation_only": true,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "NM_d7cadceb79c6ffa8abf9",
+      "count_class": "ELIGIBILITY_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "blocker_diagnostic_id": "BLKLED_00a36c7b1e4bed87dff9",
@@ -1377,7 +1444,10 @@
       "extended_observation_only": true,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "RS_8fce5440f0d44a9f5b38",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "blocker_diagnostic_id": "BLKLED_bfcdc807ed804c2fe233",
@@ -1405,7 +1475,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "RS_20f5fd2e524b0c6d05e8",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "blocker_diagnostic_id": "BLKLED_46487f53544949d9b816",
@@ -1433,7 +1506,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "RS_90079e88276373a28a0d",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "blocker_diagnostic_id": "BLKLED_dd2c760edfc4b6d64454",
@@ -1461,7 +1537,10 @@
       "extended_observation_only": false,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "RS_0d3be7bd954baf9dc704",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "blocker_diagnostic_id": "BLKLED_dc84dbacebf1cddfdc20",
@@ -1489,7 +1568,10 @@
       "extended_observation_only": true,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "RS_53d540020b7dab375569",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     },
     {
       "blocker_diagnostic_id": "BLKLED_d79f9609300614b783e2",
@@ -1517,10 +1599,121 @@
       "extended_observation_only": true,
       "candidate_eligible_after_reason": false,
       "review_priority": "LOW",
-      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE"
+      "forbidden": "NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+      "count_record_id": "RS_b485bbe023db18237152",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
+    },
+    {
+      "blocker_diagnostic_id": "BLKLED_00a36c7b1e4bed87dff9",
+      "source": "blocker_diagnostic_ledger_current",
+      "candidate_id": null,
+      "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "setup_cluster_id": "UNKNOWN_CLUSTER",
+      "blocker_reason_code": "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW",
+      "blocker_family": "BLOCKER_LEDGER",
+      "severity": "MEDIUM",
+      "plain_language_fa": "این مورد در لاگ blocker ثبت شده است.",
+      "source_payload": "blocker_reason_breakdown_current",
+      "count_record_id": "1a773cf7cb8062600b48",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "reason_code": "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
+    },
+    {
+      "blocker_diagnostic_id": "BLKLED_bfcdc807ed804c2fe233",
+      "source": "blocker_diagnostic_ledger_current",
+      "candidate_id": null,
+      "memory_id": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "setup_cluster_id": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "blocker_reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "blocker_family": "BLOCKER_LEDGER",
+      "severity": "MEDIUM",
+      "plain_language_fa": "این مورد در لاگ blocker ثبت شده است.",
+      "source_payload": "blocker_reason_breakdown_current",
+      "count_record_id": "87677e6f6bc2eaa8cbbe",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
+    },
+    {
+      "blocker_diagnostic_id": "BLKLED_46487f53544949d9b816",
+      "source": "blocker_diagnostic_ledger_current",
+      "candidate_id": null,
+      "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "setup_cluster_id": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "blocker_reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "blocker_family": "BLOCKER_LEDGER",
+      "severity": "MEDIUM",
+      "plain_language_fa": "این مورد در لاگ blocker ثبت شده است.",
+      "source_payload": "blocker_reason_breakdown_current",
+      "count_record_id": "95081cbf66104daa67ff",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
+    },
+    {
+      "blocker_diagnostic_id": "BLKLED_dd2c760edfc4b6d64454",
+      "source": "blocker_diagnostic_ledger_current",
+      "candidate_id": null,
+      "memory_id": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "setup_cluster_id": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "blocker_reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "blocker_family": "BLOCKER_LEDGER",
+      "severity": "MEDIUM",
+      "plain_language_fa": "این مورد در لاگ blocker ثبت شده است.",
+      "source_payload": "blocker_reason_breakdown_current",
+      "count_record_id": "bff89a812ff8df40737b",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
+    },
+    {
+      "blocker_diagnostic_id": "BLKLED_dc84dbacebf1cddfdc20",
+      "source": "blocker_diagnostic_ledger_current",
+      "candidate_id": null,
+      "memory_id": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "setup_cluster_id": "OUT_OF_CORE_OBSERVATION",
+      "blocker_reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "blocker_family": "BLOCKER_LEDGER",
+      "severity": "MEDIUM",
+      "plain_language_fa": "این مورد در لاگ blocker ثبت شده است.",
+      "source_payload": "blocker_reason_breakdown_current",
+      "count_record_id": "e63cecd441d0d9cf04b5",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
+    },
+    {
+      "blocker_diagnostic_id": "BLKLED_d79f9609300614b783e2",
+      "source": "blocker_diagnostic_ledger_current",
+      "candidate_id": null,
+      "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "setup_cluster_id": "OUT_OF_CORE_OBSERVATION",
+      "blocker_reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "blocker_family": "BLOCKER_LEDGER",
+      "severity": "MEDIUM",
+      "plain_language_fa": "این مورد در لاگ blocker ثبت شده است.",
+      "source_payload": "blocker_reason_breakdown_current",
+      "count_record_id": "dd37d02e8c8a0b07c599",
+      "count_class": "BLOCKER_DIAGNOSTIC_RECORD",
+      "reason_code": "BLOCKER_LEDGER_REASON_UNKNOWN",
+      "count_semantics_note": "This is a diagnostic row, not automatically a unique market opportunity."
     }
   ],
-  "plain_language_fa": "reason-upstream این فایل را با reason_codeهای دقیق‌تر بازنویسی کرده است. این سیگنال نیست.",
+  "plain_language_fa": "این فایل معنای شمارش‌های Shadow را اصلاح می‌کند. near-miss خام لزوماً فرصت بازار نیست؛ در اینجا به diagnostic records، unique market near-miss events، blocker diagnostics، eligibility/lifecycle records و instrumentation gaps تفکیک شده است.",
   "boundary": {
     "signal_authorized": false,
     "trade_instruction_authorized": false,

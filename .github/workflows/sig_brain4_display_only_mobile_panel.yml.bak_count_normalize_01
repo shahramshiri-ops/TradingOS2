@@ -1,31 +1,32 @@
-name: SIG Brain5 Context Builder + Brain4 Panel
+name: SIG Brain4 Display-Only Mobile Panel
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - 'inputs/sig_brain5_raw_bars_latest.json'
-      - 'scripts/build_sig_brain5_live_context.py'
-      - 'scripts/build_sig_brain4_runtime_payload.py'
       - 'data/sig_brain/**'
+      - 'inputs/sig_brain4_live_context_latest.json'
+      - 'scripts/build_sig_brain4_runtime_payload.py'
       - 'panel/brain4/**'
 
 concurrency:
-  group: sig-brain5-context-builder-brain4-panel
+  group: sig-brain4-display-only-mobile-panel
   cancel-in-progress: true
 
 jobs:
-  build-brain-context:
+  build-brain4-panel:
     runs-on: ubuntu-latest
     permissions:
       contents: write
       actions: write
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
-      - name: Build derived Brain5 live context
+      - name: Build SIG Brain4 display-only runtime payload
         run: |
-          python scripts/build_sig_brain5_live_context.py
-          python scripts/validate_sig_brain5_context_builder.py
+          python scripts/build_sig_brain4_runtime_payload.py
+          python scripts/validate_sig_brain4_outputs.py
           python scripts/run_sig_shadow_01b_integrated.py
           python scripts/run_sig_shadow_ready_01.py
       # SHADOW-DIAG-01 — near-miss/blocker/eligibility diagnostics (NOT_SIGNAL)
@@ -40,22 +41,18 @@ jobs:
       - name: Build REASON-UPSTREAM-01 near-miss reason source
         run: python scripts/run_sig_shadow_reason_upstream_01.py
 
-      # COUNT-NORMALIZE-01 — clarify shadow count semantics (NOT_SIGNAL)
-      - name: Build COUNT-NORMALIZE-01 shadow count semantics
-        run: python scripts/run_sig_shadow_count_normalize_01.py
-
-      - name: Commit derived display-only context and payload
+      - name: Commit generated display-only payload
         id: commit_generated
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add inputs/sig_brain4_live_context_latest.json runtime/sig_brain/sig_brain5_derived_context_latest.json runtime/sig_brain/sig_brain4_runtime_payload_current.json panel/brain4/sig_brain4_runtime_payload_current.json proofs/sig_brain5_context_validation_result.json proofs/sig_brain4_validation_result.json runtime/sig_signal_candidates runtime/sig_shadow
+          git add runtime/sig_brain/sig_brain4_runtime_payload_current.json panel/brain4/sig_brain4_runtime_payload_current.json proofs/sig_brain4_validation_result.json runtime/sig_signal_candidates runtime/sig_shadow
           if git diff --cached --quiet; then
             echo "No generated changes"
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git commit -m "Update SIG Brain5 derived context and Brain4 payload"
+          git commit -m "Update SIG Brain4 display-only payload"
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
