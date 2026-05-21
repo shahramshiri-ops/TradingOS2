@@ -1,7 +1,7 @@
 {
   "ledger_version": "SIG_SHADOW_READY_01_BLOCKER_DIAGNOSTIC_LEDGER_v1_0",
-  "created_utc": "2026-05-21T04:57:21Z",
-  "updated_utc": "2026-05-21T04:57:21Z",
+  "created_utc": "2026-05-21T05:07:19Z",
+  "updated_utc": "2026-05-21T05:07:19Z",
   "authority": "SHADOW_READY_01|LIVE_SHADOW_READINESS_HARDENING|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING",
   "signal_authorized": false,
   "trade_instruction_authorized": false,
@@ -30,7 +30,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_f8469499b3c078b9",
+      "diagnostic_id": "BD_d0b26b94c818c87e",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -60,7 +60,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_37bbebd9470e66be",
+      "diagnostic_id": "BD_e9e8f5b79867bf4a",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
@@ -89,7 +89,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_4e3989052daf903b",
+      "diagnostic_id": "BD_ad14cb6cab6f1848",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -118,7 +118,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_99a936bef1f50d1d",
+      "diagnostic_id": "BD_0dbfb8b9ae00f3cd",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -127,14 +127,17 @@
       "timeframe": "H1",
       "blocking_or_gating_categories": [
         "SESSION_OR_TIME_WINDOW",
+        "D1_H4_REGIME_MISMATCH",
         "SWEEP_RECLAIM_NOT_CONFIRMED",
         "DIRECTION_OR_CLOSE_CONFIRMATION_MISSING"
       ],
-      "near_miss_strength": "INPUT_INSUFFICIENT_DIAGNOSTIC",
-      "missing_inputs": [
-        "asian_high_swept_and_reclaimed_by_closed_h1"
+      "near_miss_strength": "NEAR_MISS_MEDIUM",
+      "missing_inputs": [],
+      "failed_conditions": [
+        "session_bucket eq LONDON observed=ASIA",
+        "d1_trend_safe eq DOWN observed=NEUTRAL",
+        "asian_high_swept_and_reclaimed_by_closed_h1 bool_eq True observed=False"
       ],
-      "failed_conditions": [],
       "candidate_created": false,
       "reason": "diagnostic only; no candidate generated before all conditions cleared",
       "signal_authorized": false,
@@ -145,7 +148,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_2c862a207f77eba4",
+      "diagnostic_id": "BD_6fb3c59f340e09b5",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
