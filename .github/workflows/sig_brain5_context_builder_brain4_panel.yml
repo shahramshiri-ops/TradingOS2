@@ -36,6 +36,10 @@ jobs:
       - name: Build SHADOW-OPS-01 operational diagnostics
         run: python scripts/run_sig_shadow_ops_01.py
 
+      # REASON-UPSTREAM-01 / DIAG-02 — enrich near-miss reason codes (NOT_SIGNAL)
+      - name: Build REASON-UPSTREAM-01 near-miss reason source
+        run: python scripts/run_sig_shadow_reason_upstream_01.py
+
       - name: Commit derived display-only context and payload
         id: commit_generated
         run: |

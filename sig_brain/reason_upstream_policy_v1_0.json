@@ -1,0 +1,22 @@
+{
+  "policy_id": "REASON_UPSTREAM_POLICY_v1_0",
+  "created_utc": "2026-05-21T06:46:35Z",
+  "purpose": "Convert UNKNOWN near-miss reasons into explicit reason codes where possible and identify remaining upstream instrumentation gaps.",
+  "authority": "DIAGNOSTIC_ONLY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+  "reason_confidence_levels": {
+    "HIGH": "Explicit reason or exact structural eligibility/lifecycle fact.",
+    "MEDIUM": "Reason inferred from reliable text/status hints but not emitted as a dedicated upstream code.",
+    "LOW": "No reliable reason emitted; classified as upstream instrumentation gap."
+  },
+  "fallback_reason": "UPSTREAM_REASON_NOT_EMITTED",
+  "forbidden": [
+    "signal_generation",
+    "buy_sell_instruction",
+    "entry_stop_target",
+    "position_sizing",
+    "broker_execution",
+    "auto_learning",
+    "automatic_rule_rewrite",
+    "rule_relaxation"
+  ]
+}

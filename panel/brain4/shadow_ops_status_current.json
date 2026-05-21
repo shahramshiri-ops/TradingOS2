@@ -1,6 +1,6 @@
 {
   "panel_payload_version": "SHADOW_OPS_01_PANEL_STATUS_v1_0",
-  "created_utc": "2026-05-21T06:37:20Z",
+  "created_utc": "2026-05-21T06:47:26Z",
   "authority": "SHADOW_OPS_01|DIAG_ELIG_LEDGER_HEALTH_REVIEW|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
   "display_badge": "SHADOW OPS / NOT A SIGNAL",
   "health_status": "PASS",
@@ -12,23 +12,47 @@
   "active_watch_extended_observation_only_count": 0,
   "top_reason_breakdown": [
     [
-      "UNKNOWN_NEAR_MISS_REASON",
-      11
+      "UPSTREAM_REASON_NOT_EMITTED",
+      9
+    ],
+    [
+      "BLOCKER_LEDGER_REASON_UNKNOWN",
+      5
+    ],
+    [
+      "OUT_OF_CORE_SPLIT_STABILITY_CAVEAT",
+      2
+    ],
+    [
+      "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW",
+      1
     ]
   ],
   "top_stage_breakdown": [
     [
-      "UNKNOWN",
-      11
+      "UPSTREAM_INSTRUMENTATION_GAP",
+      9
+    ],
+    [
+      "BLOCKER_LEDGER_REASON_UNKNOWN",
+      5
+    ],
+    [
+      "ELIGIBILITY_OUT_OF_CORE",
+      2
+    ],
+    [
+      "EXTENDED_OBSERVATION_ONLY_NOT_CORE_UNTIL_SPLIT_REVIEW",
+      1
     ]
   ],
   "daily_rollup_latest": {
     "period": "2026-05-21",
-    "run_count": 5,
+    "run_count": 6,
     "candidate_count": 0,
-    "near_miss_count": 57,
-    "near_miss_high_count": 8,
-    "blocked_candidate_count": 30,
+    "near_miss_count": 68,
+    "near_miss_high_count": 9,
+    "blocked_candidate_count": 36,
     "active_watch_core_eligible_count": 0,
     "active_watch_extended_observation_only_count": 1,
     "health_fail_count": 0,
@@ -36,11 +60,11 @@
   },
   "weekly_rollup_latest": {
     "period": "2026-W21",
-    "run_count": 5,
+    "run_count": 6,
     "candidate_count": 0,
-    "near_miss_count": 57,
-    "near_miss_high_count": 8,
-    "blocked_candidate_count": 30,
+    "near_miss_count": 68,
+    "near_miss_high_count": 9,
+    "blocked_candidate_count": 36,
     "active_watch_core_eligible_count": 0,
     "active_watch_extended_observation_only_count": 1,
     "health_fail_count": 0,
@@ -48,19 +72,28 @@
   },
   "cohort_rollup": {
     "cohort_id": "SHADOW_COHORT_a02eda4698d5b981d94a",
-    "run_count": 5,
+    "run_count": 6,
     "candidate_count": 0,
-    "near_miss_count": 57,
-    "near_miss_high_count": 8,
-    "blocked_candidate_count": 30
+    "near_miss_count": 68,
+    "near_miss_high_count": 9,
+    "blocked_candidate_count": 36
   },
   "review_item_count": 2,
-  "plain_language_fa": "این وضعیت عملیاتی shadow است: علت near-missها، eligibility، rollup و سلامت pipeline را نشان می‌دهد. این سیگنال، ورود، حدضرر، تارگت، اجرای معامله یا یادگیری خودکار نیست.",
+  "plain_language_fa": "این کارت وضعیت عملیاتی shadow را نشان می‌دهد. reason-upstream تلاش کرده علت near-missها را صریح‌تر کند. موارد LOW confidence به معنی نیاز به instrument کردن دقیق‌تر setup/trigger/blocker است. این سیگنال یا دستور معامله نیست.",
   "boundary": {
     "signal_authorized": false,
     "trade_instruction_authorized": false,
     "broker_execution_authorized": false,
     "auto_learning_authorized": false,
     "rule_rewrite_authorized": false
-  }
+  },
+  "reason_upstream_version": "REASON_UPSTREAM_01_v1_0",
+  "reason_upstream_created_utc": "2026-05-21T06:47:27Z",
+  "reason_confidence_breakdown": {
+    "LOW": 9,
+    "HIGH": 8
+  },
+  "low_confidence_reason_count": 9,
+  "instrumentation_gap_count": 9,
+  "unresolved_unknown_reason_count_after_reason_upstream": 0
 }
