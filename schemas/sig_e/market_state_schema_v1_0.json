@@ -1,0 +1,61 @@
+{
+  "schema_id": "SIG_E_MARKET_STATE_SCHEMA_v1_0",
+  "program": "SIG-E-REGIME1",
+  "required_top_level_fields": [
+    "status_version",
+    "created_utc",
+    "program",
+    "authority",
+    "summary",
+    "surfaces",
+    "boundary"
+  ],
+  "required_surface_fields": [
+    "surface_id",
+    "instrument",
+    "timeframe",
+    "bar_open_ts_utc",
+    "session_bucket",
+    "data_sufficiency_status",
+    "trend_state",
+    "range_state",
+    "volatility_state",
+    "htf_alignment",
+    "liquidity_context",
+    "tradeability_context",
+    "setup_relevance_hints",
+    "regime_explanation",
+    "boundary"
+  ],
+  "forbidden_surface_fields": [
+    "entry",
+    "entry_zone",
+    "entry_price",
+    "stop",
+    "stop_loss",
+    "target",
+    "target_1",
+    "target_2",
+    "take_profit",
+    "position_size",
+    "risk_percent",
+    "order_type",
+    "broker",
+    "execution",
+    "buy",
+    "sell",
+    "trade_instruction"
+  ],
+  "output_files": [
+    "runtime/sig_e/market_state_current.json",
+    "runtime/sig_e/sig_e_regime1_market_state_current.json",
+    "panel/brain4/sig_e_market_state_current.json"
+  ],
+  "boundary": {
+    "signal_authorized": false,
+    "trade_proposal_authorized": false,
+    "entry_stop_target_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_execution_authorized": false
+  }
+}

@@ -64,6 +64,12 @@ jobs:
           python scripts/run_sig_shadow_01b_integrated.py
           python scripts/run_sig_shadow_ready_01.py
 
+      # SIG-E-REGIME1 — market state / regime runtime layer (CONTEXT_ONLY / NOT_SIGNAL)
+      - name: Build SIG-E-REGIME1 market state context
+        run: |
+          python scripts/build_sig_e_regime1_market_state.py
+          python scripts/validate_sig_e_regime1_market_state.py
+
       # SHADOW-CANDIDATE-UNIVERSE-01 — research-only candidate bank for forward observation (NOT_SIGNAL)
       - name: Build SHADOW-CANDIDATE-UNIVERSE-01 research candidates
         run: python scripts/run_shadow_candidate_universe_01.py

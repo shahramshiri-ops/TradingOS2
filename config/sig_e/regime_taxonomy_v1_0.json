@@ -1,0 +1,89 @@
+{
+  "taxonomy_id": "SIG_E_REGIME_TAXONOMY_v1_0",
+  "program": "SIG-E-REGIME1",
+  "purpose": "Canonical market state / regime vocabulary for Target Architecture E. This is context only; not a signal and not a trade plan.",
+  "boundary": {
+    "current_runtime_signal_authorized": false,
+    "trade_proposal_authorized": false,
+    "entry_stop_target_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_execution_authorized": false,
+    "manual_review_required_for_any_future_trade_plan": true
+  },
+  "trend_state": [
+    "UP",
+    "DOWN",
+    "NEUTRAL",
+    "MIXED",
+    "UNKNOWN"
+  ],
+  "range_state": [
+    "TRENDING",
+    "RANGING",
+    "CHOP",
+    "COMPRESSION",
+    "EXPANSION",
+    "EXPANSION_AFTER_COMPRESSION",
+    "MIXED",
+    "UNKNOWN"
+  ],
+  "volatility_state": [
+    "LOW",
+    "NORMAL",
+    "HIGH",
+    "SHOCK",
+    "UNKNOWN"
+  ],
+  "htf_alignment": [
+    "D1_H4_H1_ALIGNED_UP",
+    "D1_H4_H1_ALIGNED_DOWN",
+    "H4_H1_ALIGNED_UP",
+    "H4_H1_ALIGNED_DOWN",
+    "M15_H1_CONFLICT",
+    "H4_H1_CONFLICT",
+    "D1_H4_CONFLICT",
+    "CONFLICT",
+    "UNKNOWN"
+  ],
+  "liquidity_tags": [
+    "NONE",
+    "FAILED_BREAKOUT_ACTIVE",
+    "SESSION_REFERENCE_BREAK_ACTIVE",
+    "ASIAN_HIGH_SWEEP_RECLAIM_ACTIVE",
+    "ASIAN_HIGH_BREAKOUT_CONTINUATION_ACTIVE",
+    "LONDON_LOW_SWEEP_RECLAIM_ACTIVE",
+    "WEEKLY_OPEN_RECLAIM_SHORT_ACTIVE",
+    "UPSIDE_SWEEP_ACTIVE",
+    "UPSIDE_SWEEP_REJECT_ACTIVE",
+    "PRIOR_HIGH_PROXIMITY_UNKNOWN",
+    "PRIOR_LOW_PROXIMITY_UNKNOWN",
+    "UNKNOWN"
+  ],
+  "tradeability_context": [
+    "REGIME_SUPPORTIVE",
+    "REGIME_MIXED",
+    "REGIME_BLOCKED",
+    "DATA_INSUFFICIENT",
+    "UNKNOWN"
+  ],
+  "setup_relevance_hints": [
+    "PULLBACK_CONTINUATION_CONTEXT_SUPPORTED",
+    "FAILED_BREAKOUT_REVERSAL_CONTEXT_SUPPORTED",
+    "SWEEP_RECLAIM_CONTEXT_SUPPORTED",
+    "VOLATILITY_EXPANSION_CONTEXT_SUPPORTED",
+    "CHOP_AVOID_TREND_FOLLOWING_CONTEXT",
+    "INSUFFICIENT_CONTEXT"
+  ],
+  "mechanical_thresholds": {
+    "m15_range_ratio_low_max": 0.65,
+    "m15_range_ratio_high_min": 1.35,
+    "h1_range_to_atr_low_max": 0.55,
+    "h1_range_to_atr_high_min": 1.35,
+    "h1_range_to_atr_shock_min": 2.5
+  },
+  "notes": [
+    "REGIME1 is a vocabulary and runtime state layer only.",
+    "It must not create signal candidates, entry/stop/target, risk sizing, position sizing, broker integration, or execution.",
+    "SETUP1 and later layers may consume REGIME1, but promotion to trading layers requires separate gates."
+  ]
+}
