@@ -1,0 +1,334 @@
+/* SHADOW-PANEL-03 — unified Shadow status + OPS diagnostics */
+.shadow-panel-03-unified-host {
+  width: min(1120px, calc(100% - 32px));
+  margin: 16px auto 22px;
+  direction: rtl;
+}
+
+.shadow-unified-card {
+  position: relative;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 26px;
+  padding: 20px 24px;
+  background:
+    radial-gradient(circle at 98% 0%, rgba(34, 197, 94, 0.10), transparent 32%),
+    radial-gradient(circle at 2% 5%, rgba(59, 130, 246, 0.10), transparent 34%),
+    rgba(15, 23, 42, 0.78);
+  color: #e5e7eb;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.24);
+  overflow: hidden;
+}
+
+.shadow-unified-card::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background: #94a3b8;
+}
+
+.unified-pass::before { background: #22c55e; }
+.unified-warn::before { background: #f59e0b; }
+.unified-fail::before { background: #ef4444; }
+
+.shadow-unified-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.shadow-unified-kicker {
+  color: #93c5fd;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.shadow-unified-card h3,
+.shadow-unified-card h4 {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.shadow-unified-card h3 {
+  font-size: 1.22rem;
+}
+
+.shadow-unified-card h4 {
+  color: #dbeafe;
+  font-size: 0.92rem;
+  margin-bottom: 10px;
+}
+
+.shadow-unified-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.shadow-unified-badge,
+.shadow-unified-health {
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.shadow-unified-badge {
+  border: 1px solid rgba(34, 197, 94, 0.30);
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+}
+
+.shadow-unified-health {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.unified-pass .shadow-unified-health {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.14);
+  color: #bbf7d0;
+}
+
+.unified-warn .shadow-unified-health {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.14);
+  color: #fde68a;
+}
+
+.unified-fail .shadow-unified-health {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.14);
+  color: #fecaca;
+}
+
+.shadow-unified-quick {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 11px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(96, 165, 250, 0.17);
+  background: rgba(30, 41, 59, 0.40);
+  color: #dbeafe;
+  margin-bottom: 14px;
+  line-height: 1.65;
+}
+
+.shadow-unified-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #60a5fa;
+  box-shadow: 0 0 0 6px rgba(96, 165, 250, 0.10);
+}
+
+.shadow-unified-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.shadow-unified-metric,
+.shadow-unified-roll {
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  background: rgba(2, 6, 23, 0.26);
+  border-radius: 17px;
+  padding: 11px;
+  min-height: 78px;
+}
+
+.shadow-unified-metric.primary {
+  border-color: rgba(34, 197, 94, 0.22);
+  background: rgba(34, 197, 94, 0.07);
+}
+
+.shadow-unified-metric.attention {
+  border-color: rgba(245, 158, 11, 0.22);
+  background: rgba(245, 158, 11, 0.07);
+}
+
+.shadow-unified-metric span,
+.shadow-unified-roll span {
+  display: block;
+  color: #9ca3af;
+  font-size: 0.74rem;
+  margin-bottom: 6px;
+}
+
+.shadow-unified-metric b,
+.shadow-unified-roll b {
+  display: block;
+  font-size: 1.28rem;
+  color: #f8fafc;
+}
+
+.shadow-unified-metric small,
+.shadow-unified-roll small {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  margin-top: 4px;
+}
+
+.shadow-unified-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.shadow-unified-panel {
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 18px;
+  padding: 12px;
+  background: rgba(15, 23, 42, 0.47);
+}
+
+.shadow-unified-pairs {
+  display: grid;
+  gap: 7px;
+}
+
+.shadow-unified-pair {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+  padding: 6px 0;
+}
+
+.shadow-unified-pair span {
+  direction: ltr;
+  text-align: left;
+  color: #cbd5e1;
+  overflow-wrap: anywhere;
+}
+
+.shadow-unified-pair b {
+  min-width: 34px;
+  text-align: center;
+  color: #f8fafc;
+  background: rgba(148, 163, 184, 0.13);
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
+.shadow-unified-warning {
+  margin-top: 10px;
+  border: 1px solid rgba(245, 158, 11, 0.24);
+  background: rgba(245, 158, 11, 0.10);
+  color: #fde68a;
+  border-radius: 13px;
+  padding: 9px 10px;
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.shadow-unified-details {
+  margin-top: 14px;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  padding-top: 12px;
+}
+
+.shadow-unified-details summary {
+  cursor: pointer;
+  color: #bfdbfe;
+  font-weight: 900;
+}
+
+.shadow-unified-rollups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.shadow-unified-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.shadow-unified-detail-grid div {
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: rgba(2, 6, 23, 0.25);
+  overflow-wrap: anywhere;
+}
+
+.shadow-unified-detail-grid span {
+  display: block;
+  color: #94a3b8;
+  font-size: 0.74rem;
+}
+
+.shadow-unified-detail-grid b {
+  color: #e5e7eb;
+  font-size: 0.82rem;
+}
+
+.shadow-unified-muted,
+.shadow-unified-empty {
+  color: #94a3b8;
+  font-size: 0.84rem;
+  line-height: 1.7;
+}
+
+.shadow-unified-details pre {
+  white-space: pre-wrap;
+  direction: ltr;
+  text-align: left;
+  color: #cbd5e1;
+  background: rgba(2, 6, 23, 0.35);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+/* Hide stale old hosts defensively if old scripts somehow run after the unified card. */
+body.shadow-panel-03-unified #shadow-panel-01-host,
+body.shadow-panel-03-unified #shadow-panel-02-ops-host {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  .shadow-unified-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .shadow-unified-rollups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .shadow-unified-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .shadow-panel-03-unified-host {
+    width: min(100% - 16px, 1120px);
+  }
+  .shadow-unified-head {
+    flex-direction: column;
+  }
+  .shadow-unified-badges {
+    justify-content: flex-start;
+  }
+  .shadow-unified-metrics,
+  .shadow-unified-rollups,
+  .shadow-unified-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
