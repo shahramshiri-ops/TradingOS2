@@ -1,0 +1,34 @@
+{
+  "policy_id": "SHADOW_OUTCOME_01C_LIVE_RECENT_PRICE_BRIDGE_GUARD_POLICY_v1_0",
+  "created_utc": "2026-05-21T11:16:42Z",
+  "purpose": "Ensure live shadow outcome uses live-recent M5 incremental data, not stale sample/audit/historical files.",
+  "preferred_source": "data/live_m5/incremental/{INSTRUMENT}_M5_incremental_latest.csv",
+  "rejected_sources": [
+    "_mem_audit",
+    "mem_audit",
+    "sample",
+    "historical",
+    "history",
+    "derived_rebuild",
+    "_factory_registry",
+    "factory_registry",
+    "backtest",
+    "discovery",
+    "validation",
+    "holdout",
+    "archive"
+  ],
+  "max_staleness_hours_default": 96,
+  "output_dir": "runtime/sig_shadow/price_bridge_h1",
+  "forbidden": [
+    "signal",
+    "PnL",
+    "entry",
+    "stop",
+    "target",
+    "position_size",
+    "broker_execution",
+    "auto_learning",
+    "rule_rewrite"
+  ]
+}

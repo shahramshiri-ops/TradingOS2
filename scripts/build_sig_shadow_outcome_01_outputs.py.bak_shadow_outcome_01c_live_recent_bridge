@@ -1,0 +1,684 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+SHADOW-OUTCOME-01 — Shadow Outcome Observer
+
+Purpose:
+- Observe what happened after shadow candidates / setup-shadow / trigger-shadow /
+  blocker-shadow / diagnostic records, without creating trades.
+- Track H1+1 / H1+2 / H1+4 / H1+8 close-path, MFE/MAE style movement.
+- Produce pending/complete/not-observable states.
+- Make it explicit when records lack instrument/timestamp/direction context.
+
+Boundary:
+NOT_SIGNAL / NO_BUY_SELL / NO_ENTRY_STOP_TARGET / NO_POSITION_SIZE /
+NO_BROKER_EXECUTION / NO_AUTO_LEARNING / NO_RULE_REWRITE / NO_PNL
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+from datetime import datetime, timezone, timedelta
+from typing import Any, Dict, List, Optional, Tuple
+from collections import Counter, defaultdict
+import csv
+import json
+import hashlib
+import os
+import math
+
+ROOT = Path.cwd()
+
+RUNTIME_SHADOW = ROOT / "runtime" / "sig_shadow"
+PANEL = ROOT / "panel" / "brain4"
+PROOFS = ROOT / "proofs"
+
+for p in [RUNTIME_SHADOW, PANEL, PROOFS]:
+    p.mkdir(parents=True, exist_ok=True)
+
+AUTHORITY = (
+    "SHADOW_OUTCOME_01|SHADOW_OUTCOME_01B_H1_PRICE_SOURCE_BRIDGE|SHADOW_OUTCOME_01A_PRICE_ANCHOR_PATCH|OBSERVATION_ONLY|H1_PATH_AFTER_SHADOW_OBJECTS|"
+    "NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|"
+    "NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE|NO_PNL"
+)
+
+BOUNDARY = {
+    "signal_authorized": False,
+    "trade_instruction_authorized": False,
+    "broker_execution_authorized": False,
+    "action_surface_authorized": False,
+    "auto_learning_authorized": False,
+    "rule_rewrite_authorized": False,
+    "pnl_authorized": False,
+    "entry_stop_target_authorized": False,
+}
+
+HORIZONS = [1, 2, 4, 8]
+LOOKBACK_DAYS = int(os.environ.get("SHADOW_OUTCOME_LOOKBACK_DAYS", "14"))
+
+# Inputs
+FOUNDATION_STATUS = RUNTIME_SHADOW / "live_shadow_foundation_status_current.json"
+COUNT_SEMANTICS = RUNTIME_SHADOW / "shadow_count_semantics_current.json"
+
+# Outputs
+OUT_LEDGER = RUNTIME_SHADOW / "shadow_outcome_observation_ledger_current.json"
+OUT_STATUS_RUNTIME = RUNTIME_SHADOW / "shadow_outcome_status_current.json"
+OUT_STATUS_PANEL = PANEL / "shadow_outcome_status_current.json"
+OUT_VALIDATION = PROOFS / "sig_shadow_outcome_01_validation_result.json"
+
+
+def now_dt() -> datetime:
+    return datetime.now(timezone.utc).replace(microsecond=0)
+
+
+def now_utc() -> str:
+    return now_dt().isoformat().replace("+00:00", "Z")
+
+
+def parse_ts(value: Any) -> Optional[datetime]:
+    if value is None:
+        return None
+    s = str(value).strip()
+    if not s:
+        return None
+    # Accept common variants.
+    try:
+        if s.endswith("Z"):
+            return datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(timezone.utc)
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except Exception:
+        pass
+    for fmt in [
+        "%Y-%m-%d %H:%M:%S",
+        "%Y.%m.%d %H:%M:%S",
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y/%m/%d %H:%M:%S",
+    ]:
+        try:
+            return datetime.strptime(s[:19], fmt).replace(tzinfo=timezone.utc)
+        except Exception:
+            continue
+    return None
+
+
+def iso(dt: Optional[datetime]) -> Optional[str]:
+    if dt is None:
+        return None
+    return dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def load_json(path: Path, default: Any) -> Any:
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return default
+
+
+def write_json(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def stable_hash(payload: Any) -> str:
+    raw = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()
+
+
+def day_range(today: datetime, lookback_days: int) -> List[str]:
+    days = []
+    for i in range(max(1, lookback_days)):
+        d = today.date() - timedelta(days=i)
+        days.append(d.isoformat())
+    return days
+
+
+def read_jsonl(path: Path) -> List[Dict[str, Any]]:
+    if not path.exists():
+        return []
+    rows: List[Dict[str, Any]] = []
+    try:
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+                if isinstance(item, dict):
+                    rows.append(item)
+            except Exception:
+                continue
+    except Exception:
+        return []
+    return rows
+
+
+def append_jsonl_dedup(path: Path, records: List[Dict[str, Any]]) -> Dict[str, int]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    existing = set()
+    if path.exists():
+        for item in read_jsonl(path):
+            h = item.get("record_hash")
+            if h:
+                existing.add(str(h))
+    written = 0
+    skipped = 0
+    with path.open("a", encoding="utf-8") as f:
+        for r in records:
+            rr = dict(r)
+            rr.setdefault("authority", AUTHORITY)
+            rr.setdefault("boundary", BOUNDARY)
+            h = rr.get("record_hash") or stable_hash({k: v for k, v in rr.items() if k != "record_hash"})
+            rr["record_hash"] = h
+            if h in existing:
+                skipped += 1
+                continue
+            f.write(json.dumps(rr, ensure_ascii=False, sort_keys=True) + "\n")
+            existing.add(h)
+            written += 1
+    return {"written": written, "skipped": skipped, "path": str(path).replace("\\", "/")}
+
+
+def normalize_instrument(value: Any) -> Optional[str]:
+    if value is None:
+        return None
+    s = str(value).strip().upper().replace("/", "").replace("-", "")
+    if not s:
+        return None
+    aliases = {
+        "GOLD": "XAUUSD",
+        "XAUUSD.": "XAUUSD",
+        "EUR/USD": "EURUSD",
+        "USD/JPY": "USDJPY",
+    }
+    return aliases.get(s, s)
+
+
+def infer_instrument_from_memory(memory_id: Any) -> Optional[str]:
+    s = str(memory_id or "").upper()
+    for inst in ["EURUSD", "USDJPY", "XAUUSD"]:
+        if s.startswith(inst) or ("_" + inst + "_") in s or inst in s:
+            return inst
+    return None
+
+
+def normalize_timeframe(value: Any) -> str:
+    s = str(value or "").strip().upper()
+    if s in {"60", "1H", "HOUR", "HOURLY"}:
+        return "H1"
+    if not s:
+        return "H1"
+    return s
+
+
+def infer_direction(row: Dict[str, Any]) -> str:
+    for k in ["direction_side", "direction", "side", "direction_code"]:
+        v = row.get(k)
+        if v:
+            s = str(v).upper()
+            if "LONG" in s or s in {"UP", "BUY", "1"}:
+                return "LONG"
+            if "SHORT" in s or s in {"DOWN", "SELL", "-1"}:
+                return "SHORT"
+    mid = str(row.get("memory_id") or "").upper()
+    if "_LONG" in mid or "LONG_" in mid or mid.endswith("LONG"):
+        return "LONG"
+    if "_SHORT" in mid or "SHORT_" in mid or mid.endswith("SHORT"):
+        return "SHORT"
+    return "UNKNOWN_DIRECTION"
+
+
+def anchor_ts(row: Dict[str, Any]) -> Tuple[Optional[datetime], str]:
+    for k in ["source_bar_open_ts_utc", "bar_open_ts_utc", "activated_at_utc", "event_ts_utc"]:
+        dt = parse_ts(row.get(k))
+        if dt:
+            return dt, k
+    # Runtime created_utc is not a price-bar anchor. Keep it as a diagnostic anchor only.
+    dt = parse_ts(row.get("created_utc"))
+    if dt:
+        return dt, "created_utc_runtime_not_price_anchor"
+    return None, "missing_timestamp"
+
+
+def outcome_subject_id(row: Dict[str, Any], source_file: str) -> str:
+    key = [
+        source_file,
+        row.get("record_hash"),
+        row.get("candidate_snapshot_id"),
+        row.get("setup_shadow_id"),
+        row.get("trigger_shadow_id"),
+        row.get("blocker_shadow_id"),
+        row.get("diagnostic_log_id"),
+        row.get("memory_id"),
+        row.get("instrument"),
+        row.get("timeframe"),
+        row.get("source_bar_open_ts_utc"),
+        row.get("created_utc"),
+    ]
+    return "OUTSUBJ_" + stable_hash(key)[:24]
+
+
+def collect_subjects() -> List[Dict[str, Any]]:
+    today = now_dt()
+    subjects: Dict[str, Dict[str, Any]] = {}
+
+    file_specs = [
+        ("candidate_shadow", "candidate_shadow_log_*.jsonl", "SHADOW_CANDIDATE"),
+        ("setup_shadow", "setup_shadow_log_*.jsonl", "SETUP_SHADOW"),
+        ("trigger_shadow", "trigger_shadow_log_*.jsonl", "TRIGGER_SHADOW"),
+        ("blocker_shadow", "blocker_shadow_log_*.jsonl", "BLOCKER_SHADOW"),
+        ("diagnostic_record", "diagnostic_record_log_*.jsonl", "DIAGNOSTIC_RECORD"),
+    ]
+
+    for day in day_range(today, LOOKBACK_DAYS):
+        ldir = RUNTIME_SHADOW / "live_logs" / day
+        if not ldir.exists():
+            continue
+        for source_name, pattern, subject_type in file_specs:
+            for path in sorted(ldir.glob(pattern)):
+                for row in read_jsonl(path):
+                    sid = outcome_subject_id(row, str(path))
+                    inst = normalize_instrument(row.get("instrument")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id"))
+                    tf = normalize_timeframe(row.get("timeframe"))
+                    anchor, anchor_basis = anchor_ts(row)
+                    direction = infer_direction(row)
+                    subjects[sid] = {
+                        "subject_id": sid,
+                        "subject_type": subject_type,
+                        "source_log": str(path).replace("\\", "/"),
+                        "source_record_hash": row.get("record_hash"),
+                        "created_utc": row.get("created_utc"),
+                        "memory_id": row.get("memory_id"),
+                        "memory_class": row.get("memory_class"),
+                        "instrument": inst,
+                        "timeframe": tf,
+                        "observation_timeframe": "H1",
+                        "anchor_ts_utc": iso(anchor),
+                        "anchor_basis": anchor_basis,
+                        "direction_side": direction,
+                        "reason_code": row.get("reason_code") or row.get("blocker_reason_code"),
+                        "record_type": row.get("record_type"),
+                        "source_outcome_authorized": bool(row.get("outcome_authorized")),
+                        "boundary": BOUNDARY,
+                    }
+
+    return list(subjects.values())
+
+
+def candidate_data_paths(instrument: str, timeframe: str = "H1") -> List[Path]:
+    names = [
+        f"{instrument}_{timeframe}.csv",
+        f"{instrument}_{timeframe.lower()}.csv",
+        f"{instrument}{timeframe}.csv",
+        f"{instrument}_{timeframe}_canonical.csv",
+    ]
+    roots = [
+        ROOT / "runtime" / "sig_shadow" / "price_bridge_h1",
+        ROOT / "data" / "canonical",
+        ROOT / "data",
+        ROOT / "runtime",
+        ROOT / "outputs",
+    ]
+    paths: List[Path] = []
+    for root in roots:
+        if not root.exists():
+            continue
+        for name in names:
+            p = root / name
+            if p.exists():
+                paths.append(p)
+        # Controlled rglob fallback.
+        try:
+            for p in root.rglob(f"{instrument}_{timeframe}.csv"):
+                if p not in paths:
+                    paths.append(p)
+        except Exception:
+            pass
+    return paths
+
+
+def get_col(row: Dict[str, str], names: List[str]) -> Optional[str]:
+    lower_map = {str(k).strip().lower(): v for k, v in row.items()}
+    for name in names:
+        if name.lower() in lower_map:
+            return lower_map[name.lower()]
+    return None
+
+
+def parse_float(v: Any) -> Optional[float]:
+    try:
+        if v is None or str(v).strip() == "":
+            return None
+        return float(str(v).replace(",", ""))
+    except Exception:
+        return None
+
+
+_BAR_CACHE: Dict[Tuple[str, str], Tuple[List[Dict[str, Any]], Optional[str]]] = {}
+
+
+def load_bars(instrument: str, timeframe: str = "H1") -> Tuple[List[Dict[str, Any]], Optional[str]]:
+    key = (instrument, timeframe)
+    if key in _BAR_CACHE:
+        return _BAR_CACHE[key]
+
+    paths = candidate_data_paths(instrument, timeframe)
+    for p in paths:
+        bars: List[Dict[str, Any]] = []
+        try:
+            with p.open("r", encoding="utf-8-sig", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    ts_raw = get_col(row, [
+                        "bar_open_ts_utc", "timestamp", "datetime", "date_time", "time", "date"
+                    ])
+                    dt = parse_ts(ts_raw)
+                    if not dt:
+                        continue
+                    o = parse_float(get_col(row, ["open", "o"]))
+                    h = parse_float(get_col(row, ["high", "h"]))
+                    l = parse_float(get_col(row, ["low", "l"]))
+                    c = parse_float(get_col(row, ["close", "c"]))
+                    if o is None or h is None or l is None or c is None:
+                        continue
+                    bars.append({"ts": dt, "open": o, "high": h, "low": l, "close": c})
+            bars.sort(key=lambda x: x["ts"])
+            if bars:
+                _BAR_CACHE[key] = (bars, str(p).replace("\\", "/"))
+                return _BAR_CACHE[key]
+        except Exception:
+            continue
+
+    _BAR_CACHE[key] = ([], None)
+    return _BAR_CACHE[key]
+
+
+def observe_subject(subject: Dict[str, Any]) -> Dict[str, Any]:
+    inst = subject.get("instrument")
+    anchor = parse_ts(subject.get("anchor_ts_utc"))
+    direction = subject.get("direction_side") or "UNKNOWN_DIRECTION"
+
+    base = dict(subject)
+    base["outcome_observer_version"] = "SHADOW_OUTCOME_01_v1_0"
+    base["observation_created_utc"] = now_utc()
+    base["horizons"] = HORIZONS
+    base["price_data_status"] = "NOT_CHECKED"
+    base["observation_status"] = "UNKNOWN"
+    base["horizon_results"] = []
+    base["boundary"] = BOUNDARY
+
+    if not inst:
+        base["observation_status"] = "NOT_OBSERVABLE_MISSING_INSTRUMENT"
+        base["price_data_status"] = "NO_INSTRUMENT"
+        return base
+
+    if not anchor:
+        base["observation_status"] = "NOT_OBSERVABLE_MISSING_ANCHOR_TS"
+        base["price_data_status"] = "NO_ANCHOR_TS"
+        return base
+
+    # Runtime created_utc is not an event price anchor, but for live shadow records
+    # without a source_bar_open_ts_utc we can conservatively resolve to the latest
+    # closed H1 bar at or before runtime. This is explicitly labeled and remains
+    # observation-only, not PnL/trade evidence.
+    runtime_timestamp_only = subject.get("anchor_basis") == "created_utc_runtime_not_price_anchor"
+
+    bars, data_path = load_bars(inst, "H1")
+    base["price_data_path"] = data_path
+    if not bars:
+        base["observation_status"] = "PENDING_NO_H1_PRICE_DATA"
+        base["price_data_status"] = "H1_DATA_NOT_FOUND"
+        return base
+
+    anchor_idx = None
+    for i, b in enumerate(bars):
+        if b["ts"] <= anchor:
+            anchor_idx = i
+        else:
+            break
+
+    if anchor_idx is None:
+        base["observation_status"] = "PENDING_ANCHOR_BEFORE_FIRST_BAR"
+        base["price_data_status"] = "ANCHOR_BEFORE_DATA"
+        return base
+
+    anchor_bar = bars[anchor_idx]
+    base["anchor_h1_bar_open_ts_utc"] = iso(anchor_bar["ts"])
+    base["anchor_close"] = anchor_bar["close"]
+    base["latest_h1_bar_open_ts_utc"] = iso(bars[-1]["ts"])
+    if runtime_timestamp_only:
+        base["anchor_resolution_status"] = "CONTEXT_DERIVED_LATEST_CLOSED_H1_BAR"
+        base["anchor_basis_resolved"] = "LATEST_CLOSED_H1_BAR_AT_OR_BEFORE_RUNTIME_CREATED_UTC"
+        base["price_data_status"] = "H1_DATA_FOUND_CONTEXT_DERIVED_ANCHOR"
+    else:
+        base["anchor_resolution_status"] = "SOURCE_PRICE_BAR_ANCHOR"
+        base["anchor_basis_resolved"] = subject.get("anchor_basis")
+        base["price_data_status"] = "H1_DATA_FOUND"
+
+    future = [b for b in bars if b["ts"] > anchor_bar["ts"]]
+    max_complete = len(future)
+    results = []
+    complete_count = 0
+
+    for h in HORIZONS:
+        if max_complete < h:
+            results.append({
+                "horizon": f"H1+{h}",
+                "horizon_bars": h,
+                "completion_status": "PENDING",
+                "required_future_bars": h,
+                "available_future_bars": max_complete,
+                "directional_outcome": "PENDING",
+            })
+            continue
+
+        window = future[:h]
+        end_bar = window[-1]
+        close_delta = end_bar["close"] - anchor_bar["close"]
+        mfe_abs = max(b["high"] for b in window) - anchor_bar["close"]
+        mae_abs = min(b["low"] for b in window) - anchor_bar["close"]
+
+        signed_close_delta = None
+        signed_mfe = None
+        signed_mae = None
+        if direction == "LONG":
+            signed_close_delta = close_delta
+            signed_mfe = mfe_abs
+            signed_mae = mae_abs
+        elif direction == "SHORT":
+            signed_close_delta = -close_delta
+            # For short, favorable movement is price falling; adverse is price rising.
+            signed_mfe = anchor_bar["close"] - min(b["low"] for b in window)
+            signed_mae = anchor_bar["close"] - max(b["high"] for b in window)
+
+        if signed_close_delta is None:
+            directional = "UNKNOWN_DIRECTION_PRICE_PATH_ONLY"
+        elif signed_close_delta > 0:
+            directional = "FAVORABLE_CLOSE_PATH"
+        elif signed_close_delta < 0:
+            directional = "ADVERSE_CLOSE_PATH"
+        else:
+            directional = "FLAT_CLOSE_PATH"
+
+        results.append({
+            "horizon": f"H1+{h}",
+            "horizon_bars": h,
+            "completion_status": "COMPLETE",
+            "anchor_h1_bar_open_ts_utc": iso(anchor_bar["ts"]),
+            "horizon_h1_bar_open_ts_utc": iso(end_bar["ts"]),
+            "anchor_close": anchor_bar["close"],
+            "horizon_close": end_bar["close"],
+            "close_delta_abs": close_delta,
+            "mfe_abs": mfe_abs,
+            "mae_abs": mae_abs,
+            "direction_side": direction,
+            "signed_close_delta_abs": signed_close_delta,
+            "signed_mfe_abs": signed_mfe,
+            "signed_mae_abs": signed_mae,
+            "directional_outcome": directional,
+            "interpretation_boundary": "PATH_OBSERVATION_ONLY_NOT_PNL_NOT_TRADE",
+        })
+        complete_count += 1
+
+    base["horizon_results"] = results
+    base["complete_horizon_count"] = complete_count
+    if complete_count == 0:
+        base["observation_status"] = "PENDING_FUTURE_H1_BARS"
+    elif complete_count < len(HORIZONS):
+        base["observation_status"] = "PARTIAL_COMPLETE"
+    else:
+        base["observation_status"] = "COMPLETE"
+
+    return base
+
+
+def write_outcome_append_log(observations: List[Dict[str, Any]], created: str) -> Dict[str, int]:
+    day = created[:10]
+    path = RUNTIME_SHADOW / "live_logs" / day / ("outcome_observation_log_" + day + ".jsonl")
+    records = []
+    for obs in observations:
+        for hr in obs.get("horizon_results") or []:
+            rr = {
+                "record_type": "OUTCOME_OBSERVATION",
+                "created_utc": created,
+                "subject_id": obs.get("subject_id"),
+                "subject_type": obs.get("subject_type"),
+                "memory_id": obs.get("memory_id"),
+                "instrument": obs.get("instrument"),
+                "timeframe": obs.get("timeframe"),
+                "direction_side": obs.get("direction_side"),
+                "anchor_ts_utc": obs.get("anchor_ts_utc"),
+                "observation_status": obs.get("observation_status"),
+                "price_data_status": obs.get("price_data_status"),
+                "horizon_result": hr,
+                "boundary": BOUNDARY,
+                "authority": AUTHORITY,
+            }
+            records.append(rr)
+    # If no horizon rows, still append a subject-level not-observable/pending record.
+    if not records:
+        for obs in observations:
+            records.append({
+                "record_type": "OUTCOME_OBSERVATION_SUBJECT_STATUS",
+                "created_utc": created,
+                "subject_id": obs.get("subject_id"),
+                "subject_type": obs.get("subject_type"),
+                "memory_id": obs.get("memory_id"),
+                "instrument": obs.get("instrument"),
+                "observation_status": obs.get("observation_status"),
+                "price_data_status": obs.get("price_data_status"),
+                "boundary": BOUNDARY,
+                "authority": AUTHORITY,
+            })
+    return append_jsonl_dedup(path, records)
+
+
+def summarize(observations: List[Dict[str, Any]]) -> Dict[str, Any]:
+    subject_type_counts = Counter(str(o.get("subject_type") or "UNKNOWN") for o in observations)
+    status_counts = Counter(str(o.get("observation_status") or "UNKNOWN") for o in observations)
+    price_status_counts = Counter(str(o.get("price_data_status") or "UNKNOWN") for o in observations)
+
+    horizon_counts = Counter()
+    directional_counts = Counter()
+    complete_horizon_total = 0
+    pending_horizon_total = 0
+
+    for o in observations:
+        for hr in o.get("horizon_results") or []:
+            horizon_counts[str(hr.get("horizon"))] += 1
+            cs = str(hr.get("completion_status") or "UNKNOWN")
+            if cs == "COMPLETE":
+                complete_horizon_total += 1
+            elif cs == "PENDING":
+                pending_horizon_total += 1
+            directional_counts[str(hr.get("directional_outcome") or "UNKNOWN")] += 1
+
+    return {
+        "subject_count": len(observations),
+        "subject_type_breakdown": dict(subject_type_counts.most_common()),
+        "observation_status_breakdown": dict(status_counts.most_common()),
+        "price_data_status_breakdown": dict(price_status_counts.most_common()),
+        "horizon_result_count": sum(horizon_counts.values()),
+        "complete_horizon_result_count": complete_horizon_total,
+        "pending_horizon_result_count": pending_horizon_total,
+        "directional_outcome_breakdown": dict(directional_counts.most_common()),
+    }
+
+
+def main() -> None:
+    created = now_utc()
+    subjects = collect_subjects()
+    observations = [observe_subject(s) for s in subjects]
+    summary = summarize(observations)
+    append_result = write_outcome_append_log(observations, created)
+
+    foundation = load_json(FOUNDATION_STATUS, {})
+    count_semantics = load_json(COUNT_SEMANTICS, {})
+
+    ledger = {
+        "payload_version": "SHADOW_OUTCOME_01_LEDGER_v1_0",
+        "price_anchor_patch_version": "SHADOW_OUTCOME_01A_PRICE_ANCHOR_v1_0",
+        "price_source_bridge_version": "SHADOW_OUTCOME_01B_H1_PRICE_SOURCE_BRIDGE_v1_0",
+        "created_utc": created,
+        "authority": AUTHORITY,
+        "lookback_days": LOOKBACK_DAYS,
+        "horizons": [f"H1+{h}" for h in HORIZONS],
+        "outcome_scope": [
+            "SHADOW_CANDIDATE",
+            "SETUP_SHADOW",
+            "TRIGGER_SHADOW",
+            "BLOCKER_SHADOW",
+            "DIAGNOSTIC_RECORD",
+        ],
+        "summary": summary,
+        "observations": observations,
+        "plain_language_fa": (
+            "این ledger فقط رفتار قیمت بعد از shadow objects را مشاهده می‌کند. "
+            "این PnL، entry، stop، target، signal یا execution نیست."
+        ),
+        "boundary": BOUNDARY,
+    }
+
+    status = {
+        "payload_version": "SHADOW_OUTCOME_01_STATUS_v1_0",
+        "price_anchor_patch_version": "SHADOW_OUTCOME_01A_PRICE_ANCHOR_v1_0",
+        "created_utc": created,
+        "authority": AUTHORITY,
+        "lookback_days": LOOKBACK_DAYS,
+        "horizons": [f"H1+{h}" for h in HORIZONS],
+        "foundation_status_created_utc": foundation.get("created_utc"),
+        "count_semantics_created_utc": count_semantics.get("created_utc"),
+        **summary,
+        "append_result": append_result,
+        "candidate_count_from_count_semantics": count_semantics.get("candidate_count"),
+        "diagnostic_record_count_from_count_semantics": count_semantics.get("diagnostic_record_count_last_run"),
+        "display_badge": "SHADOW OUTCOME / OBSERVATION ONLY / NOT A SIGNAL",
+        "plain_language_fa": (
+            "Outcome Observer آینده قیمت را بعد از setup/trigger/blocker/candidate به شکل H1+1/H1+2/H1+4/H1+8 ثبت می‌کند. "
+            "این فقط مشاهده مسیر قیمت است، نه PnL و نه دستور معامله."
+        ),
+        "boundary": BOUNDARY,
+    }
+
+    write_json(OUT_LEDGER, ledger)
+    write_json(OUT_STATUS_RUNTIME, status)
+    write_json(OUT_STATUS_PANEL, status)
+
+    print(json.dumps({
+        "status": "SHADOW_OUTCOME_01_OUTPUTS_BUILT",
+        "subject_count": summary["subject_count"],
+        "complete_horizon_result_count": summary["complete_horizon_result_count"],
+        "pending_horizon_result_count": summary["pending_horizon_result_count"],
+        "observation_status_breakdown": summary["observation_status_breakdown"],
+        "signal_authorized": False,
+        "broker_execution_authorized": False,
+        "pnl_authorized": False,
+    }, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()

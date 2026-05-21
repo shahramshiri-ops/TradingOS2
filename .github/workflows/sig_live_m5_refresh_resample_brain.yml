@@ -78,6 +78,22 @@ jobs:
       - name: Build LIVE-SHADOW-FOUNDATION-01 append-only logs
         run: python scripts/run_sig_live_shadow_foundation_01.py
 
+      # SHADOW-OUTCOME-01 — path observation after shadow objects (NOT_SIGNAL, NOT_PNL)
+      - name: Build SHADOW-OUTCOME-01 path observations
+        run: python scripts/run_sig_shadow_outcome_01.py
+
+      # SHADOW-OUTCOME-01A — price-bar anchor fallback for outcome observations (NOT_SIGNAL, NOT_PNL)
+      - name: Build SHADOW-OUTCOME-01A price anchors
+        run: python scripts/run_shadow_outcome_01a_price_anchor.py
+
+      # SHADOW-OUTCOME-01B — H1 price source bridge for outcome observations (NOT_SIGNAL, NOT_PNL)
+      - name: Build SHADOW-OUTCOME-01B H1 price bridge
+        run: python scripts/run_shadow_outcome_01b_price_source_bridge.py
+
+      # SHADOW-OUTCOME-01C — live-recent M5 price bridge guard (NOT_SIGNAL, NOT_PNL)
+      - name: Build SHADOW-OUTCOME-01C live-recent price bridge
+        run: python scripts/run_shadow_outcome_01c_live_recent_price_bridge.py
+
       - name: Commit generated read-only data, brain payload, and refresh status
         id: commit_generated
         run: |

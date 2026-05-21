@@ -1,0 +1,22 @@
+{
+  "policy_id": "SHADOW_OUTCOME_01A_PRICE_ANCHOR_POLICY_v1_0",
+  "created_utc": "2026-05-21T09:40:39Z",
+  "purpose": "Resolve outcome subjects to conservative H1 price-bar anchors when shadow logs only have runtime timestamps.",
+  "allowed_anchor_basis": [
+    "source_bar_open_ts_utc",
+    "bar_open_ts_utc",
+    "activated_at_utc",
+    "latest_closed_h1_bar_at_or_before_runtime_created_utc"
+  ],
+  "safety_note": "Context-derived anchors are acceptable for path observation and system diagnostics only; they are not trade entries and not PnL.",
+  "forbidden": [
+    "signal",
+    "buy_sell",
+    "entry_stop_target",
+    "position_size",
+    "broker_execution",
+    "auto_learning",
+    "rule_rewrite",
+    "pnl"
+  ]
+}
