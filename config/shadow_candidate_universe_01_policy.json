@@ -1,0 +1,42 @@
+{
+  "policy_version": "SHADOW_CANDIDATE_UNIVERSE_01_POLICY_v1_0",
+  "status": "ACTIVE_AFTER_PATCH",
+  "purpose": "Increase live forward-observation density by evaluating pre-registered research-only shadow candidates without promoting them to active memories.",
+  "authority": "RESEARCH_SHADOW_ONLY_NOT_SIGNAL",
+  "scope": "H1-native candidate universe first; M15 deferred until M15 price-anchor/outcome hooks are explicit.",
+  "boundaries": {
+    "active_memory_authorized": false,
+    "signal_authorized": false,
+    "trade_instruction_authorized": false,
+    "entry_stop_target_authorized": false,
+    "position_size_authorized": false,
+    "broker_execution_authorized": false,
+    "profitability_claim_authorized": false,
+    "auto_learning_authorized": false,
+    "rule_rewrite_authorized": false
+  },
+  "outputs": {
+    "registry": "config/shadow_candidate_universe_01_registry.json",
+    "persistent_state": "state/shadow_candidate_universe/shadow_candidate_universe_state_v1.json",
+    "current_summary": "panel/brain4/shadow_candidate_universe_summary_current.json",
+    "monthly_review_pack": "panel/brain4/shadow_candidate_universe_review_pack_current.json",
+    "signal_intake_for_observation_only": "runtime/sig_shadow_candidate_universe/shadow_candidate_universe_signal_intake_current.json"
+  },
+  "review_policy": {
+    "minimum_recommended_observation_period": "4_to_12_weeks_before_any_candidate_decision",
+    "allowed_after_separate_review_only": [
+      "KEEP_SHADOW_ONLY",
+      "PARK_SHADOW_CANDIDATE",
+      "REJECT_SHADOW_CANDIDATE",
+      "RESPECIFY_AS_NEW_CANDIDATE_VERSION",
+      "NOMINATE_FOR_CAVEATED_MEMORY_WATCH_REVIEW_ONLY"
+    ],
+    "forbidden_automatic_actions": [
+      "automatic_memory_promotion",
+      "automatic_rule_change",
+      "automatic_signal_creation",
+      "automatic_trade_instruction",
+      "automatic_holdout_opening"
+    ]
+  }
+}

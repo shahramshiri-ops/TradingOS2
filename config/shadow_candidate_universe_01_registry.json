@@ -1,0 +1,1997 @@
+{
+  "registry_version": "SHADOW_CANDIDATE_UNIVERSE_01_REGISTRY_v1_0",
+  "status": "ACTIVE_SHADOW_ONLY_AFTER_PATCH",
+  "purpose": "Pre-register a broad but bounded universe of research-only shadow candidates to increase live observation density without promoting them to active memories or panel events.",
+  "authority": "SHADOW_CANDIDATE_UNIVERSE_01|RESEARCH_SHADOW_ONLY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
+  "boundary": {
+    "display_only": true,
+    "research_shadow_only": true,
+    "active_memory_authorized": false,
+    "signal_authorized": false,
+    "trade_instruction_authorized": false,
+    "broker_execution_authorized": false,
+    "entry_stop_target_authorized": false,
+    "position_size_authorized": false,
+    "profitability_claim_authorized": false,
+    "auto_learning_authorized": false,
+    "rule_rewrite_authorized": false
+  },
+  "candidate_policy": {
+    "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+    "promotion_forbidden_inside_this_patch": true,
+    "panel_main_display_forbidden": true,
+    "debug_or_monthly_review_only": true,
+    "initial_scope": "H1_NATIVE_CONTEXT_FIRST; M15 candidate universe intentionally deferred until M15 price-anchor/closed-bar outcome hooks are made explicit.",
+    "minimum_review_period_before_any_promotion_decision": "4_to_12_weeks_forward_observation",
+    "allowed_future_decisions_after_separate_review_only": [
+      "KEEP_SHADOW_ONLY",
+      "PARK_SHADOW_CANDIDATE",
+      "REJECT_SHADOW_CANDIDATE",
+      "RESPECIFY_AS_NEW_CANDIDATE_VERSION",
+      "NOMINATE_FOR_CAVEATED_MEMORY_WATCH_REVIEW_ONLY"
+    ]
+  },
+  "rule_language": {
+    "supported_ops": [
+      "eq",
+      "neq",
+      "in",
+      "not_in",
+      "contains",
+      "truthy",
+      "falsey",
+      "exists",
+      "gt",
+      "gte",
+      "lt",
+      "lte",
+      "between"
+    ],
+    "near_miss_policy": "A row is a near-miss when the context surface is available and data is OK, but only a small number of predeclared clauses fail. Near-miss is never an event and never a signal."
+  },
+  "candidates": [
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_SESSION_OPEN_TREND_LONG_v1_0",
+      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "is_first_h1_bar_of_session",
+          "op": "truthy"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "in",
+          "value": [
+            "UP",
+            "FLAT"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "in",
+          "value": [
+            "UP",
+            "FLAT"
+          ]
+        }
+      ],
+      "rationale": "First closed H1 of a liquid session moves bullish while higher timeframe context is not directly bearish.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_SESSION_OPEN_TREND_SHORT_v1_0",
+      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "is_first_h1_bar_of_session",
+          "op": "truthy"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "in",
+          "value": [
+            "DOWN",
+            "FLAT"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "in",
+          "value": [
+            "DOWN",
+            "FLAT"
+          ]
+        }
+      ],
+      "rationale": "First closed H1 of a liquid session moves bearish while higher timeframe context is not directly bullish.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_SESSION_OPEN_TREND_LONG_v1_0",
+      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "is_first_h1_bar_of_session",
+          "op": "truthy"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "in",
+          "value": [
+            "UP",
+            "FLAT"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "in",
+          "value": [
+            "UP",
+            "FLAT"
+          ]
+        }
+      ],
+      "rationale": "First closed H1 of a liquid session moves bullish while higher timeframe context is not directly bearish.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_SESSION_OPEN_TREND_SHORT_v1_0",
+      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "is_first_h1_bar_of_session",
+          "op": "truthy"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "in",
+          "value": [
+            "DOWN",
+            "FLAT"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "in",
+          "value": [
+            "DOWN",
+            "FLAT"
+          ]
+        }
+      ],
+      "rationale": "First closed H1 of a liquid session moves bearish while higher timeframe context is not directly bullish.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_SESSION_OPEN_TREND_LONG_v1_0",
+      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "is_first_h1_bar_of_session",
+          "op": "truthy"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "in",
+          "value": [
+            "UP",
+            "FLAT"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "in",
+          "value": [
+            "UP",
+            "FLAT"
+          ]
+        }
+      ],
+      "rationale": "First closed H1 of a liquid session moves bullish while higher timeframe context is not directly bearish.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_SESSION_OPEN_TREND_SHORT_v1_0",
+      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "is_first_h1_bar_of_session",
+          "op": "truthy"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "in",
+          "value": [
+            "DOWN",
+            "FLAT"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "in",
+          "value": [
+            "DOWN",
+            "FLAT"
+          ]
+        }
+      ],
+      "rationale": "First closed H1 of a liquid session moves bearish while higher timeframe context is not directly bullish.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "H1 volatility expands bullish after a recent H1 contraction sequence.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "H1 volatility expands bearish after a recent H1 contraction sequence.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "H1 volatility expands bullish after a recent H1 contraction sequence.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "H1 volatility expands bearish after a recent H1 contraction sequence.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "H1 volatility expands bullish after a recent H1 contraction sequence.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "H1 volatility expands bearish after a recent H1 contraction sequence.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_v1_0",
+      "candidate_family": "H1_ASIAN_RANGE_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_ASIAN_RANGE_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_ASIAN_RANGE_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_asian_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "asian_high_breakout_continuation_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Closed H1 continuation above the same-day Asian high during active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_v1_0",
+      "candidate_family": "H1_ASIAN_RANGE_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_ASIAN_RANGE_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_ASIAN_RANGE_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_asian_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "asian_high_swept_and_reclaimed_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Closed H1 sweeps the same-day Asian high and reclaims back inside with bearish close.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_v1_0",
+      "candidate_family": "H1_ASIAN_RANGE_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_ASIAN_RANGE_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_ASIAN_RANGE_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_asian_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "asian_high_breakout_continuation_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Closed H1 continuation above the same-day Asian high during active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_v1_0",
+      "candidate_family": "H1_ASIAN_RANGE_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_ASIAN_RANGE_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_ASIAN_RANGE_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_asian_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "asian_high_swept_and_reclaimed_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Closed H1 sweeps the same-day Asian high and reclaims back inside with bearish close.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_v1_0",
+      "candidate_family": "H1_ASIAN_RANGE_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_ASIAN_RANGE_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_ASIAN_RANGE_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_asian_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "asian_high_breakout_continuation_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Closed H1 continuation above the same-day Asian high during active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_v1_0",
+      "candidate_family": "H1_ASIAN_RANGE_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_ASIAN_RANGE_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_ASIAN_RANGE_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 50,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_asian_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "asian_high_swept_and_reclaimed_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Closed H1 sweeps the same-day Asian high and reclaims back inside with bearish close.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
+      "candidate_family": "H1_WEEKLY_OPEN_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_WEEKLY_OPEN_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 47,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "is_weekly_open_bar",
+          "op": "falsey"
+        },
+        {
+          "field": "weekly_open_reclaim_short_state",
+          "op": "neq",
+          "value": "NONE"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Closed H1 short-side reaction around weekly open state; shadow-only until forward evidence exists.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
+      "candidate_family": "H1_WEEKLY_OPEN_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_WEEKLY_OPEN_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 47,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "is_weekly_open_bar",
+          "op": "falsey"
+        },
+        {
+          "field": "weekly_open_reclaim_short_state",
+          "op": "neq",
+          "value": "NONE"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Closed H1 short-side reaction around weekly open state; shadow-only until forward evidence exists.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
+      "candidate_family": "H1_WEEKLY_OPEN_REACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_WEEKLY_OPEN_REACTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 47,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "is_weekly_open_bar",
+          "op": "falsey"
+        },
+        {
+          "field": "weekly_open_reclaim_short_state",
+          "op": "neq",
+          "value": "NONE"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Closed H1 short-side reaction around weekly open state; shadow-only until forward evidence exists.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_LONDON_LOW_SWEEP_RECLAIM_LONG_v1_0",
+      "candidate_family": "H1_FAILED_BREAKOUT_TRAP",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_FAILED_BREAKOUT_TRAP_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_FAILED_BREAKOUT_TRAP",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 52,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "same_utc_date_london_range_available",
+          "op": "truthy"
+        },
+        {
+          "field": "london_low_swept_and_reclaimed_by_closed_h1",
+          "op": "truthy"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "EURUSD closed H1 reclaims London low after a downside sweep/failed breakout; shadow-only recurrence/outcome collection.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_FAILED_DOWNSIDE_STATE_RECLAIM_LONG_v1_0",
+      "candidate_family": "H1_FAILED_BREAKOUT_TRAP",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_FAILED_BREAKOUT_TRAP_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_FAILED_BREAKOUT_TRAP",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 48,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h1_failed_breakout_or_session_sweep_state",
+          "op": "contains",
+          "value": "FAILED_DOWNSIDE"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Broader EURUSD failed-downside reclaim state, deliberately shadow-only to test if the narrower rule is too strict.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
+      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 46,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "D1/H4 up alignment with bullish H1 close in active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
+      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 46,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "D1/H4 down alignment with bearish H1 close in active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
+      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 46,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "D1/H4 up alignment with bullish H1 close in active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
+      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 46,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "D1/H4 down alignment with bearish H1 close in active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
+      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 46,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "D1/H4 up alignment with bullish H1 close in active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
+      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 46,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "D1/H4 down alignment with bearish H1 close in active session.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
+      "candidate_family": "H1_COUNTER_HTF_RECLAIM",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_RECLAIM_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_RECLAIM",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 43,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Bullish H1 reclaim while H4 remains down; shadow-only test of reversal/short-squeeze behavior.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_EURUSD_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
+      "candidate_family": "H1_COUNTER_HTF_REJECTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "EURUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 43,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Bearish H1 rejection while H4 remains up; shadow-only test of reversal/long-trap behavior.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
+      "candidate_family": "H1_COUNTER_HTF_RECLAIM",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_RECLAIM_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_RECLAIM",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 43,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Bullish H1 reclaim while H4 remains down; shadow-only test of reversal/short-squeeze behavior.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
+      "candidate_family": "H1_COUNTER_HTF_REJECTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "USDJPY",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 43,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Bearish H1 rejection while H4 remains up; shadow-only test of reversal/long-trap behavior.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
+      "candidate_family": "H1_COUNTER_HTF_RECLAIM",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "LONG_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_RECLAIM_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_RECLAIM",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 43,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BULLISH"
+        }
+      ],
+      "rationale": "Bullish H1 reclaim while H4 remains down; shadow-only test of reversal/short-squeeze behavior.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    },
+    {
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_id": "SCU01_XAUUSD_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
+      "candidate_family": "H1_COUNTER_HTF_REJECTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "expected_activation_frequency": "UNKNOWN_FORWARD_MEASURED_ONLY",
+      "evidence_grade": "PRE_REGISTERED_SHADOW_ONLY_NO_EDGE_CLAIM",
+      "score_not_probability": 43,
+      "near_miss_max_failed_clauses": 1,
+      "clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "value": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "value": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ]
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "value": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "value": "BEARISH"
+        }
+      ],
+      "rationale": "Bearish H1 rejection while H4 remains up; shadow-only test of reversal/long-trap behavior.",
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution.",
+      "promotion_status": "NOT_ELIGIBLE_WITHOUT_FORWARD_REVIEW"
+    }
+  ]
+}

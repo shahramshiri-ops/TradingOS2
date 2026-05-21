@@ -63,6 +63,14 @@ ALLOWED_GLOBS = [
     "panel/brain4/assets/*.js",
     "panel/brain4/assets/*.css",
 
+    "runtime/sig_shadow_candidate_universe/*current.json",
+    "state/shadow_candidate_universe/*.json",
+    "panel/brain4/shadow_candidate_universe*.json",
+    "runtime/sig_live_observation/*current.json",
+    "panel/brain4/live_observation*.json",
+    "panel/brain4/live_memory_evaluation*.json",
+    "panel/brain4/live_event_ledger*.json",
+
     # Runtime/status JSONs that are safe to publish and useful for freshness audits.
     "runtime/sig_brain/*.json",
     "runtime/sig_shadow/*current.json",

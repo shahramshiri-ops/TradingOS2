@@ -1,0 +1,52 @@
+{
+  "schema_version": "SHADOW_CANDIDATE_UNIVERSE_01_SCHEMA_v1_0",
+  "description": "Conceptual schema for research-only shadow candidate universe and forward observation intake.",
+  "major_objects": {
+    "candidate_spec": [
+      "candidate_id",
+      "candidate_family",
+      "candidate_state",
+      "instrument",
+      "timeframe",
+      "directional_bias",
+      "clauses",
+      "shadow_horizons"
+    ],
+    "evaluation_row": [
+      "created_utc",
+      "candidate_id",
+      "evaluation_status",
+      "reason_codes",
+      "passed_clause_count",
+      "failed_clause_count",
+      "trigger_bar_open_ts_utc",
+      "is_shadow_active",
+      "is_near_miss"
+    ],
+    "signal_intake_candidate_for_observation_only": [
+      "candidate_id",
+      "candidate_state",
+      "source_candidate_id",
+      "instrument",
+      "timeframe",
+      "directional_bias",
+      "trigger_bar_open_ts_utc",
+      "observation_reference_price"
+    ]
+  },
+  "evaluation_status_enum": [
+    "SHADOW_CANDIDATE_ACTIVE",
+    "SHADOW_CANDIDATE_NEAR_MISS",
+    "NOT_TRIGGERED",
+    "INPUT_SURFACE_MISSING",
+    "INPUT_INSUFFICIENT",
+    "DATA_OR_CONTEXT_NOT_READY"
+  ],
+  "hard_boundaries": {
+    "active_memory_authorized": false,
+    "signal_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_learning_authorized": false,
+    "rule_rewrite_authorized": false
+  }
+}
