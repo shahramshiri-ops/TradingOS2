@@ -1,6 +1,6 @@
 {
   "history_version": "SIG_BRAIN4_OFFICIAL_EVENT_HISTORY_v1_2_EVENT_LIFECYCLE_OPS21",
-  "created_utc": "2026-05-20T18:57:18Z",
+  "created_utc": "2026-05-21T05:57:17Z",
   "authority": "SIG_BRAIN4_OFFICIAL_EVENT_HISTORY|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
   "signal_authorized": false,
   "action_surface_authorized": false,
@@ -18,70 +18,11 @@
   },
   "summary": {
     "event_count": 6,
-    "active_event_count": 1,
+    "active_event_count": 0,
     "expired_event_count": 4,
-    "invalidated_event_count": 1
+    "invalidated_event_count": 2
   },
-  "active_events": [
-    {
-      "event_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0::2026-05-20T15:00:00Z",
-      "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
-      "instrument": "XAUUSD",
-      "timeframe": "H1",
-      "event_type": "DIRECTIONAL_WATCH",
-      "direction_side": "SHORT",
-      "posture_fa": "directional watch پژوهشی: SHORT-bias context",
-      "meaning_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session MULTI، با context D1=['DOWN'], H4=['UP', 'NEUTRAL', 'DOWN'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
-      "display_message_fa": "این memory صرفاً یک watch تاریخی است، نه سیگنال. در شرایط مشابه گذشته (روی XAUUSD، session MULTI، با context D1=['DOWN'], H4=['UP', 'NEUTRAL', 'DOWN'])، حرکت قیمت در پنجره‌های 3 تا 12 ساعت بعد به طور قابل‌توجهی به سمت SHORT متمایل بوده است. هیچ entry/stop/target پیشنهاد نمی‌شود.",
-      "activated_at_utc": "2026-05-20T16:07:18Z",
-      "first_seen_utc": "2026-05-20T16:07:18Z",
-      "last_seen_utc": "2026-05-20T16:57:16Z",
-      "expires_at_utc": "2026-05-20T22:00:00Z",
-      "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-      "expiry_is_invalidation": false,
-      "expiry_plain_language_fa": "این weekly-open reclaim SHORT memory تا ۶ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره بالای weekly open بسته شود.",
-      "event_lifecycle_policy_applied": {
-        "policy_version": "SIG_BRAIN_EVENT_LIFECYCLE_POLICY_v1_0_OPS21",
-        "basis": "source_bar_close_plus_trigger_timeframe_bars",
-        "validity_bars": 6,
-        "max_validity_minutes": 360,
-        "duration_minutes_applied": 360,
-        "session_cap": null,
-        "expiry_label_fa": "از بازهٔ اعتبار پژوهشی خارج شده",
-        "expiry_is_invalidation": false,
-        "expiry_plain_language_fa": "این weekly-open reclaim SHORT memory تا ۶ کندل H1 پس از trigger معتبر نمایش داده می‌شود، مگر اینکه H1 close دوباره بالای weekly open بسته شود."
-      },
-      "invalidation_policy": {
-        "enabled": true,
-        "invalidation_is_not_trade_stop": true,
-        "rules": [
-          {
-            "type": "h1_close_back_through_reference_level",
-            "reference_field": "weekly_open",
-            "memory_direction": "SHORT",
-            "evaluation_timeframe": "H1",
-            "buffer_policy": "NO_ADDITIONAL_BUFFER_IN_OPS21",
-            "plain_language_fa": "اگر H1 close دوباره از سطح مرجع در خلاف جهت memory عبور کند، context از نظر lifecycle نقض شده محسوب می‌شود؛ این stop-loss یا دستور معامله نیست."
-          }
-        ],
-        "invalidated_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
-        "plain_language_fa": "Invalidation در این سیستم به معنی نقض context پژوهشی است، نه stop-loss، شکست معامله یا دستور خروج."
-      },
-      "reference_level_field": "weekly_open",
-      "reference_level_value": 4536.76036,
-      "source_bar_open_ts_utc": "2026-05-20T15:00:00Z",
-      "source_bar_close_ts_utc": "2026-05-20T16:00:00Z",
-      "session_bucket": "LONDON_NY_OVERLAP",
-      "score_not_probability": 71,
-      "band": "CAVEATED_DIRECTIONAL_WATCH",
-      "status": "ACTIVE",
-      "no_trade": false,
-      "forbidden": "بدون buy/sell، بدون entry/stop/target، بدون probability، بدون broker/execution.",
-      "authority": "SIG_BRAIN4_OFFICIAL_EVENT_HISTORY|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
-      "created_by_workflow_run": "26177302563",
-      "created_by_workflow_sha": "58b24938bb50846a822642b4209384386c15b875"
-    }
-  ],
+  "active_events": [],
   "events": [
     {
       "event_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0::2026-05-20T15:00:00Z",
@@ -134,12 +75,16 @@
       "session_bucket": "LONDON_NY_OVERLAP",
       "score_not_probability": 71,
       "band": "CAVEATED_DIRECTIONAL_WATCH",
-      "status": "ACTIVE",
+      "status": "INVALIDATED",
       "no_trade": false,
       "forbidden": "بدون buy/sell، بدون entry/stop/target، بدون probability، بدون broker/execution.",
       "authority": "SIG_BRAIN4_OFFICIAL_EVENT_HISTORY|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
       "created_by_workflow_run": "26177302563",
-      "created_by_workflow_sha": "58b24938bb50846a822642b4209384386c15b875"
+      "created_by_workflow_sha": "58b24938bb50846a822642b4209384386c15b875",
+      "invalidated_at_utc": "2026-05-20T19:07:15Z",
+      "invalidation_label_fa": "context توسط شرط نقض سطح دیگر فعال محسوب نمی‌شود",
+      "invalidation_technical_reason": "h1_close 4543.17149 > reference 4536.76036",
+      "invalidation_is_not_trade_stop": true
     },
     {
       "event_id": "EURUSD_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_SHORT_DIRECTIONAL_WATCH_v1_0::2026-05-20T12:00:00Z",

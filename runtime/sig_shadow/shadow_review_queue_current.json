@@ -1,42 +1,46 @@
 {
-  "payload_version": "SHADOW_OPS_01_REVIEW_QUEUE_v1_0",
-  "created_utc": "2026-05-21T05:57:08Z",
-  "authority": "SHADOW_OPS_01|DIAG_ELIG_LEDGER_HEALTH_REVIEW|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
-  "review_item_count": 4,
-  "items": [
+  "queue_version": "SIG_SHADOW_READY_01_REVIEW_QUEUE_v1_0",
+  "created_utc": "2026-05-21T05:57:18Z",
+  "authority": "SHADOW_READY_01|LIVE_SHADOW_READINESS_HARDENING|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING",
+  "signal_authorized": false,
+  "trade_instruction_authorized": false,
+  "broker_execution_authorized": false,
+  "action_surface_authorized": false,
+  "auto_learning_authorized": false,
+  "rule_rewrite_authorized": false,
+  "cohort_id": "SHADOW_COHORT_a02eda4698d5b981d94a",
+  "review_items": [
     {
-      "review_id": "REV_63552d4ff8f93155779d",
-      "priority": "HIGH",
-      "review_type": "HIGH_NEAR_MISS_WITH_ZERO_CANDIDATES",
-      "reason": "There are high-severity near-misses but no shadow candidate. Review gating / eligibility reasons.",
-      "suggested_action": "Inspect near_miss_reason_enriched_current.json; do not loosen rules without PMO review."
+      "setup_cluster_id": "OUT_OF_CORE_OBSERVATION",
+      "candidate_count": 0,
+      "near_miss_medium_high_count": 2,
+      "blocker_or_gating_diagnostic_count": 2,
+      "recommended_pmo_action": "CONTINUE_OBSERVATION",
+      "rule_change_authorized": false,
+      "auto_learning_authorized": false
     },
     {
-      "review_id": "REV_4661a3549c18b0796db8",
-      "priority": "MEDIUM",
-      "review_type": "ACTIVE_EXTENDED_OBSERVATION_ONLY_WATCH",
-      "reason": "An active watch is not core-shadow eligible because it remains extended-observation-only.",
-      "suggested_action": "Keep out of candidate path until split-stability review is formally accepted."
+      "setup_cluster_id": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
+      "candidate_count": 0,
+      "near_miss_medium_high_count": 1,
+      "blocker_or_gating_diagnostic_count": 3,
+      "recommended_pmo_action": "CONTINUE_OBSERVATION",
+      "rule_change_authorized": false,
+      "auto_learning_authorized": false
     },
     {
-      "review_id": "REV_f4b3220a5f14b2ef2e06",
-      "priority": "MEDIUM",
-      "review_type": "PIPELINE_HEALTH_WARN",
-      "reason": "Pipeline health has warning/failure diagnostics.",
-      "suggested_action": "Review shadow_pipeline_health_current.json before interpreting candidate/near-miss counts."
-    },
-    {
-      "review_id": "REV_48a17c86c23ac1668a9a",
-      "priority": "MEDIUM",
-      "review_type": "UNKNOWN_NEAR_MISS_REASON_REMAINS",
-      "reason": "11 near-miss records still have unknown reason after enrichment.",
-      "suggested_action": "Upstream setup/trigger/blocker scripts should emit stage_failed/reason_code."
+      "setup_cluster_id": "SETUP_CLUSTER_H1_LONDON_NY_OVERLAP_SESSION_OPEN_TREND_v1_0",
+      "candidate_count": 0,
+      "near_miss_medium_high_count": 6,
+      "blocker_or_gating_diagnostic_count": 0,
+      "recommended_pmo_action": "CONTINUE_OBSERVATION",
+      "rule_change_authorized": false,
+      "auto_learning_authorized": false
     }
   ],
-  "boundary": {
-    "auto_learning_authorized": false,
-    "rule_rewrite_authorized": false,
-    "signal_authorized": false,
-    "broker_execution_authorized": false
-  }
+  "summary": {
+    "review_item_count": 3,
+    "requires_manual_pmo_review": false
+  },
+  "boundary": "Queue items are prompts for manual PMO review only. No automatic rule updates are permitted."
 }
