@@ -100,6 +100,18 @@ jobs:
 
       - name: Commit generated read-only data, brain payload, and refresh status
         run: python scripts/actions_commit_generated_readonly_safe.py
+      # ACTIONS-DEPLOY-LINK-03 — explicit static Pages deploy trigger after live refresh
+      - name: Trigger static Pages deploy after live refresh
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          echo "Triggering Deploy TradingOS Static Pages after live refresh..."
+          gh workflow run "Deploy TradingOS Static Pages" --ref "${GITHUB_REF_NAME:-main}" || \
+          gh workflow run "deploy_tradingos_static_pages.yml" --ref "${GITHUB_REF_NAME:-main}" || \
+          gh workflow run "deploy.yml" --ref "${GITHUB_REF_NAME:-main}"
+
       - name: Trigger static Pages deploy after generated commit
         if: steps.commit_generated.outputs.changed == 'true'
         env:
