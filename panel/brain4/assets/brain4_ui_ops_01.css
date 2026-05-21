@@ -1,225 +1,36 @@
+/* BRAIN4-UI-STABILIZE-02
+   Conservative visual stabilization after aggressive UI OPS 01.
+   No layout-changing card mutations.
+*/
 
-/* BRAIN4-UI-OPS-01 — visual polish layer */
-:root {
-  --ui-surface-1: rgba(8, 17, 36, 0.86);
-  --ui-surface-2: rgba(10, 24, 52, 0.92);
-  --ui-surface-3: rgba(7, 14, 29, 0.72);
-  --ui-border: rgba(148, 163, 184, 0.14);
-  --ui-border-strong: rgba(34, 197, 94, 0.22);
-  --ui-text: #e5eefc;
-  --ui-muted: #9fb0cb;
-  --ui-accent: #22c55e;
-  --ui-accent-soft: rgba(34, 197, 94, 0.12);
-  --ui-shadow: 0 18px 46px rgba(2, 6, 23, 0.34);
-  --ui-radius-xl: 28px;
-  --ui-radius-lg: 22px;
-  --ui-radius-md: 16px;
-}
-
-html.brain4-ui-ops01-root {
+html.brain4-ui-stabilize02-root {
   scroll-behavior: smooth;
 }
 
-body.brain4-ui-ops01-body {
-  color: var(--ui-text);
+body.brain4-ui-stabilize02-body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-body.brain4-ui-ops01-body main,
-body.brain4-ui-ops01-body .container,
-body.brain4-ui-ops01-body .page,
-body.brain4-ui-ops01-body .app {
-  max-width: 1220px;
-  margin-inline: auto;
+/* Only safe micro-polish. Avoid broad section/card styling. */
+body.brain4-ui-stabilize02-body button,
+body.brain4-ui-stabilize02-body a[role="button"] {
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
 }
 
-.brain4-ui-card {
-  position: relative;
-  background: linear-gradient(180deg, var(--ui-surface-1), var(--ui-surface-2));
-  border: 1px solid var(--ui-border);
-  border-radius: var(--ui-radius-xl) !important;
-  box-shadow: var(--ui-shadow);
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-}
-
-.brain4-ui-card + .brain4-ui-card,
-.brain4-ui-card + section,
-section + .brain4-ui-card {
-  margin-top: 18px;
-}
-
-.brain4-ui-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 12px 18px 0;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(34, 197, 94, 0.22);
-  background: var(--ui-accent-soft);
-  color: #d8ffe6;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.brain4-ui-shadow-card {
-  border-color: var(--ui-border-strong);
-}
-
-.brain4-ui-hero-card,
-.brain4-ui-empty-state,
-.brain4-ui-library-card,
-.brain4-ui-pattern-card {
-  padding-top: 8px;
-}
-
-.brain4-ui-shadow-card h1,
-.brain4-ui-shadow-card h2,
-.brain4-ui-shadow-card h3,
-.brain4-ui-shadow-card h4,
-.brain4-ui-library-card h1,
-.brain4-ui-library-card h2,
-.brain4-ui-library-card h3,
-.brain4-ui-pattern-card h1,
-.brain4-ui-pattern-card h2,
-.brain4-ui-pattern-card h3,
-.brain4-ui-hero-card h1,
-.brain4-ui-hero-card h2,
-.brain4-ui-empty-state h1,
-.brain4-ui-empty-state h2 {
-  color: #f6fbff !important;
-  line-height: 1.25;
-}
-
-.brain4-ui-shadow-card p,
-.brain4-ui-library-card p,
-.brain4-ui-pattern-card p,
-.brain4-ui-hero-card p,
-.brain4-ui-empty-state p {
-  color: var(--ui-muted) !important;
-  line-height: 1.9;
-}
-
-.brain4-ui-tabrow {
-  border-radius: 18px !important;
-  border: 1px solid var(--ui-border) !important;
-  background: rgba(2, 8, 23, 0.38) !important;
-  padding: 10px 12px !important;
-  margin: 12px 0 14px !important;
-}
-
-.brain4-ui-btn,
-.brain4-ui-pill {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  min-height: 38px;
-  padding: 8px 14px !important;
-  border-radius: 999px !important;
-  border: 1px solid rgba(148, 163, 184, 0.16) !important;
-  background: rgba(8, 15, 28, 0.6) !important;
-  color: #eef5ff !important;
-  transition: all 0.18s ease;
-  box-shadow: none !important;
-}
-
-.brain4-ui-btn:hover,
-.brain4-ui-pill:hover {
+body.brain4-ui-stabilize02-body button:hover,
+body.brain4-ui-stabilize02-body a[role="button"]:hover {
   transform: translateY(-1px);
-  border-color: rgba(34, 197, 94, 0.28) !important;
-  background: rgba(34, 197, 94, 0.1) !important;
 }
 
-.brain4-ui-chipbar-host {
-  padding-top: 6px;
+/* Keep long raw strings from breaking mobile layout. */
+body.brain4-ui-stabilize02-body pre,
+body.brain4-ui-stabilize02-body code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
-.brain4-ui-chipbar-host span,
-.brain4-ui-chipbar-host div {
-  border-radius: 999px;
-}
-
-.brain4-ui-pattern-card {
-  border-radius: var(--ui-radius-lg) !important;
-  min-height: 360px;
-}
-
-.brain4-ui-pattern-card .brain4-ui-clamp-4 {
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.brain4-ui-pattern-card .brain4-ui-muted-link {
-  color: #d9e8ff !important;
-  opacity: 0.88;
-}
-
-.brain4-ui-empty-state {
-  text-align: center;
-}
-
-.brain4-ui-empty-state::after {
-  content: "";
-  position: absolute;
-  inset: auto auto 20px 20px;
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0));
-  filter: blur(8px);
-  pointer-events: none;
-}
-
-.brain4-ui-details {
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 16px;
-  background: rgba(7, 14, 29, 0.46);
-  padding: 12px 14px;
-}
-
-.brain4-ui-details > summary {
-  cursor: pointer;
-  list-style: none;
-  color: #eff6ff;
-  font-weight: 700;
-}
-.brain4-ui-details > summary::-webkit-details-marker { display: none; }
-
-/* Generic refinements for common metric tiles inside the screenshots */
-body.brain4-ui-ops01-body [class*="metric"],
-body.brain4-ui-ops01-body [class*="tile"],
-body.brain4-ui-ops01-body [class*="stat"] {
-  border-radius: 18px;
-}
-
-body.brain4-ui-ops01-body section,
-body.brain4-ui-ops01-body article {
-  scroll-margin-top: 28px;
-}
-
-@media (max-width: 980px) {
-  .brain4-ui-card {
-    border-radius: 22px !important;
-  }
-  .brain4-ui-pattern-card {
-    min-height: unset;
-  }
-}
-
-@media (max-width: 640px) {
-  .brain4-ui-eyebrow {
-    margin-inline: 14px;
-    font-size: 11px;
-  }
-  .brain4-ui-btn,
-  .brain4-ui-pill {
-    min-height: 34px;
-    padding: 7px 12px !important;
-    font-size: 12px;
-  }
+/* Do not let old generated labels remain visible if cached. */
+.brain4-ui-eyebrow {
+  display: none !important;
 }

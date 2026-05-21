@@ -1,22 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-ACTIONS-COMMIT-SCOPE-FIX-02
+ACTIONS-COMMIT-SCOPE-FIX-02A
 
-Safe commit step for GitHub Actions generated panel/status updates.
+Hotfix for ACTIONS-COMMIT-SCOPE-FIX-02.
 
-Problem fixed:
-- Previous workflow committed append-only live logs such as
-  runtime/sig_shadow/live_logs/YYYY-MM-DD/outcome_observation_log_YYYY-MM-DD.jsonl
-- That file exceeded GitHub's 100 MB limit and caused push rejection.
-
-This script stages only small, panel-safe read-only payloads and never stages:
-- runtime/sig_shadow/live_logs/**
-- runtime/sig_shadow/price_bridge_h1/**
-- outputs/**
-- proofs/**
-- data/live_m5/incremental/*.csv
-- *.zip
+Fixes:
+1. 02 deleted outputs/** before trying to write:
+   outputs/_actions_commit_scope_fix_02/actions_commit_scope_fix_02_result.json
+   causing FileNotFoundError.
+2. Keeps the safe commit scope: never stage raw live logs, jsonl, zip, outputs, proofs, price bridge, or live CSV data.
+3. Writes its own report after recreating the report directory.
 
 Boundary: read-only generated payload commit. Not signal, not broker/execution.
 """
@@ -31,15 +25,12 @@ import json
 import os
 import shutil
 import subprocess
-import sys
 
 ROOT = Path.cwd()
 REPORT_DIR = ROOT / "outputs" / "_actions_commit_scope_fix_02"
-REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 MAX_STAGE_BYTES = int(os.environ.get("ACTIONS_SAFE_COMMIT_MAX_FILE_MB", "8")) * 1024 * 1024
 
-# Explicitly forbidden. These are never staged.
 FORBIDDEN_PATTERNS = [
     "runtime/sig_shadow/live_logs/**",
     "runtime/sig_shadow/price_bridge_h1/**",
@@ -60,7 +51,6 @@ FORBIDDEN_PATTERNS = [
     "**/*.jsonl",
 ]
 
-# Small files that may be useful for the deployed read-only panel.
 ALLOWED_GLOBS = [
     "panel/brain4/*.json",
     "panel/brain4/index.html",
@@ -91,6 +81,16 @@ def now_utc() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def ensure_report_dir() -> None:
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def write_report(payload: Dict[str, Any]) -> None:
+    ensure_report_dir()
+    out = REPORT_DIR / "actions_commit_scope_fix_02_result.json"
+    out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def run(cmd: List[str], check: bool = False) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, cwd=str(ROOT), text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=check)
 
@@ -104,39 +104,62 @@ def match_any(path: str, patterns: Iterable[str]) -> bool:
     return any(fnmatch.fnmatch(p, pat) for pat in patterns)
 
 
+def safe_remove_dir(path: Path, label: str, removed: List[Dict[str, Any]]) -> None:
+    if not path.exists():
+        return
+    try:
+        shutil.rmtree(path)
+        removed.append({"path": str(path.relative_to(ROOT)).replace("\\", "/"), "action": f"removed_{label}"})
+    except Exception as e:
+        removed.append({"path": str(path), "action": f"remove_{label}_failed", "error": str(e)})
+
+
 def remove_forbidden_working_files() -> List[Dict[str, Any]]:
-    removed = []
-    dirs_to_remove = [
-        ROOT / "runtime" / "sig_shadow" / "live_logs",
-        ROOT / "runtime" / "sig_shadow" / "price_bridge_h1",
-        ROOT / "outputs",
-    ]
-    for d in dirs_to_remove:
-        if d.exists():
+    removed: List[Dict[str, Any]] = []
+
+    # Remove raw/generated dirs that must never be pushed.
+    safe_remove_dir(ROOT / "runtime" / "sig_shadow" / "live_logs", "live_logs_dir_before_staging", removed)
+    safe_remove_dir(ROOT / "runtime" / "sig_shadow" / "price_bridge_h1", "price_bridge_h1_dir_before_staging", removed)
+
+    # 02A deliberately does NOT remove the whole outputs folder until after report creation logic is safe.
+    # Remove children inside outputs except the hygiene report dir, then recreate report dir.
+    outputs = ROOT / "outputs"
+    if outputs.exists():
+        for child in outputs.iterdir():
             try:
-                shutil.rmtree(d)
-                removed.append({"path": rel(d), "action": "removed_dir_before_staging"})
+                if child.name == "_actions_commit_scope_fix_02":
+                    continue
+                if child.is_dir():
+                    shutil.rmtree(child)
+                    removed.append({"path": rel(child), "action": "removed_outputs_child_dir"})
+                else:
+                    child.unlink()
+                    removed.append({"path": rel(child), "action": "removed_outputs_child_file"})
             except Exception as e:
-                removed.append({"path": str(d), "action": "remove_failed", "error": str(e)})
+                removed.append({"path": str(child), "action": "remove_outputs_child_failed", "error": str(e)})
 
     # Remove JSONL anywhere under runtime as a hard guard.
-    for p in (ROOT / "runtime").rglob("*.jsonl") if (ROOT / "runtime").exists() else []:
-        try:
-            path = rel(p)
-            p.unlink()
-            removed.append({"path": path, "action": "removed_jsonl_before_staging"})
-        except Exception as e:
-            removed.append({"path": str(p), "action": "remove_failed", "error": str(e)})
+    runtime = ROOT / "runtime"
+    if runtime.exists():
+        for p in runtime.rglob("*.jsonl"):
+            try:
+                rp = rel(p)
+                p.unlink()
+                removed.append({"path": rp, "action": "removed_jsonl_before_staging"})
+            except Exception as e:
+                removed.append({"path": str(p), "action": "remove_jsonl_failed", "error": str(e)})
+
+    ensure_report_dir()
     return removed
 
 
 def collect_allowed_files() -> List[Path]:
-    files = []
+    files: List[Path] = []
     for pattern in ALLOWED_GLOBS:
         files.extend(ROOT.glob(pattern))
-    # Dedupe, file-only, forbidden excluded.
+
     seen = set()
-    out = []
+    out: List[Path] = []
     for p in files:
         if not p.exists() or not p.is_file():
             continue
@@ -156,7 +179,6 @@ def stage_allowed_files(files: List[Path]) -> Dict[str, Any]:
     skipped_missing = []
     skipped_forbidden = []
 
-    # Ensure previous broad staging is cleared.
     run(["git", "reset"], check=False)
 
     for p in files:
@@ -211,31 +233,21 @@ def commit_and_push(paths: List[str]) -> Dict[str, Any]:
     msg = "Update read-only panel and shadow status payloads"
     r_commit = run(["git", "commit", "-m", msg])
     if r_commit.returncode != 0:
-        return {
-            "status": "COMMIT_FAILED",
-            "stdout": r_commit.stdout,
-            "stderr": r_commit.stderr,
-        }
+        combined = (r_commit.stdout + "\n" + r_commit.stderr).strip()
+        if "nothing to commit" in combined.lower():
+            return {"status": "NO_STAGED_CHANGES_TO_COMMIT", "detail": combined}
+        return {"status": "COMMIT_FAILED", "stdout": r_commit.stdout, "stderr": r_commit.stderr}
 
     r_push = run(["git", "push"])
     if r_push.returncode != 0:
-        return {
-            "status": "PUSH_FAILED",
-            "stdout": r_push.stdout,
-            "stderr": r_push.stderr,
-        }
+        return {"status": "PUSH_FAILED", "stdout": r_push.stdout, "stderr": r_push.stderr}
 
-    return {
-        "status": "COMMIT_AND_PUSH_OK",
-        "commit_stdout": r_commit.stdout,
-        "push_stdout": r_push.stdout,
-    }
+    return {"status": "COMMIT_AND_PUSH_OK", "commit_stdout": r_commit.stdout, "push_stdout": r_push.stdout}
 
 
 def main() -> None:
     started = now_utc()
 
-    # Git identity is often needed in Actions.
     run(["git", "config", "user.name", "github-actions[bot]"], check=False)
     run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], check=False)
 
@@ -246,7 +258,6 @@ def main() -> None:
     failures = validate_staged_files(staged)
 
     if failures:
-        # Clear staging to avoid accidental broad commits.
         run(["git", "reset"], check=False)
         result = {
             "status": "SAFE_COMMIT_ABORTED_VALIDATION_FAIL",
@@ -257,8 +268,7 @@ def main() -> None:
             "staged_files_before_abort": staged,
             "boundary": BOUNDARY,
         }
-        out = REPORT_DIR / "actions_commit_scope_fix_02_result.json"
-        out.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+        write_report(result)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         raise SystemExit(1)
 
@@ -267,6 +277,7 @@ def main() -> None:
     result = {
         "status": commit_result.get("status"),
         "created_utc": started,
+        "hotfix_version": "ACTIONS_COMMIT_SCOPE_FIX_02A",
         "allowed_globs": ALLOWED_GLOBS,
         "forbidden_patterns": FORBIDDEN_PATTERNS,
         "max_stage_bytes": MAX_STAGE_BYTES,
@@ -277,17 +288,11 @@ def main() -> None:
         "boundary": BOUNDARY,
     }
 
-    out = REPORT_DIR / "actions_commit_scope_fix_02_result.json"
-    out.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    write_report(result)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
-    if commit_result.get("status") == "PUSH_FAILED":
+    if commit_result.get("status") in {"PUSH_FAILED", "COMMIT_FAILED"}:
         raise SystemExit(1)
-    if commit_result.get("status") == "COMMIT_FAILED":
-        # "nothing to commit" shouldn't happen because paths checked, but treat as non-fatal only if text says so.
-        stderr = commit_result.get("stderr", "") + commit_result.get("stdout", "")
-        if "nothing to commit" not in stderr.lower():
-            raise SystemExit(1)
 
 
 if __name__ == "__main__":
