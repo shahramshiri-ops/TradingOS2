@@ -71,9 +71,14 @@ jobs:
 
       - name: Commit generated read-only data, brain payload, and refresh status
         run: python scripts/actions_commit_generated_readonly_safe.py
-      - name: Trigger static Pages deploy after generated commit
-        if: steps.commit_generated.outputs.changed == 'true'
+      # TRADINGOS-UI-WORKFLOW-HYGIENE-04 — explicit deploy trigger without stale commit_generated output dependency
+      - name: Trigger static Pages deploy after panel build
+        if: success()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh workflow run deploy_tradingos_pages.yml --ref "${GITHUB_REF_NAME}"
+          set -e
+          echo "Triggering Deploy TradingOS Static Pages after panel build..."
+          gh workflow run "Deploy TradingOS Static Pages" --ref "${GITHUB_REF_NAME:-main}" || \
+          gh workflow run "deploy_tradingos_pages.yml" --ref "${GITHUB_REF_NAME:-main}" || \
+          gh workflow run "deploy.yml" --ref "${GITHUB_REF_NAME:-main}"

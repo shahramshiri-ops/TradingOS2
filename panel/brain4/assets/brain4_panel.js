@@ -8,7 +8,7 @@
    personal-research active-event surface with human-readable local times. UTC and
    technical M5/M15/H1/H4/D1 timing stay in Diagnostics. The UI remains display-only
    and never emits buy/sell/entry/stop/target/probability/broker instructions. */
-const PANEL_VERSION = 'SIG-BRAIN-OPS21_EVENT_LIFECYCLE_POLICY_v1_0';
+const PANEL_VERSION = 'SIG-BRAIN-OPS22_MINIMAL_SURFACE_DEBUG_GATED_v1_0';
 const ACTIVE_EVENT_WINDOW_MIN = 60; // fallback only; official events use per-memory lifecycle policy
 const HISTORY_KEEP_DAYS = 7;
 const HISTORY_MAX_ITEMS = 500;
@@ -29,6 +29,58 @@ async function loadPayload(){ return await loadJson('sig_brain4_runtime_payload_
 async function loadContext(){ return await loadJson('../../inputs/sig_brain4_live_context_latest.json', false); }
 async function loadRefreshStatus(){ return await loadJson('sig_live_refresh_status_latest.json', false); }
 async function loadOfficialHistory(){ return await loadJson('sig_brain4_event_history_current.json', false); }
+
+const DEBUG_PANEL_ASSETS = {
+  styles: [
+    'assets/shadow_unified_panel.css',
+    'assets/live_shadow_foundation_panel.css',
+    'assets/shadow_outcome_panel.css',
+    'assets/shadow_outcome_01d_panel.css',
+    'assets/brain4_ui_ops_01.css'
+  ],
+  scripts: [
+    'assets/shadow_unified_panel.js',
+    'assets/live_shadow_foundation_panel.js',
+    'assets/shadow_outcome_panel.js',
+    'assets/shadow_outcome_01d_panel.js',
+    'assets/brain4_ui_ops_01.js'
+  ]
+};
+
+function debugPanelsEnabled(){
+  try{
+    const params = new URLSearchParams(window.location.search || '');
+    const raw = String(params.get('debug') || params.get('diagnostics') || '').toLowerCase();
+    return raw === '1' || raw === 'true' || raw === 'yes';
+  }catch(_){
+    return false;
+  }
+}
+
+function loadDebugPanelAssets(){
+  if(!debugPanelsEnabled()) return;
+  document.documentElement.classList.add('sig-debug-panels-enabled');
+  document.body.classList.add('sig-debug-panels-enabled');
+
+  for(const href of DEBUG_PANEL_ASSETS.styles){
+    if(document.querySelector(`link[href="${href}"]`)) continue;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.dataset.debugPanelAsset = 'true';
+    document.head.appendChild(link);
+  }
+
+  for(const src of DEBUG_PANEL_ASSETS.scripts){
+    if(document.querySelector(`script[src="${src}"]`)) continue;
+    const script = document.createElement('script');
+    script.src = src;
+    script.defer = true;
+    script.dataset.debugPanelAsset = 'true';
+    document.body.appendChild(script);
+  }
+}
+
 
 function esc(x){ return String(x ?? '—').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[m])); }
 function asArray(x){ return Array.isArray(x) ? x : []; }
@@ -636,6 +688,7 @@ Promise.all([loadPayload(), loadContext(), loadRefreshStatus(), loadOfficialHist
   document.getElementById('context-strip').innerHTML = renderControls(activeEvents.length, cards.length, history.length);
   document.getElementById('cards').innerHTML = `<section id="active-tab" class="tab-panel">${activeEvents.length ? activeEvents.map(eventCard).join('') : emptyActive()}</section><section id="library-tab" class="tab-panel hidden">${renderMemoryLibrary(cards)}</section><section id="history-tab" class="tab-panel hidden">${renderHistory(history, officialHistory)}${renderDiagnostics(payload, cards, context, activeEvents, refreshStatus, info, officialHistory)}</section>`;
   attachControls();
+  loadDebugPanelAssets();
   maybeNotify(activeEvents);
 }).catch(err=>{
   document.getElementById('summary').innerHTML = `<span class="warn">خطا در خواندن payload: ${esc(err.message)}</span>`;

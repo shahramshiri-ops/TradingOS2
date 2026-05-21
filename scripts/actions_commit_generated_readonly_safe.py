@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-ACTIONS-COMMIT-SCOPE-FIX-02A
+ACTIONS-COMMIT-SCOPE-FIX-02B / TRADINGOS-UI-WORKFLOW-HYGIENE-04
 
-Hotfix for ACTIONS-COMMIT-SCOPE-FIX-02.
+Hotfix for ACTIONS-COMMIT-SCOPE-FIX-02 plus UI/Workflow Hygiene 04 freshness sync.
 
 Fixes:
 1. 02 deleted outputs/** before trying to write:
@@ -11,6 +11,7 @@ Fixes:
    causing FileNotFoundError.
 2. Keeps the safe commit scope: never stage raw live logs, jsonl, zip, outputs, proofs, price bridge, or live CSV data.
 3. Writes its own report after recreating the report directory.
+4. Stages small freshness/report JSONs used by handoff/audit without staging raw CSV/GZ/log/price-bridge data.
 
 Boundary: read-only generated payload commit. Not signal, not broker/execution.
 """
@@ -57,14 +58,16 @@ ALLOWED_GLOBS = [
     "panel/brain4/assets/*.js",
     "panel/brain4/assets/*.css",
 
+    # Runtime/status JSONs that are safe to publish and useful for freshness audits.
+    "runtime/sig_brain/*.json",
     "runtime/sig_shadow/*current.json",
     "runtime/sig_shadow/price_source_bridge_catalog_current.json",
     "runtime/sig_signal_candidates/*current.json",
 
-    "data/live_m5/*fetch_report.json",
-    "data/live_m5/*merge_report.json",
-    "data/live_m5/*status*.json",
-    "data/live_m5/*latest*.json",
+    # Small provider/merge/resample reports only. Raw CSV/GZ market data remains forbidden below.
+    "data/live_m5/*.json",
+    "data/live_m5/incremental/*.json",
+    "data/live_m5/reports/*.json",
 ]
 
 BOUNDARY = {
@@ -277,7 +280,7 @@ def main() -> None:
     result = {
         "status": commit_result.get("status"),
         "created_utc": started,
-        "hotfix_version": "ACTIONS_COMMIT_SCOPE_FIX_02A",
+        "hotfix_version": "ACTIONS_COMMIT_SCOPE_FIX_02B_UI_WORKFLOW_HYGIENE_04",
         "allowed_globs": ALLOWED_GLOBS,
         "forbidden_patterns": FORBIDDEN_PATTERNS,
         "max_stage_bytes": MAX_STAGE_BYTES,
