@@ -1,0 +1,36 @@
+{
+  "schema_version": "SHADOW_CANDIDATE_OUTCOME_BASELINE_01_SCHEMA_v1_0",
+  "required_top_level_files": [
+    "state/shadow_candidate_outcome_baseline/shadow_candidate_outcome_baseline_state_v1.json",
+    "runtime/sig_shadow_candidate_outcome_baseline/shadow_candidate_outcome_baseline_current.json",
+    "panel/brain4/shadow_candidate_outcome_baseline_summary_current.json",
+    "panel/brain4/shadow_candidate_promotion_review_current.json"
+  ],
+  "subject_required_fields": [
+    "subject_id",
+    "source_candidate_id",
+    "instrument",
+    "timeframe",
+    "directional_bias",
+    "trigger_bar_open_ts_utc",
+    "horizon_results",
+    "baseline_control_snapshot",
+    "subject_status"
+  ],
+  "horizon_labels": ["H1+1", "H1+2", "H1+4", "H1+8"],
+  "allowed_review_statuses": [
+    "NO_LIVE_OCCURRENCE_YET",
+    "DATA_QUALITY_BLOCKED",
+    "UNDERPOWERED_CONTINUE",
+    "PROMOTION_REVIEW_READY_NOT_AUTO_PROMOTED",
+    "TOO_NOISY_DEMOTE_REVIEW",
+    "CONTINUE_SHADOW"
+  ],
+  "forbidden_authorities": [
+    "signal_authorized=true",
+    "memory_promotion_authorized=true",
+    "broker_execution_authorized=true",
+    "auto_learning_authorized=true",
+    "rule_rewrite_authorized=true"
+  ]
+}

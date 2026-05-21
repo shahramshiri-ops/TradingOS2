@@ -108,6 +108,12 @@ jobs:
           python scripts/build_live_observation_max_value_01.py
           python scripts/validate_live_observation_max_value_01.py
 
+      # SHADOW-CANDIDATE-OUTCOME-BASELINE-01 — outcome + control baseline for research shadow candidates (NOT_SIGNAL)
+      - name: Build SHADOW-CANDIDATE-OUTCOME-BASELINE-01 research outcomes
+        run: |
+          python scripts/build_shadow_candidate_outcome_baseline_01.py
+          python scripts/validate_shadow_candidate_outcome_baseline_01.py
+
       - name: Commit generated read-only data, brain payload, and refresh status
         run: python scripts/actions_commit_generated_readonly_safe.py
       # ACTIONS-DEPLOY-LINK-03 — explicit static Pages deploy trigger after live refresh
