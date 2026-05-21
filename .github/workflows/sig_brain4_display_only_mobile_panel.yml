@@ -69,21 +69,8 @@ jobs:
       - name: Build SHADOW-OUTCOME-01D outcome quality guard
         run: python scripts/run_shadow_outcome_01d.py
 
-      - name: Commit generated display-only payload
-        id: commit_generated
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add runtime/sig_brain/sig_brain4_runtime_payload_current.json panel/brain4/sig_brain4_runtime_payload_current.json proofs/sig_brain4_validation_result.json runtime/sig_signal_candidates runtime/sig_shadow
-          if git diff --cached --quiet; then
-            echo "No generated changes"
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          git commit -m "Update SIG Brain4 display-only payload"
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Commit generated read-only data, brain payload, and refresh status
+        run: python scripts/actions_commit_generated_readonly_safe.py
       - name: Trigger static Pages deploy after generated commit
         if: steps.commit_generated.outputs.changed == 'true'
         env:
