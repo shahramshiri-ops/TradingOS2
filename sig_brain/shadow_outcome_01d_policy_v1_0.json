@@ -1,0 +1,24 @@
+{
+  "policy_id": "SHADOW_OUTCOME_01D_FRESHNESS_COMPLETION_GUARD_POLICY_v1_0",
+  "created_utc": "2026-05-21T11:45:05Z",
+  "purpose": "Guard shadow outcome quality with live freshness tiers, closed-H1-only price bridge, stable subject keys, deduplication, and pending carry-forward.",
+  "freshness_tiers_minutes": {
+    "LIVE_FRESH": "<=30",
+    "LIVE_LAGGING": "30-90",
+    "LIVE_STALE": "90-360",
+    "LIVE_BROKEN": ">360"
+  },
+  "closed_h1_rule": "Only H1 buckets with source_last_m5_ts >= bucket_start + 55 minutes are eligible.",
+  "stable_subject_key": "subject_type + memory_id + instrument + timeframe + direction_side + anchor_h1_bar_open_ts_utc/anchor_ts_utc + reason_code",
+  "forbidden": [
+    "signal",
+    "PnL",
+    "entry",
+    "stop",
+    "target",
+    "position_size",
+    "broker_execution",
+    "auto_learning",
+    "rule_rewrite"
+  ]
+}

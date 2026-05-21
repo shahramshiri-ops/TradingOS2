@@ -282,7 +282,7 @@ def collect_subjects() -> List[Dict[str, Any]]:
             for path in sorted(ldir.glob(pattern)):
                 for row in read_jsonl(path):
                     sid = outcome_subject_id(row, str(path))
-                    inst = normalize_instrument(row.get("instrument")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id"))
+                    inst = normalize_instrument(row.get("instrument")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id")) or infer_instrument_from_memory(row.get("memory_id") or row.get("source_memory_id"))
                     tf = normalize_timeframe(row.get("timeframe"))
                     anchor, anchor_basis = anchor_ts(row)
                     direction = infer_direction(row)
