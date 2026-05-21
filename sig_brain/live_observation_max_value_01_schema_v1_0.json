@@ -1,0 +1,53 @@
+{
+  "schema_version": "LIVE_OBSERVATION_MAX_VALUE_01_SCHEMA_v1_0",
+  "description": "Conceptual schema for persistent live forward-observation evidence.",
+  "major_objects": {
+    "memory_evaluation_row": [
+      "refresh_id",
+      "created_utc",
+      "memory_id",
+      "instrument",
+      "timeframe",
+      "active_in_runtime",
+      "is_active_match",
+      "evaluation_status",
+      "reason_codes",
+      "session_bucket",
+      "latest_bar_open_ts_utc",
+      "data_sufficiency_status"
+    ],
+    "event_ledger_row": [
+      "event_id",
+      "memory_id",
+      "instrument",
+      "timeframe",
+      "event_type",
+      "direction_side",
+      "activated_at_utc",
+      "expires_at_utc",
+      "last_observed_in_live_observation_utc"
+    ],
+    "baseline_exposure_row": [
+      "baseline_exposure_key",
+      "instrument",
+      "timeframe",
+      "session_bucket",
+      "latest_bar_open_ts_utc",
+      "scope"
+    ]
+  },
+  "evaluation_status_enum": [
+    "MATCHED_ACTIVE",
+    "NOT_MATCHED",
+    "NEAR_MISS",
+    "INPUT_INSUFFICIENT",
+    "DATA_OR_CONTEXT_NOT_READY",
+    "NOT_RUNTIME_ACTIVE"
+  ],
+  "hard_boundaries": {
+    "signal_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_learning_authorized": false,
+    "rule_rewrite_authorized": false
+  }
+}

@@ -69,6 +69,12 @@ jobs:
       - name: Build SHADOW-OUTCOME-01D outcome quality guard
         run: python scripts/run_shadow_outcome_01d.py
 
+      # LIVE-OBSERVATION-MAX-VALUE-01 — forward evidence ledger/summaries (DISPLAY_ONLY, NOT_SIGNAL)
+      - name: Build LIVE-OBSERVATION-MAX-VALUE-01 forward evidence pack
+        run: |
+          python scripts/build_live_observation_max_value_01.py
+          python scripts/validate_live_observation_max_value_01.py
+
       - name: Commit generated read-only data, brain payload, and refresh status
         run: python scripts/actions_commit_generated_readonly_safe.py
       # TRADINGOS-UI-WORKFLOW-HYGIENE-04 — explicit deploy trigger without stale commit_generated output dependency

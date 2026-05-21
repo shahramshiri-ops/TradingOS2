@@ -1,0 +1,41 @@
+{
+  "policy_version": "LIVE_OBSERVATION_MAX_VALUE_01_POLICY_v1_0",
+  "status": "ACTIVE_AFTER_PATCH",
+  "purpose": "Convert live refreshes into durable forward-observation evidence for later review.",
+  "authority": "DISPLAY_ONLY_FORWARD_EVIDENCE_NOT_SIGNAL",
+  "boundaries": {
+    "signal_authorized": false,
+    "trade_instruction_authorized": false,
+    "entry_stop_target_authorized": false,
+    "position_size_authorized": false,
+    "broker_execution_authorized": false,
+    "profitability_claim_authorized": false,
+    "auto_learning_authorized": false,
+    "rule_rewrite_authorized": false
+  },
+  "outputs": {
+    "persistent_state": "state/live_observation/live_observation_state_v1.json",
+    "panel_current_summary": "panel/brain4/live_observation_current.json",
+    "memory_evaluation_current": "panel/brain4/live_memory_evaluation_current.json",
+    "event_ledger_current": "panel/brain4/live_event_ledger_current.json",
+    "monthly_review_pack_current": "panel/brain4/live_observation_monthly_review_pack_current.json"
+  },
+  "review_policy": {
+    "minimum_recommended_observation_period": "4_to_12_weeks_before_major_memory_decisions",
+    "allowed_after_review_only": [
+      "KEEP_AS_DISPLAY_CONTEXT",
+      "KEEP_AS_CAVEATED_WATCH",
+      "PROMOTE_TO_SETUP_TRIGGER_PILOT_REVIEW_ONLY",
+      "DEMOTE_TO_EXTENDED_OBSERVATION",
+      "PARK_NO_RUNTIME_USE",
+      "REJECT_OR_ARCHIVE",
+      "NEEDS_RESEARCH_RESPEC"
+    ],
+    "forbidden_automatic_actions": [
+      "automatic_memory_promotion",
+      "automatic_rule_change",
+      "automatic_signal_creation",
+      "automatic_trade_instruction"
+    ]
+  }
+}
