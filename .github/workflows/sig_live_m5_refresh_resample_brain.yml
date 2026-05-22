@@ -1,4 +1,4 @@
-name: SIG Live M5 Refresh Resample Brain
+﻿name: SIG Live M5 Refresh Resample Brain
 
 on:
   workflow_dispatch:
@@ -47,7 +47,7 @@ jobs:
           print("numpy", np.__version__)
           PY
 
-      # SIG-E-ARCH1 — target E architecture contract validation (NOT_SIGNAL / NO_EXECUTION)
+      # SIG-E-ARCH1 â€” target E architecture contract validation (NOT_SIGNAL / NO_EXECUTION)
       - name: Validate SIG-E-ARCH1 decision architecture contracts
         run: |
           python scripts/build_sig_e_arch1_status.py
@@ -64,63 +64,63 @@ jobs:
           python scripts/run_sig_shadow_01b_integrated.py
           python scripts/run_sig_shadow_ready_01.py
 
-      # SIG-E-REGIME1 — market state / regime runtime layer (CONTEXT_ONLY / NOT_SIGNAL)
+      # SIG-E-REGIME1 â€” market state / regime runtime layer (CONTEXT_ONLY / NOT_SIGNAL)
       - name: Build SIG-E-REGIME1 market state context
         run: |
           python scripts/build_sig_e_regime1_market_state.py
           python scripts/validate_sig_e_regime1_market_state.py
 
-      # SHADOW-CANDIDATE-UNIVERSE-01 — research-only candidate bank for forward observation (NOT_SIGNAL)
+      # SHADOW-CANDIDATE-UNIVERSE-01 â€” research-only candidate bank for forward observation (NOT_SIGNAL)
       - name: Build SHADOW-CANDIDATE-UNIVERSE-01 research candidates
         run: python scripts/run_shadow_candidate_universe_01.py
 
-      # SHADOW-DIAG-01 — near-miss/blocker/eligibility diagnostics (NOT_SIGNAL)
+      # SHADOW-DIAG-01 â€” near-miss/blocker/eligibility diagnostics (NOT_SIGNAL)
       - name: Build SHADOW-DIAG-01 diagnostics
         run: python scripts/run_sig_shadow_diag_01.py
 
-      # SHADOW-OPS-01 — diagnostics, eligibility, rollups, health (NOT_SIGNAL)
+      # SHADOW-OPS-01 â€” diagnostics, eligibility, rollups, health (NOT_SIGNAL)
       - name: Build SHADOW-OPS-01 operational diagnostics
         run: python scripts/run_sig_shadow_ops_01.py
 
-      # REASON-UPSTREAM-01 / DIAG-02 — enrich near-miss reason codes (NOT_SIGNAL)
+      # REASON-UPSTREAM-01 / DIAG-02 â€” enrich near-miss reason codes (NOT_SIGNAL)
       - name: Build REASON-UPSTREAM-01 near-miss reason source
         run: python scripts/run_sig_shadow_reason_upstream_01.py
 
-      # COUNT-NORMALIZE-01 — clarify shadow count semantics (NOT_SIGNAL)
+      # COUNT-NORMALIZE-01 â€” clarify shadow count semantics (NOT_SIGNAL)
       - name: Build COUNT-NORMALIZE-01 shadow count semantics
         run: python scripts/run_sig_shadow_count_normalize_01.py
 
-      # LIVE-SHADOW-FOUNDATION-01 — append-only context/setup/trigger logs (NOT_SIGNAL)
+      # LIVE-SHADOW-FOUNDATION-01 â€” append-only context/setup/trigger logs (NOT_SIGNAL)
       - name: Build LIVE-SHADOW-FOUNDATION-01 append-only logs
         run: python scripts/run_sig_live_shadow_foundation_01.py
 
-      # SHADOW-OUTCOME-01 — path observation after shadow objects (NOT_SIGNAL, NOT_PNL)
+      # SHADOW-OUTCOME-01 â€” path observation after shadow objects (NOT_SIGNAL, NOT_PNL)
       - name: Build SHADOW-OUTCOME-01 path observations
         run: python scripts/run_sig_shadow_outcome_01.py
 
-      # SHADOW-OUTCOME-01A — price-bar anchor fallback for outcome observations (NOT_SIGNAL, NOT_PNL)
+      # SHADOW-OUTCOME-01A â€” price-bar anchor fallback for outcome observations (NOT_SIGNAL, NOT_PNL)
       - name: Build SHADOW-OUTCOME-01A price anchors
         run: python scripts/run_shadow_outcome_01a_price_anchor.py
 
-      # SHADOW-OUTCOME-01B — H1 price source bridge for outcome observations (NOT_SIGNAL, NOT_PNL)
+      # SHADOW-OUTCOME-01B â€” H1 price source bridge for outcome observations (NOT_SIGNAL, NOT_PNL)
       - name: Build SHADOW-OUTCOME-01B H1 price bridge
         run: python scripts/run_shadow_outcome_01b_price_source_bridge.py
 
-      # SHADOW-OUTCOME-01C — live-recent M5 price bridge guard (NOT_SIGNAL, NOT_PNL)
+      # SHADOW-OUTCOME-01C â€” live-recent M5 price bridge guard (NOT_SIGNAL, NOT_PNL)
       - name: Build SHADOW-OUTCOME-01C live-recent price bridge
         run: python scripts/run_shadow_outcome_01c_live_recent_price_bridge.py
 
-      # SHADOW-OUTCOME-01D — freshness, closed-H1 and completion guard (NOT_SIGNAL, NOT_PNL)
+      # SHADOW-OUTCOME-01D â€” freshness, closed-H1 and completion guard (NOT_SIGNAL, NOT_PNL)
       - name: Build SHADOW-OUTCOME-01D outcome quality guard
         run: python scripts/run_shadow_outcome_01d.py
 
-      # LIVE-OBSERVATION-MAX-VALUE-01 — forward evidence ledger/summaries (DISPLAY_ONLY, NOT_SIGNAL)
+      # LIVE-OBSERVATION-MAX-VALUE-01 â€” forward evidence ledger/summaries (DISPLAY_ONLY, NOT_SIGNAL)
       - name: Build LIVE-OBSERVATION-MAX-VALUE-01 forward evidence pack
         run: |
           python scripts/build_live_observation_max_value_01.py
           python scripts/validate_live_observation_max_value_01.py
 
-      # SHADOW-CANDIDATE-OUTCOME-BASELINE-01 — outcome + control baseline for research shadow candidates (NOT_SIGNAL)
+      # SHADOW-CANDIDATE-OUTCOME-BASELINE-01 â€” outcome + control baseline for research shadow candidates (NOT_SIGNAL)
       - name: Build SHADOW-CANDIDATE-OUTCOME-BASELINE-01 research outcomes
         run: |
           python scripts/build_shadow_candidate_outcome_baseline_01.py
@@ -128,7 +128,7 @@ jobs:
 
       - name: Commit generated read-only data, brain payload, and refresh status
         run: python scripts/actions_commit_generated_readonly_safe.py
-      # ACTIONS-DEPLOY-LINK-03 — explicit static Pages deploy trigger after live refresh
+      # ACTIONS-DEPLOY-LINK-03 â€” explicit static Pages deploy trigger after live refresh
       - name: Trigger static Pages deploy after live refresh
         if: success()
         env:
@@ -144,4 +144,6 @@ jobs:
 
 
 # SIG-E-RUNTIME-SHADOW-DETECTOR1 steps were not auto-inserted. Add manually if needed.
+
+
 
