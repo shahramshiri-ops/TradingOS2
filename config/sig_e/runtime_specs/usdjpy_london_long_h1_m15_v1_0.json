@@ -1,0 +1,128 @@
+{
+  "spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
+  "program": "SIG-E-RUNTIME-SPEC1",
+  "title": "USDJPY London Long H1+M15 Runtime Specification Contract",
+  "status": "SPEC_DRAFT_NOT_RUNTIME_DETECTOR",
+  "created_utc": "2026-05-22T00:00:00Z",
+  "target_architecture": "E_MANUAL_SEMI_AUTOMATED_DECISION_SYSTEM",
+  "runtime_authority": {
+    "current_runtime_signal_authorized": false,
+    "runtime_setup_activation_authorized": false,
+    "runtime_trigger_activation_authorized": false,
+    "trade_plan_authorized": false,
+    "entry_stop_target_authorized": false,
+    "risk_position_sizing_authorized": false,
+    "broker_execution_authorized": false,
+    "manual_review_required_always": true
+  },
+  "boundary": [
+    "SPEC_CONTRACT_ONLY",
+    "CURRENT_RUNTIME_NOT_SIGNAL",
+    "NO_RUNTIME_SETUP_ACTIVATION",
+    "NO_RUNTIME_TRIGGER_ACTIVATION",
+    "NO_TRADE_PROPOSAL",
+    "NO_ENTRY_STOP_TARGET",
+    "NO_RISK_OR_POSITION_SIZING",
+    "NO_BROKER_EXECUTION",
+    "NO_AUTO_EXECUTION",
+    "NO_RULE_REWRITE",
+    "NO_MEMORY_PROMOTION"
+  ],
+  "historical_evidence_source": {
+    "source_program": "SIG-E-HIST-RUNTIME_MAPPING1",
+    "mapping_status": "MAPPING_READY_FOR_RUNTIME_SPEC_DRAFT",
+    "holdout_used": "NO",
+    "future_after_2024_used": "NO"
+  },
+  "lane": {
+    "instrument": "USDJPY",
+    "session_bucket": "LONDON",
+    "direction": "LONG",
+    "setup_family": "H1_RANGE_EXPANSION_LOWER_REJECTION_LONG",
+    "h1_trigger_type": "NEXT_H1_DIRECTION_CONFIRM",
+    "m15_trigger_policy": "M15_INSIDE_H1_DIRECTIONAL_CLOSE_CONFIRM",
+    "horizon_h1_bars": 16
+  },
+  "regime_contract": {
+    "d1_trend_state": "UP",
+    "h4_trend_state": "UP",
+    "htf_alignment": "D1_H4_ALIGNED_UP",
+    "d1_vol_bucket": "LOW",
+    "range_state": "H1_EXPANDED_RANGE_VS_H4_ATR"
+  },
+  "setup_contract": {
+    "setup_definition": "H1 range expansion lower rejection long in London with D1/H4 up alignment and low D1 volatility.",
+    "required_runtime_inputs": [
+      "instrument",
+      "timeframe",
+      "bar_open_ts_utc",
+      "session_bucket",
+      "open",
+      "high",
+      "low",
+      "close",
+      "d1_trend_state",
+      "h4_trend_state",
+      "htf_alignment",
+      "d1_vol_bucket",
+      "range_state",
+      "h1_range",
+      "h4_atr",
+      "lower_rejection_or_computable_ohlc",
+      "close_location_or_computable_ohlc"
+    ],
+    "output_if_implemented_later": "SETUP_FORMING_OR_SETUP_READY_SHADOW_ONLY"
+  },
+  "h1_trigger_contract": {
+    "trigger_definition": "The next closed H1 bar after setup confirms the long direction.",
+    "required_runtime_inputs": [
+      "closed_h1_bar",
+      "next_h1_open",
+      "next_h1_close",
+      "bar_open_ts_utc"
+    ],
+    "output_if_implemented_later": "H1_TRIGGER_SHADOW_CONFIRMED_OR_NOT_CONFIRMED"
+  },
+  "m15_trigger_contract": {
+    "trigger_definition": "Inside the relevant H1 trigger window, at least one closed M15 bar directionally confirms the long condition.",
+    "required_runtime_inputs": [
+      "closed_m15_bars_inside_h1_window",
+      "m15_open",
+      "m15_high",
+      "m15_low",
+      "m15_close",
+      "m15_bar_open_ts_utc"
+    ],
+    "output_if_implemented_later": "M15_TRIGGER_SHADOW_CONFIRMED_OR_NOT_CONFIRMED"
+  },
+  "evidence": {
+    "h1_reference_validation_n": 57,
+    "m15_validation_n": 55,
+    "validation_retention_rate_vs_h1_reference": 0.964912,
+    "reference_validation_favorable_rate": 0.561404,
+    "m15_validation_favorable_rate": 0.618182,
+    "delta_validation_favorable_rate_vs_h1_reference": 0.056778,
+    "reference_validation_avg_move_norm_atr": 0.139702,
+    "m15_validation_avg_move_norm_atr": 0.306398,
+    "delta_validation_avg_move_norm_atr_vs_h1_reference": 0.166696,
+    "m15_validation_avg_mfe_norm_atr": 1.427227,
+    "m15_validation_avg_mae_norm_atr": -1.07534,
+    "m15_validation_max_year_share": 0.309091,
+    "m15_validation_max_year": 2017,
+    "interpretation": "Historical setup+H1+M15 chain is eligible for runtime specification drafting only; it is not a signal."
+  },
+  "compatibility_status_values": [
+    "SPEC_COMPATIBLE_READY_FOR_SHADOW_DETECTOR_DRAFT",
+    "SPEC_COMPATIBLE_WITH_FIELD_CAVEATS",
+    "SPEC_BLOCKED_MISSING_RUNTIME_FIELDS"
+  ],
+  "next_allowed_step_if_review_accepts": "SIG-E-RUNTIME-SHADOW-DETECTOR1_USDJPY_LONDON_LONG_H1_M15",
+  "not_allowed_next_steps": [
+    "live signal",
+    "manual trade proposal",
+    "entry/stop/target",
+    "risk sizing",
+    "broker/execution",
+    "automatic memory promotion"
+  ]
+}
