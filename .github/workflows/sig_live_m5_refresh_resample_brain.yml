@@ -1,4 +1,4 @@
-﻿name: SIG Live M5 Refresh Resample Brain
+name: SIG Live M5 Refresh Resample Brain
 
 on:
   workflow_dispatch:
@@ -71,6 +71,28 @@ jobs:
           python scripts/validate_sig_e_regime1_market_state.py
 
       # SHADOW-CANDIDATE-UNIVERSE-01 â€” research-only candidate bank for forward observation (NOT_SIGNAL)
+      # SIG-E-SHADOW-WORKFLOW-CHAIN1 — detectors + ledgers + portfolio + persistence (NOT_SIGNAL)
+      - name: Build SIG-E shadow detector portfolio and persistence chain
+        run: |
+          set -e
+          python scripts/restore_sig_e_shadow_persistence1.py
+
+          python scripts/build_sig_e_shadow_detector1_usdjpy_london_long.py
+          python scripts/validate_sig_e_shadow_detector1.py
+          python scripts/build_sig_e_shadow_detector1_obsledger.py
+          python scripts/validate_sig_e_shadow_detector1_obsledger.py
+
+          python scripts/build_sig_e_shadow_detector2_usdjpy_asia_short.py
+          python scripts/validate_sig_e_shadow_detector2.py
+          python scripts/build_sig_e_shadow_detector2_obsledger.py
+          python scripts/validate_sig_e_shadow_detector2_obsledger.py
+
+          python scripts/build_sig_e_shadow_portfolio1.py
+          python scripts/validate_sig_e_shadow_portfolio1.py
+
+          python scripts/build_sig_e_shadow_persistence1_snapshot.py
+          python scripts/validate_sig_e_shadow_persistence1.py
+
       - name: Build SHADOW-CANDIDATE-UNIVERSE-01 research candidates
         run: python scripts/run_shadow_candidate_universe_01.py
 
@@ -129,6 +151,10 @@ jobs:
       - name: Commit generated read-only data, brain payload, and refresh status
         run: python scripts/actions_commit_generated_readonly_safe.py
       # ACTIONS-DEPLOY-LINK-03 â€” explicit static Pages deploy trigger after live refresh
+      - name: Commit SIG-E shadow persistence generated outputs
+        if: success()
+        run: python scripts/commit_sig_e_shadow_persistence_outputs.py
+
       - name: Trigger static Pages deploy after live refresh
         if: success()
         env:
@@ -145,15 +171,5 @@ jobs:
 
 # SIG-E-RUNTIME-SHADOW-DETECTOR1 steps were not auto-inserted. Add manually if needed.
 
-# SIG-E-SHADOW-PERSIST1-WORKFLOW-HOTFIX:
-# The automatic patch could not find safe anchors. Add these steps manually:
-#
-#      - name: Restore SIG-E shadow persistence 1
-#        run: python scripts/restore_sig_e_shadow_persistence1.py
-#
-#      - name: Build SIG-E shadow persistence 1 snapshot
-#        run: python scripts/build_sig_e_shadow_persistence1_snapshot.py
-#
-#      - name: Validate SIG-E shadow persistence 1
 #        run: python scripts/validate_sig_e_shadow_persistence1.py
 
