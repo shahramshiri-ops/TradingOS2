@@ -2,12 +2,12 @@
   "program": "SIG-E-RUNTIME-SHADOW-DETECTOR1",
   "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1_USDJPY_20260522T094327Z",
-  "created_utc": "2026-05-22T09:43:27Z",
+  "detector_run_id": "SIGE_SD1_USDJPY_20260522T112150Z",
+  "created_utc": "2026-05-22T11:21:50Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "REGIME_NOT_MATCHED",
-  "status_reason": "d1_h4_alignment_not_matched",
+  "detector_status": "INPUT_INSUFFICIENT",
+  "status_reason": "not_enough_h1_rows_for_setup_trigger_window",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -43,33 +43,33 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-05-22T08:00:00Z",
-    "m15_bar_open_ts_utc": "2026-05-22T09:00:00Z",
-    "h1_surface_score": 347,
-    "m15_surface_score": 347
+    "h1_bar_open_ts_utc": "2026-05-22T10:00:00Z",
+    "m15_bar_open_ts_utc": "2026-05-22T11:00:00Z",
+    "h1_surface_score": 345,
+    "m15_surface_score": 345
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": false,
+      "passed": true,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
         "session_bucket": "LONDON",
         "d1_trend_state": "NEUTRAL",
         "h4_trend_state": "UP",
-        "htf_alignment": "H4_H1_CONFLICT",
+        "htf_alignment": "H4_H1_ALIGNED_UP",
         "volatility_state_or_d1_vol_bucket": "LOW",
-        "volatility_source_policy": "EXISTING_RUNTIME_FIELD",
-        "tradeability_context": "REGIME_MIXED",
+        "volatility_source_policy": null,
+        "tradeability_context": "REGIME_SUPPORTIVE",
         "range_state": "COMPRESSION",
         "h4_h1_up_context": null,
         "session_ok": true,
-        "alignment_ok": false,
+        "alignment_ok": true,
         "vol_known": true,
         "vol_ok": true,
         "missing_regime_fields": [],
-        "selected_surface_score": 347,
+        "selected_surface_score": 345,
         "volatility_caveat": null
       }
     }
@@ -85,5 +85,14 @@
   ],
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
+  },
+  "source_paths": {
+    "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
+    "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
+    "live_source_policy": "live_only_no_data_canonical_fallback"
+  },
+  "data_counts": {
+    "h1_rows_loaded": 0,
+    "m15_rows_loaded": 0
   }
 }
