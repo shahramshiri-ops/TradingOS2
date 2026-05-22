@@ -1,4 +1,4 @@
-import json
+﻿import json
 from pathlib import Path
 from datetime import datetime
 from collections import Counter
@@ -52,7 +52,16 @@ LANES = [
         "ledger_file": Path("runtime/sig_e/shadow_detector_usdjpy_asia_short_obsledger_current.json"),
         "expected_shadow_match_statuses": ["CAVEATED_SHADOW_MATCH_CONFIRMED"],
     },
-]
+    {
+        "lane_id": "SIGE_SD3_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15",
+        "display_name": "EURUSD London/Overlap Prior-Day-Low Trap Long H1+M15",
+        "classification": "PRIMARY_SHADOW_OBSERVATION",
+        "instrument": "EURUSD",
+        "direction": "LONG",
+        "detector_file": Path("runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json"),
+        "ledger_file": Path("runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json"),
+        "expected_shadow_match_statuses": ["SHADOW_MATCH_CONFIRMED"],
+    },]
 
 DATA_OR_FIELD_STATUSES = {
     "DATA_STALE",
@@ -308,3 +317,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -1,4 +1,4 @@
-import json
+﻿import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from collections import Counter, defaultdict
@@ -9,6 +9,7 @@ PORTFOLIO = Path("runtime/sig_e/shadow_portfolio_current.json")
 LANE_STATES = [
     Path("state/sig_e_shadow_detector_observation/usdjpy_london_long_obsledger_v1.json"),
     Path("state/sig_e_shadow_detector_observation/usdjpy_asia_short_obsledger_v1.json"),
+    Path("state/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json"),
 ]
 
 RUNTIME_OUT = Path("runtime/sig_e/shadow_observation_report_current.json")
@@ -252,3 +253,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

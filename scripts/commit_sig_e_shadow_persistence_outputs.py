@@ -1,4 +1,4 @@
-import os
+﻿import os
 import subprocess
 from pathlib import Path
 from datetime import datetime
@@ -40,6 +40,13 @@ SAFE_PATHS = [
     "runtime/sig_e/shadow_observation_report_current.json",
     "panel/brain4/sig_e_shadow_observation_report_current.json",
     "outputs/_sig_e_shadow_report1",
+    "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
+    "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json",
+    "panel/brain4/sig_e_shadow_detector3_status_current.json",
+    "panel/brain4/sig_e_shadow_detector3_obsledger_status_current.json",
+    "state/sig_e_shadow_detector3",
+    "outputs/_sig_e_shadow_detector3",
+    "outputs/_sig_e_shadow_detector3_obsledger",
 ]
 
 AUTHORITY = {
@@ -133,3 +140,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
