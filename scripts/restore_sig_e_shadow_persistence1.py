@@ -31,6 +31,18 @@ FILES = [
         "mirror_path": "persist/sig_e_shadow_detector2/usdjpy_asia_short_state_v1.json",
         "counter_key": "history",
     },
+    {
+        "logical_id": "lane3_obsledger_state",
+        "local_path": "state/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json",
+        "mirror_path": "persist/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json",
+        "counter_key": "refresh_records",
+    },
+    {
+        "logical_id": "lane3_detector_state",
+        "local_path": "state/sig_e_shadow_detector3/eurusd_london_pdlow_trap_long_state_v1.json",
+        "mirror_path": "persist/sig_e_shadow_detector3/eurusd_london_pdlow_trap_long_state_v1.json",
+        "counter_key": "history",
+    },
 ]
 
 OUT = Path("outputs/_sig_e_shadow_persist1/sig_e_shadow_persist1_restore_result.json")

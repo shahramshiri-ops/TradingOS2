@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from collections import Counter, defaultdict
@@ -81,6 +81,8 @@ def lane_name_from_state(state, fallback):
         return "USDJPY Asia Short H1+M15 Caveated"
     if "LONDON_LONG" in detector_id:
         return "USDJPY London Long H1+M15"
+    if "EURUSD_LONDON_PDLOW_TRAP_LONG" in detector_id:
+        return "EURUSD London/Overlap Prior-Day-Low Trap Long H1+M15"
     return detector_id
 
 def bucket_records(records, cutoff):

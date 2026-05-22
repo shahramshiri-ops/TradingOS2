@@ -30,6 +30,18 @@ STATE_FILES = [
         "mirror": "panel/brain4/persist/sig_e_shadow_detector2/usdjpy_asia_short_state_v1.json",
         "counter": "history",
     },
+    {
+        "logical_id": "lane3_obsledger_state",
+        "source": "state/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json",
+        "mirror": "panel/brain4/persist/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json",
+        "counter": "refresh_records",
+    },
+    {
+        "logical_id": "lane3_detector_state",
+        "source": "state/sig_e_shadow_detector3/eurusd_london_pdlow_trap_long_state_v1.json",
+        "mirror": "panel/brain4/persist/sig_e_shadow_detector3/eurusd_london_pdlow_trap_long_state_v1.json",
+        "counter": "history",
+    },
 ]
 
 CURRENT_FILES = [
@@ -47,6 +59,16 @@ CURRENT_FILES = [
         "logical_id": "lane2_obsledger_current",
         "source": "runtime/sig_e/shadow_detector_usdjpy_asia_short_obsledger_current.json",
         "mirror": "panel/brain4/persist/current/shadow_detector_usdjpy_asia_short_obsledger_current.json",
+    },
+    {
+        "logical_id": "lane3_obsledger_current",
+        "source": "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json",
+        "mirror": "panel/brain4/persist/current/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json",
+    },
+    {
+        "logical_id": "lane3_detector_current",
+        "source": "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
+        "mirror": "panel/brain4/persist/current/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
     },
 ]
 
