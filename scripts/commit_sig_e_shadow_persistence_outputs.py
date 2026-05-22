@@ -37,6 +37,9 @@ SAFE_PATHS = [
     "outputs/_sig_e_shadow_portfolio1",
     "outputs/_sig_e_shadow_persist1",
     "outputs/_sig_e_shadow_workflow_chain1",
+    "runtime/sig_e/shadow_observation_report_current.json",
+    "panel/brain4/sig_e_shadow_observation_report_current.json",
+    "outputs/_sig_e_shadow_report1",
 ]
 
 AUTHORITY = {
