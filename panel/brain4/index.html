@@ -1,70 +1,225 @@
 <!doctype html>
-<html lang="en" data-panel="SIG-E-PANEL-OPS6_ACTIVE_SHADOW_COCKPIT_v1_0">
+<html lang="en" data-panel="SIG-E-PANEL-OPS6B_TABBED_RESEARCH_CONSOLE_v1_0">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="color-scheme" content="dark light">
-  <title>SIG-E Shadow Cockpit</title>
-  <link rel="stylesheet" href="./assets/sig_e_panel_ops6.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <title>TradingOS · SIG-E Research Console</title>
+  <link rel="stylesheet" href="./assets/sig_e_panel_ops6b.css" />
 </head>
 <body>
-  <div class="shell">
+  <div class="app-shell">
     <header class="topbar">
-      <div class="brand">
-        <div class="mark" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
         <div>
           <p class="eyebrow">TradingOS · SIG-E</p>
-          <h1>Shadow Research Cockpit</h1>
+          <h1>Shadow Research Console</h1>
         </div>
       </div>
-      <div id="systemPill" class="pill"><span></span><b>Loading</b></div>
+
+      <div class="top-actions">
+        <div class="system-pill" id="systemPill">
+          <span class="pulse" aria-hidden="true"></span>
+          <span id="systemPillText">Loading</span>
+        </div>
+        <button class="icon-button" id="refreshButton" type="button" aria-label="Refresh panel data">Refresh</button>
+      </div>
     </header>
 
+    <nav class="tabbar" aria-label="SIG-E panel sections">
+      <button class="tab active" data-tab="cockpit" type="button">Cockpit</button>
+      <button class="tab" data-tab="memories" type="button">Memories</button>
+      <button class="tab" data-tab="live-shadow" type="button">Live Shadow</button>
+      <button class="tab" data-tab="lanes" type="button">Lanes</button>
+      <button class="tab" data-tab="history" type="button">History</button>
+      <button class="tab" data-tab="diagnostics" type="button">Diagnostics</button>
+    </nav>
+
     <main>
-      <section class="summary">
-        <article class="hero">
-          <div class="row"><p class="label">Portfolio State</p><em>Display only</em></div>
-          <h2 id="portfolioStatus">Loading…</h2>
-          <p id="portfolioMeaning">Reading latest shadow portfolio state.</p>
-          <div class="chips"><span id="lastRefresh">refresh —</span><span id="ageBadge">age —</span></div>
-        </article>
-        <article class="metric"><p class="label">Lanes</p><strong id="laneCount">—</strong><span>shadow observers</span></article>
-        <article class="metric"><p class="label">Active Events</p><strong id="activeCount">—</strong><span>now</span></article>
-        <article class="metric"><p class="label">Data Attention</p><strong id="attentionCount">—</strong><span>open flags</span></article>
+      <section class="tab-panel active" id="tab-cockpit">
+        <section class="hero-grid" aria-label="System summary">
+          <article class="hero-card hero-status">
+            <div class="hero-card-top">
+              <p class="label">Portfolio State</p>
+              <span class="safety-chip">Display only</span>
+            </div>
+            <h2 id="portfolioStatus">Loading…</h2>
+            <p id="portfolioMeaning" class="muted">Reading latest shadow portfolio state.</p>
+            <div class="hero-meta">
+              <span id="lastRefresh">refresh —</span>
+              <span id="ageBadge">age —</span>
+              <span id="portfolioSource">source —</span>
+            </div>
+          </article>
+
+          <article class="metric-card">
+            <p class="label">Lanes</p>
+            <strong id="laneCount">—</strong>
+            <span>shadow observers</span>
+          </article>
+
+          <article class="metric-card">
+            <p class="label">Active Events</p>
+            <strong id="activeCount">—</strong>
+            <span>now</span>
+          </article>
+
+          <article class="metric-card">
+            <p class="label">Data Attention</p>
+            <strong id="attentionCount">—</strong>
+            <span>open flags</span>
+          </article>
+        </section>
+
+        <section class="focus-card" aria-label="Active shadow events">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Now</p>
+              <h2>Active Shadow Events</h2>
+            </div>
+            <span class="section-badge" id="activeEventBadge">No signal</span>
+          </div>
+          <div id="activeEvents" class="active-events"></div>
+        </section>
+
+        <section class="ops-grid" aria-label="Operational counters">
+          <article class="ops-card">
+            <p class="label">Refresh Records</p>
+            <strong id="refreshRecords">—</strong>
+            <span>all lanes</span>
+          </article>
+          <article class="ops-card">
+            <p class="label">Near Misses</p>
+            <strong id="nearMisses">—</strong>
+            <span>research observations</span>
+          </article>
+          <article class="ops-card">
+            <p class="label">Shadow Events</p>
+            <strong id="shadowEvents">—</strong>
+            <span>historical live observations</span>
+          </article>
+        </section>
       </section>
 
-      <section class="panel">
-        <div class="section-head"><div><p class="eyebrow">Now</p><h2>Active Shadow Events</h2></div><span id="activeEventBadge">No signal</span></div>
-        <div id="activeEvents" class="active"></div>
+      <section class="tab-panel" id="tab-memories">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Research memory bridge</p>
+            <h2>Memories & Runtime Roles</h2>
+          </div>
+          <span class="section-badge">Library view</span>
+        </div>
+        <p class="section-lead">
+          This view keeps the historical memory registry separate from the live cockpit.
+          It translates raw classifications into readable runtime roles.
+        </p>
+        <div id="memoryGrid" class="memory-grid"></div>
       </section>
 
-      <section class="panel">
-        <div class="section-head"><div><p class="eyebrow">Live Shadow Portfolio</p><h2>Lane Status</h2></div><span id="coverageBadge">Coverage —</span></div>
-        <div id="laneGrid" class="lanes"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+      <section class="tab-panel" id="tab-live-shadow">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Debug without noise</p>
+            <h2>Live Shadow Semantics</h2>
+          </div>
+          <span class="section-badge" id="liveShadowBadge">Shadow OPS</span>
+        </div>
+        <p class="section-lead">
+          A cleaned-up version of the former debug page: near-misses, diagnostic rows,
+          blockers and instrumentation gaps are grouped without exposing raw labels first.
+        </p>
+        <div id="liveShadowGrid" class="debug-grid"></div>
       </section>
 
-      <section class="ops">
-        <article><p class="label">Refresh Records</p><strong id="refreshRecords">—</strong><span>all lanes</span></article>
-        <article><p class="label">Near Misses</p><strong id="nearMisses">—</strong><span>research observations</span></article>
-        <article><p class="label">Shadow Events</p><strong id="shadowEvents">—</strong><span>live observations</span></article>
+      <section class="tab-panel" id="tab-lanes">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Live Shadow Portfolio</p>
+            <h2>Lane Status</h2>
+          </div>
+          <span class="section-badge" id="coverageBadge">Coverage —</span>
+        </div>
+        <div id="laneGrid" class="lane-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
       </section>
 
-      <section class="boundary">
-        <div><p class="eyebrow">Authority Boundary</p><h2>Research display only</h2><p>This cockpit observes shadow conditions. It does not authorize signals, entries, stops, targets, sizing, broker actions, or auto execution.</p></div>
-        <div class="tags"><span>NOT A SIGNAL</span><span>NO ENTRY</span><span>NO STOP/TARGET</span><span>NO BROKER</span></div>
+      <section class="tab-panel" id="tab-history">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Observation history</p>
+            <h2>Near-Misses & Shadow Records</h2>
+          </div>
+          <span class="section-badge">No trading authority</span>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-diagnostics">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Operations</p>
+            <h2>Diagnostics & Data Health</h2>
+          </div>
+          <span class="section-badge" id="diagnosticBadge">Checking</span>
+        </div>
+        <div id="diagnosticsGrid" class="diagnostics-grid"></div>
+      </section>
+
+      <section class="boundary-card" aria-label="Authority boundary">
+        <div>
+          <p class="eyebrow">Authority Boundary</p>
+          <h2>Research display only</h2>
+          <p>
+            This console observes shadow conditions and memory context. It does not authorize
+            signals, entries, stops, targets, sizing, broker actions, or auto execution.
+          </p>
+        </div>
+        <div class="boundary-tags" aria-label="Safety tags">
+          <span>NOT A SIGNAL</span>
+          <span>NO ENTRY</span>
+          <span>NO STOP/TARGET</span>
+          <span>NO BROKER</span>
+        </div>
       </section>
     </main>
   </div>
 
-  <template id="laneTemplate">
-    <article class="lane">
-      <header><div><p></p><h3></h3></div><em></em></header>
-      <div class="status"><i></i><strong></strong></div>
-      <p class="reason"></p>
-      <div class="rail"><span data-s="session"></span><span data-s="regime"></span><span data-s="data"></span><span data-s="setup"></span><span data-s="trigger"></span><span data-s="m15"></span><span data-s="event"></span></div>
-      <footer><span class="session"></span><span class="time"></span></footer>
+  <template id="laneCardTemplate">
+    <article class="lane-card">
+      <div class="lane-head">
+        <div>
+          <p class="lane-kicker"></p>
+          <h3></h3>
+        </div>
+        <span class="lane-badge"></span>
+      </div>
+      <div class="lane-status-row">
+        <span class="status-dot" aria-hidden="true"></span>
+        <strong class="lane-status"></strong>
+      </div>
+      <p class="lane-reason"></p>
+      <div class="stage-rail" aria-label="Gate progress">
+        <span data-stage="session">Session</span>
+        <span data-stage="regime">Regime</span>
+        <span data-stage="setup">Setup</span>
+        <span data-stage="trigger">Trigger</span>
+        <span data-stage="m15">M15</span>
+        <span data-stage="event">Event</span>
+      </div>
+      <div class="lane-meta">
+        <span class="meta-session"></span>
+        <span class="meta-tf"></span>
+      </div>
     </article>
   </template>
-  <script src="./assets/sig_e_panel_ops6.js" defer></script>
+
+  <script src="./assets/sig_e_panel_ops6b.js" defer></script>
 </body>
 </html>
