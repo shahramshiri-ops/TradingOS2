@@ -2,6 +2,7 @@
 # USDJPY London Long H1+M15 — shadow/research only.
 
 import csv
+import gzip
 import json
 import os
 from pathlib import Path
@@ -364,15 +365,25 @@ def to_float(x):
 def read_csv_rows(path, max_tail=10000):
     if not path or not Path(path).exists():
         return []
+    p = Path(path)
     try:
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
+        if str(p).lower().endswith(".gz"):
+            import gzip
+            opener = lambda: gzip.open(p, "rt", encoding="utf-8", errors="replace", newline="")
+            fmt = "csv.gz"
+        else:
+            opener = lambda: open(p, "r", encoding="utf-8", errors="replace", newline="")
+            fmt = "csv"
+        with opener() as f:
             first = f.readline()
             delim = detect_delimiter(first)
             f.seek(0)
             reader = csv.DictReader(f, delimiter=delim)
             rows = []
             for r in reader:
-                rows.append(r)
+                if isinstance(r, dict) and any(v not in (None, "") for v in r.values()):
+                    r["_sig_e_source_file_format"] = fmt
+                    rows.append(r)
                 if len(rows) > max_tail:
                     rows = rows[-max_tail:]
             return rows

@@ -1,3 +1,4 @@
+import gzip
 import csv, json, os
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
@@ -160,15 +161,31 @@ def col(cols,names):
 def num(x):
     try: return float(x)
     except Exception: return None
-def read_rows(p,max_tail=3000):
-    if not p or not Path(p).exists(): return []
-    with open(p,"r",encoding="utf-8",errors="replace") as f:
-        first=f.readline(); d=delim(first); f.seek(0)
-        rdr=csv.DictReader(f,delimiter=d); rows=[]
-        for r in rdr:
-            rows.append(r)
-            if len(rows)>max_tail: rows=rows[-max_tail:]
-        return rows
+def read_rows(p, max_tail=3000):
+    if not p or not Path(p).exists():
+        return []
+    path = Path(p)
+    try:
+        if str(path).lower().endswith(".gz"):
+            import gzip
+            opener = lambda: gzip.open(path, "rt", encoding="utf-8", errors="replace", newline="")
+        else:
+            opener = lambda: open(path, "r", encoding="utf-8", errors="replace", newline="")
+        with opener() as f:
+            first = f.readline()
+            d = delim(first)
+            f.seek(0)
+            rdr = csv.DictReader(f, delimiter=d)
+            rows = []
+            for r in rdr:
+                if isinstance(r, dict) and any(v not in (None, "") for v in r.values()):
+                    rows.append(r)
+                if len(rows) > max_tail:
+                    rows = rows[-max_tail:]
+            return rows
+    except Exception:
+        return []
+
 def ohlc(rows):
     if not rows: return []
     cols=list(rows[0].keys()); tc=col(cols,["bar_open_ts_utc","timestamp","datetime","time","date"]); oc=col(cols,["open","o"]); hc=col(cols,["high","h"]); lc=col(cols,["low","l"]); cc=col(cols,["close","c"])
