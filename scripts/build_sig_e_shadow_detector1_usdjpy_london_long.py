@@ -1,5 +1,7 @@
-# SIG-E-RUNTIME-SHADOW-DETECTOR1-HOTFIX2
-# Surface vol + regime priority fix. Shadow/research only.
+# SIG-E-RUNTIME-SHADOW-DETECTOR1-HOTFIX3
+# Preferred SIG-E surface source + volatility propagation compatibility.
+# Shadow/research only. No signal/trade proposal/entry/stop/target.
+
 import csv, json, os
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
@@ -17,12 +19,19 @@ VALID_STATUS = {
     "SHADOW_MATCH_CONFIRMED","EXPIRED"
 }
 
+SIG_E_SOURCE_PREFIXES = (
+    "runtime/sig_e/market_state_current.json",
+    "runtime/sig_e/sig_e_regime1_market_state_current.json",
+    "panel/brain4/sig_e_market_state_current.json",
+)
+
 def now(): return datetime.utcnow().replace(microsecond=0).isoformat()+"Z"
 def load(p):
     try: return json.loads(Path(p).read_text(encoding="utf-8"))
     except Exception: return None
 def write(p,o):
-    p=Path(p); p.parent.mkdir(parents=True,exist_ok=True); p.write_text(json.dumps(o,indent=2,ensure_ascii=False),encoding="utf-8")
+    p=Path(p); p.parent.mkdir(parents=True,exist_ok=True)
+    p.write_text(json.dumps(o,indent=2,ensure_ascii=False),encoding="utf-8")
 def first(*vals):
     for v in vals:
         if v is None: continue
@@ -47,20 +56,31 @@ def tf(s): return str(first(s.get("timeframe"),s.get("base_timeframe"),"")).uppe
 def ts(s):
     if not isinstance(s,dict): return None
     return dt(first(s.get("bar_open_ts_utc"),s.get("latest_bar_open_ts_utc"),s.get("latest_h1_bar_open_ts_utc"),s.get("latest_m15_bar_open_ts_utc"),s.get("bar_close_ts_utc"),s.get("latest_bar_close_ts_utc")))
-def surfaces(p):
+def surfaces(payload, source_path):
     out=[]
-    if isinstance(p,dict):
-        if isinstance(p.get("surfaces"),list): out+=p["surfaces"]
-        bc=p.get("brain_context")
-        if isinstance(bc,dict) and isinstance(bc.get("surfaces"),list): out+=bc["surfaces"]
-        if isinstance(p.get("latest"),dict): out.append(p["latest"])
+    if isinstance(payload,dict):
+        if isinstance(payload.get("surfaces"),list):
+            out += [(x, source_path) for x in payload["surfaces"]]
+        bc=payload.get("brain_context")
+        if isinstance(bc,dict) and isinstance(bc.get("surfaces"),list):
+            out += [(x, source_path) for x in bc["surfaces"]]
+        if isinstance(payload.get("latest"),dict):
+            out.append((payload["latest"], source_path))
     return out
 def has(s,k):
     v=s.get(k) if isinstance(s,dict) else None
     return v is not None and not (isinstance(v,str) and not v.strip())
-def score(s,inst,TF):
+def source_priority(source_path):
+    sp = str(source_path).replace("\\","/")
+    if sp == "runtime/sig_e/market_state_current.json": return 300
+    if sp == "runtime/sig_e/sig_e_regime1_market_state_current.json": return 290
+    if sp == "panel/brain4/sig_e_market_state_current.json": return 280
+    if "sig_brain5_derived_context_latest" in sp: return 100
+    if "sig_brain4_live_context_latest" in sp: return 90
+    return 0
+def score(s, inst, TF, source_path=""):
     if not isinstance(s,dict): return -999
-    sc=0
+    sc=source_priority(source_path)
     if str(s.get("instrument","")).upper()==inst: sc+=10
     if tf(s)==TF: sc+=10
     if ts(s): sc+=8
@@ -70,14 +90,14 @@ def score(s,inst,TF):
     if isinstance(s.get("regime_metrics"),dict): sc+=3
     if s.get("h4_h1_up_context") is True: sc+=3
     return sc
-def find_surface(payloads,inst="USDJPY",TF="H1"):
+def find_surface(payloads, inst="USDJPY", TF="H1"):
     c=[]
-    for p in payloads:
-        for s in surfaces(p):
+    for payload, source_path in payloads:
+        for s, sp in surfaces(payload, source_path):
             if isinstance(s,dict) and str(s.get("instrument","")).upper()==inst and tf(s)==TF:
-                c.append(s)
-    if not c: return None
-    return sorted(c,key=lambda s:(score(s,inst,TF),ts(s) or datetime.min),reverse=True)[0]
+                c.append((s, sp))
+    if not c: return None, None
+    return sorted(c,key=lambda pair:(score(pair[0],inst,TF,pair[1]), ts(pair[0]) or datetime.min),reverse=True)[0]
 def dir_input(s,k):
     di=s.get("direction_inputs") if isinstance(s,dict) else None
     if isinstance(di,dict):
@@ -90,7 +110,7 @@ def ndir(v):
     if S in ("1","UP","BULL","BULLISH","LONG") or "UP" in S or "BULL" in S: return "UP"
     if S in ("-1","DOWN","BEAR","BEARISH","SHORT") or "DOWN" in S or "BEAR" in S: return "DOWN"
     return S
-def regime(s):
+def regime(s, source_path):
     if not s: return False, {"reason":"no_h1_surface"}
     sess=str(s.get("session_bucket","")).upper()
     d1=ndir(first(s.get("d1_trend_state"),s.get("d1_trend_safe"),dir_input(s,"d1")))
@@ -105,16 +125,20 @@ def regime(s):
     if not (d1 or h4 or htf or s.get("h4_h1_up_context") is not None): missing.append("d1_h4_alignment_fields")
     if not vol_known: missing.append("volatility_state_or_d1_vol_bucket")
     return sess=="LONDON" and align and vol_ok and not missing, {
+        "selected_surface_source": source_path,
+        "source_priority": source_priority(source_path),
         "session_bucket":sess,"d1_trend_state":d1,"h4_trend_state":h4,"htf_alignment":htf,
         "volatility_state_or_d1_vol_bucket":vol,"volatility_source_policy":s.get("volatility_source_policy"),
-        "tradeability_context":str(s.get("tradeability_context") or "").upper(),"range_state":str(s.get("range_state") or "").upper(),
-        "h4_h1_up_context":s.get("h4_h1_up_context"),"session_ok":sess=="LONDON","alignment_ok":align,
+        "tradeability_context":str(s.get("tradeability_context") or "").upper(),
+        "range_state":str(s.get("range_state") or "").upper(),
+        "h4_h1_up_context":s.get("h4_h1_up_context"),
+        "session_ok":sess=="LONDON","alignment_ok":align,
         "vol_known":vol_known,"vol_ok":vol_ok,"missing_regime_fields":missing,
-        "selected_surface_score":score(s,"USDJPY","H1"),
+        "selected_surface_score":score(s,"USDJPY","H1",source_path),
         "volatility_caveat":"Runtime proxy/UNKNOWN must not be treated as historical D1 LOW proof" if vol in {"NORMAL","MIXED","UNKNOWN"} else None
     }
-def freshness(payloads):
-    for p in payloads:
+def freshness(payloads_only):
+    for p in payloads_only:
         if not isinstance(p,dict): continue
         lag=p.get("lag_diagnostic")
         if isinstance(lag,dict):
@@ -150,8 +174,7 @@ def live_path(inst,T):
     for p in [Path("data/live_resampled")/f"{inst}_{T}.csv",Path("data/live_m5/resampled")/f"{inst}_{T}.csv"]:
         if p.exists() and live_allowed(p): return p
     return None
-def delim(line):
-    return max([",",";","\t","|"],key=lambda c: line.count(c)) if line else ","
+def delim(line): return max([",",";","\t","|"],key=lambda c: line.count(c)) if line else ","
 def col(cols,names):
     lows={c.lower().replace(" ","_"):c for c in cols}
     for n in names:
@@ -208,21 +231,25 @@ def update_state(s,cur):
     return s
 def build():
     cfg=load(CONFIG_PATH) or {}
-    payloads=[]; files=[]
-    for p in ["runtime/sig_e/market_state_current.json","runtime/sig_e/sig_e_regime1_market_state_current.json","panel/brain4/sig_e_market_state_current.json","runtime/sig_brain/sig_brain5_derived_context_latest.json","inputs/sig_brain4_live_context_latest.json","panel/brain4/sig_live_refresh_status_latest.json"]:
+    payload_pairs=[]; payloads=[]; files=[]
+    for p in [
+        "runtime/sig_e/market_state_current.json",
+        "runtime/sig_e/sig_e_regime1_market_state_current.json",
+        "panel/brain4/sig_e_market_state_current.json",
+        "runtime/sig_brain/sig_brain5_derived_context_latest.json",
+        "inputs/sig_brain4_live_context_latest.json",
+        "panel/brain4/sig_live_refresh_status_latest.json"]:
         x=load(p)
-        if x is not None: payloads.append(x); files.append(p)
-    h1=find_surface(payloads,"USDJPY","H1"); m15=find_surface(payloads,"USDJPY","M15")
-    res={"program":"SIG-E-RUNTIME-SHADOW-DETECTOR1","detector_id":cfg.get("detector_id","SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0"),"source_spec_id":cfg.get("source_spec_id"),"detector_run_id":"SIGE_SD1_USDJPY_"+datetime.utcnow().strftime("%Y%m%dT%H%M%SZ"),"created_utc":now(),"instrument":"USDJPY","direction":"LONG","detector_status":"INPUT_INSUFFICIENT","status_reason":None,"is_shadow_match":False,"is_signal":False,"is_trade_proposal":False,"authority":{"signal_authorized":False,"trade_proposal_authorized":False,"entry_stop_target_authorized":False,"risk_sizing_authorized":False,"broker_execution_authorized":False,"auto_execution_authorized":False},"boundary":cfg.get("boundary",[]),"loaded_source_files":files,"surface_snapshot":{"h1_surface_available":h1 is not None,"m15_surface_available":m15 is not None,"h1_bar_open_ts_utc":iso(ts(h1)) if h1 else None,"m15_bar_open_ts_utc":iso(ts(m15)) if m15 else None,"h1_surface_score":score(h1,"USDJPY","H1") if h1 else None,"m15_surface_score":score(m15,"USDJPY","M15") if m15 else None},"checks":[],"not_authorized":["signal","manual trade proposal","entry/stop/target","risk sizing","broker/execution","auto execution","memory promotion"]}
+        if x is not None: payload_pairs.append((x,p)); payloads.append(x); files.append(p)
+    h1,h1_src=find_surface(payload_pairs,"USDJPY","H1"); m15,m15_src=find_surface(payload_pairs,"USDJPY","M15")
+    res={"program":"SIG-E-RUNTIME-SHADOW-DETECTOR1","detector_id":cfg.get("detector_id","SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0"),"source_spec_id":cfg.get("source_spec_id"),"detector_run_id":"SIGE_SD1_USDJPY_"+datetime.utcnow().strftime("%Y%m%dT%H%M%SZ"),"created_utc":now(),"instrument":"USDJPY","direction":"LONG","detector_status":"INPUT_INSUFFICIENT","status_reason":None,"is_shadow_match":False,"is_signal":False,"is_trade_proposal":False,"authority":{"signal_authorized":False,"trade_proposal_authorized":False,"entry_stop_target_authorized":False,"risk_sizing_authorized":False,"broker_execution_authorized":False,"auto_execution_authorized":False},"boundary":cfg.get("boundary",[]),"loaded_source_files":files,"surface_snapshot":{"h1_surface_available":h1 is not None,"m15_surface_available":m15 is not None,"h1_surface_source":h1_src,"m15_surface_source":m15_src,"h1_bar_open_ts_utc":iso(ts(h1)) if h1 else None,"m15_bar_open_ts_utc":iso(ts(m15)) if m15 else None,"h1_surface_score":score(h1,"USDJPY","H1",h1_src) if h1 else None,"m15_surface_score":score(m15,"USDJPY","M15",m15_src) if m15 else None},"checks":[],"not_authorized":["signal","manual trade proposal","entry/stop/target","risk sizing","broker/execution","auto execution","memory promotion"]}
     fr,fm=freshness(payloads); res["freshness_check"]={"status":fr,**fm}
     if fr=="DATA_STALE": res["detector_status"]="DATA_STALE"; res["status_reason"]="freshness_blocked"; return res
-    ok,meta=regime(h1); res["checks"].append({"check_id":"REGIME","passed":ok,"details":meta})
+    ok,meta=regime(h1,h1_src); res["checks"].append({"check_id":"REGIME","passed":ok,"details":meta})
     if h1 is None: res["status_reason"]="missing_usdjpy_h1_surface"; return res
     if meta.get("session_bucket")!="LONDON": res["detector_status"]="SESSION_NOT_MATCHED"; res["status_reason"]="session_not_london"; return res
-    # Priority fix: alignment mismatch is REGIME_NOT_MATCHED even if vol missing.
     if not meta.get("alignment_ok"):
         res["detector_status"]="REGIME_NOT_MATCHED"; res["status_reason"]="d1_h4_alignment_not_matched"; return res
-    # Only block missing vol after session/alignment are otherwise matched.
     if "volatility_state_or_d1_vol_bucket" in meta.get("missing_regime_fields",[]):
         res["detector_status"]="FIELD_MAPPING_INCOMPLETE"; res["status_reason"]="missing_required_volatility_field_after_session_alignment_match"; return res
     if not meta.get("vol_ok"):
@@ -257,8 +284,8 @@ def main():
     if res.get("detector_status") not in VALID_STATUS: res["detector_status"]="INPUT_INSUFFICIENT"; res["status_reason"]="invalid_status_guardrail"
     st=update_state(load_state(),res)
     write(RUNTIME_OUT,res); write(PANEL_OUT,res); write(STATE_PATH,st)
-    write(BUILD_RESULT,{"program":"SIG-E-RUNTIME-SHADOW-DETECTOR1-HOTFIX2","created_utc":now(),"build_status":"PASS","detector_status":res.get("detector_status"),"status_reason":res.get("status_reason"),"is_shadow_match":res.get("is_shadow_match"),"hotfixes":["surface_volatility_enrichment_compatible","regime_status_priority_fix","live_ohlc_only_no_historical_fallback"],"authority":res.get("authority")})
-    print("SIG_E_SHADOW_DETECTOR1_HOTFIX2_BUILD_DONE")
+    write(BUILD_RESULT,{"program":"SIG-E-RUNTIME-SHADOW-DETECTOR1-HOTFIX3","created_utc":now(),"build_status":"PASS","detector_status":res.get("detector_status"),"status_reason":res.get("status_reason"),"is_shadow_match":res.get("is_shadow_match"),"hotfixes":["preferred_sig_e_surface_source","volatility_propagation_all_live_context_payloads","regime_status_priority_fix","live_ohlc_only_no_historical_fallback"],"authority":res.get("authority")})
+    print("SIG_E_SHADOW_DETECTOR1_HOTFIX3_BUILD_DONE")
     print("DETECTOR_STATUS="+str(res.get("detector_status")))
     print("STATUS_REASON="+str(res.get("status_reason")))
     print("IS_SHADOW_MATCH="+str(res.get("is_shadow_match")))
