@@ -1,0 +1,78 @@
+{
+  "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
+  "program": "SIG-E-RUNTIME-SHADOW-DETECTOR1",
+  "title": "USDJPY London Long H1+M15 Shadow Detector",
+  "status": "SHADOW_DETECTOR_DRAFT_RESEARCH_ONLY",
+  "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
+  "instrument": "USDJPY",
+  "direction": "LONG",
+  "session_bucket": "LONDON",
+  "timeframes": {
+    "setup_timeframe": "H1",
+    "h1_trigger_timeframe": "H1",
+    "m15_trigger_timeframe": "M15",
+    "observation_horizon_h1_bars": 16
+  },
+  "regime_requirements": {
+    "d1_trend_state": "UP",
+    "h4_trend_state": "UP",
+    "htf_alignment": "D1_H4_ALIGNED_UP",
+    "d1_or_runtime_volatility_state": "LOW"
+  },
+  "setup_requirements": {
+    "h1_range_expansion": {
+      "method": "previous_h1_range_vs_prior4_avg",
+      "min_ratio": 1.15,
+      "fallback_current_h1_expansion_flag_allowed": true
+    },
+    "lower_rejection_long": {
+      "min_lower_wick_to_range": 0.3,
+      "min_close_location": 0.55,
+      "prefer_bullish_close": false
+    }
+  },
+  "h1_trigger_requirements": {
+    "next_h1_direction_confirm": {
+      "method": "latest_closed_h1_close_gt_open",
+      "direction": "LONG"
+    }
+  },
+  "m15_trigger_requirements": {
+    "inside_h1_directional_close_confirm": {
+      "method": "any_closed_m15_inside_trigger_h1_close_gt_open",
+      "direction": "LONG"
+    }
+  },
+  "status_values": [
+    "INPUT_INSUFFICIENT",
+    "DATA_STALE",
+    "SESSION_NOT_MATCHED",
+    "REGIME_NOT_MATCHED",
+    "SETUP_NOT_FORMED",
+    "H1_TRIGGER_WAIT",
+    "H1_TRIGGER_NOT_CONFIRMED",
+    "M15_TRIGGER_WAIT",
+    "SHADOW_MATCH_CONFIRMED",
+    "EXPIRED"
+  ],
+  "authority": {
+    "signal_authorized": false,
+    "trade_proposal_authorized": false,
+    "entry_stop_target_authorized": false,
+    "risk_sizing_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_execution_authorized": false,
+    "manual_review_required_for_future_trade_plan": true
+  },
+  "boundary": [
+    "SHADOW_RESEARCH_ONLY",
+    "NOT_SIGNAL",
+    "NO_TRADE_PROPOSAL",
+    "NO_ENTRY_STOP_TARGET",
+    "NO_RISK_OR_POSITION_SIZING",
+    "NO_BROKER_EXECUTION",
+    "NO_AUTO_EXECUTION",
+    "NO_MEMORY_PROMOTION",
+    "NO_RULE_REWRITE"
+  ]
+}
