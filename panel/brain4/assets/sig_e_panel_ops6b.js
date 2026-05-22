@@ -1,7 +1,7 @@
-/* SIG-E-PANEL-OPS6B_TABBED_RESEARCH_CONSOLE_v1_0 */
+/* SIG-E-PANEL-OPS6C_VISUAL_POLISH_v1_0 */
 /* Governance markers: NOT A SIGNAL | NO ENTRY | NO TRADE PROPOSAL | NO BROKER EXECUTION */
 (() => {
-  const VERSION = "SIG-E-PANEL-OPS6B_TABBED_RESEARCH_CONSOLE_v1_0";
+  const VERSION = "SIG-E-PANEL-OPS6C_VISUAL_POLISH_v1_0";
 
   const PATHS = {
     portfolio: [
@@ -82,6 +82,29 @@
     const d = parseUtc(value);
     if (!d) return "—";
     return d.toISOString().replace(".000Z", "Z");
+  }
+
+  function updateTabRefreshAge(createdUtc) {
+    const age = ageMinutes(createdUtc);
+    const ageEl = $("tabUpdateAge");
+    const timeEl = $("tabUpdateTime");
+    if (!ageEl || !timeEl) return;
+
+    ageEl.classList.remove("warn", "danger");
+
+    if (age === null) {
+      ageEl.textContent = "Updated —";
+      timeEl.textContent = "refresh time unavailable";
+      ageEl.classList.add("warn");
+      return;
+    }
+
+    const label = age <= 1 ? "Updated just now" : `Updated ${age}m ago`;
+    ageEl.textContent = label;
+    timeEl.textContent = formatTime(createdUtc);
+
+    if (age > 30) ageEl.classList.add("danger");
+    else if (age > 10) ageEl.classList.add("warn");
   }
 
   function titleCase(value) {
@@ -414,6 +437,7 @@
     const age = ageMinutes(createdUtc);
     $("ageBadge").textContent = age === null ? "age —" : `age ${age}m`;
     $("portfolioSource").textContent = portfolioPath ? portfolioPath.split("/").slice(-2).join("/") : "source —";
+    updateTabRefreshAge(createdUtc);
     $("laneCount").textContent = safeText(summary?.detector_count ?? lanes.length);
     $("activeCount").textContent = safeText(active);
     $("attentionCount").textContent = safeText(summary?.data_or_field_attention_count ?? 0);
