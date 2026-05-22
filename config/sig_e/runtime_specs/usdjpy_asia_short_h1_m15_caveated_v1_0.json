@@ -1,0 +1,57 @@
+{
+  "spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
+  "program": "SIG-E-RUNTIME-SPEC2",
+  "title": "USDJPY Asia Short H1+M15 Caveated Observation Runtime Specification",
+  "status": "CAVEATED_OBSERVATION_SPEC_DRAFT_NOT_SIGNAL",
+  "target_architecture": "E_MANUAL_SEMI_AUTOMATED_DECISION_SYSTEM",
+  "lane": {
+    "instrument": "USDJPY",
+    "session_bucket": "ASIA",
+    "direction": "SHORT",
+    "setup_family": "ALIGNED_DOWN_PULLBACK_REJECT_SHORT",
+    "h1_trigger_type": "H1_STRONG_REJECTION_CLOSE_CONFIRM",
+    "m15_trigger_policy": "M15_NO_EARLY_FAILURE_AFTER_H1_CONFIRM",
+    "horizon_h1_bars": 8
+  },
+  "evidence": {
+    "historical_stage": "SIG-E-HIST-M15TRIGGER1",
+    "classification": "CAVEATED_OBSERVATION_ONLY",
+    "h1_reference_validation_n": 33,
+    "h1_reference_favorable_rate": 0.5758,
+    "h1_reference_avg_move_norm_atr": 0.2034,
+    "m15_validation_n": 17,
+    "m15_validation_favorable_rate": 0.6471,
+    "delta_validation_favorable_rate_vs_h1_reference": 0.0713,
+    "m15_validation_avg_move_norm_atr": 0.2306,
+    "delta_validation_avg_move_norm_atr_vs_h1_reference": 0.0272,
+    "major_caveats": [
+      "m15_validation_n_below_30",
+      "sample_caveated",
+      "not_primary_lane",
+      "not_signal",
+      "not_trade_plan"
+    ]
+  },
+  "authority": {
+    "signal_authorized": false,
+    "trade_proposal_authorized": false,
+    "entry_stop_target_authorized": false,
+    "risk_sizing_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_execution_authorized": false,
+    "manual_review_required_for_future_trade_plan": true
+  },
+  "boundary": [
+    "CAVEATED_OBSERVATION_ONLY",
+    "SHADOW_RESEARCH_ONLY",
+    "NOT_SIGNAL",
+    "NO_TRADE_PROPOSAL",
+    "NO_ENTRY_STOP_TARGET",
+    "NO_RISK_OR_POSITION_SIZING",
+    "NO_BROKER_EXECUTION",
+    "NO_AUTO_EXECUTION",
+    "NO_MEMORY_PROMOTION",
+    "NO_RULE_REWRITE"
+  ],
+  "next_allowed_use": "LIVE_CAVEATED_SHADOW_OBSERVATION_ONLY"
+}

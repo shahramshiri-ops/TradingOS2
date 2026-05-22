@@ -1,0 +1,70 @@
+{
+  "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
+  "program": "SIG-E-RUNTIME-SHADOW-DETECTOR2",
+  "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
+  "status": "CAVEATED_SHADOW_DETECTOR_DRAFT_RESEARCH_ONLY",
+  "instrument": "USDJPY",
+  "direction": "SHORT",
+  "session_bucket": "ASIA",
+  "timeframes": {
+    "setup_timeframe": "H1",
+    "m15_trigger_timeframe": "M15",
+    "observation_horizon_h1_bars": 8
+  },
+  "regime_requirements": {
+    "alignment": "D1_H4_ALIGNED_DOWN_OR_H4_H1_DOWN_CONTEXT"
+  },
+  "setup_requirements": {
+    "upper_rejection_short": {
+      "min_upper_wick_to_range": 0.3,
+      "max_close_location": 0.45
+    },
+    "strong_bearish_rejection_trigger": {
+      "min_body_to_range": 0.3,
+      "max_close_location": 0.45
+    }
+  },
+  "m15_policy": {
+    "no_early_failure_after_h1_confirm": {
+      "opposite_failure_direction": "LONG",
+      "max_allowed_strong_bullish_m15_failures": 0,
+      "strong_bullish_body_to_range": 0.45,
+      "strong_bullish_close_location": 0.6
+    }
+  },
+  "status_values": [
+    "INPUT_INSUFFICIENT",
+    "DATA_STALE",
+    "SESSION_NOT_MATCHED",
+    "REGIME_NOT_MATCHED",
+    "LIVE_OHLC_SOURCE_MISSING",
+    "SETUP_NOT_FORMED",
+    "H1_TRIGGER_WAIT",
+    "H1_TRIGGER_NOT_CONFIRMED",
+    "M15_NO_FAILURE_POLICY_WAIT",
+    "M15_FAILURE_BLOCKED",
+    "CAVEATED_SHADOW_MATCH_CONFIRMED",
+    "EXPIRED"
+  ],
+  "authority": {
+    "signal_authorized": false,
+    "trade_proposal_authorized": false,
+    "entry_stop_target_authorized": false,
+    "risk_sizing_authorized": false,
+    "broker_execution_authorized": false,
+    "auto_execution_authorized": false,
+    "manual_review_required_for_future_trade_plan": true
+  },
+  "boundary": [
+    "CAVEATED_OBSERVATION_ONLY",
+    "SHADOW_RESEARCH_ONLY",
+    "NOT_SIGNAL",
+    "NO_TRADE_PROPOSAL",
+    "NO_ENTRY_STOP_TARGET",
+    "NO_RISK_OR_POSITION_SIZING",
+    "NO_BROKER_EXECUTION",
+    "NO_AUTO_EXECUTION",
+    "NO_MEMORY_PROMOTION",
+    "NO_RULE_REWRITE"
+  ]
+}
