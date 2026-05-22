@@ -1,4 +1,4 @@
-﻿import os
+import os
 import subprocess
 from pathlib import Path
 from datetime import datetime
@@ -46,6 +46,13 @@ SAFE_PATHS = [
     "runtime/sig_e/shadow_lane1_overlap_preflight_current.json",
     "panel/brain4/sig_e_shadow_lane1_overlap_preflight_current.json",
     "outputs/_sig_e_shadow_lane1_overlap_preflight1",
+    "runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_current.json",
+    "runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_obsledger_current.json",
+    "panel/brain4/sig_e_shadow_detector1b_overlap_status_current.json",
+    "panel/brain4/sig_e_shadow_detector1b_overlap_obsledger_status_current.json",
+    "state/sig_e_shadow_detector1b",
+    "outputs/_sig_e_shadow_detector1b_overlap",
+    "outputs/_sig_e_shadow_detector1b_overlap_obsledger",
     "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
     "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json",
     "panel/brain4/sig_e_shadow_detector3_status_current.json",

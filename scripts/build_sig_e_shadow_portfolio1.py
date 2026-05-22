@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 from datetime import datetime
 from collections import Counter
@@ -61,7 +61,18 @@ LANES = [
         "detector_file": Path("runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json"),
         "ledger_file": Path("runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json"),
         "expected_shadow_match_statuses": ["SHADOW_MATCH_CONFIRMED"],
-    },]
+    },    {
+        "lane_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15",
+        "display_name": "USDJPY Overlap Long Diagnostic H1+M15",
+        "classification": "DIAGNOSTIC_SHADOW_OBSERVATION",
+        "instrument": "USDJPY",
+        "direction": "LONG",
+        "detector_file": Path("runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_current.json"),
+        "ledger_file": Path("runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_obsledger_current.json"),
+        "expected_shadow_match_statuses": ["DIAGNOSTIC_SHADOW_MATCH_CONFIRMED"],
+        "counts_as_primary": False,
+    },
+]
 
 DATA_OR_FIELD_STATUSES = {
     "DATA_STALE",

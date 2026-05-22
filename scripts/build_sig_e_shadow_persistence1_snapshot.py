@@ -42,6 +42,18 @@ STATE_FILES = [
         "mirror": "panel/brain4/persist/sig_e_shadow_detector3/eurusd_london_pdlow_trap_long_state_v1.json",
         "counter": "history",
     },
+    {
+        "logical_id": "lane1b_overlap_obsledger_state",
+        "source": "state/sig_e_shadow_detector_observation/usdjpy_overlap_long_diagnostic_obsledger_v1.json",
+        "mirror": "panel/brain4/persist/sig_e_shadow_detector_observation/usdjpy_overlap_long_diagnostic_obsledger_v1.json",
+        "counter": "refresh_records",
+    },
+    {
+        "logical_id": "lane1b_overlap_detector_state",
+        "source": "state/sig_e_shadow_detector1b/usdjpy_overlap_long_diagnostic_state_v1.json",
+        "mirror": "panel/brain4/persist/sig_e_shadow_detector1b/usdjpy_overlap_long_diagnostic_state_v1.json",
+        "counter": "history",
+    },
 ]
 
 CURRENT_FILES = [
@@ -69,6 +81,16 @@ CURRENT_FILES = [
         "logical_id": "lane3_detector_current",
         "source": "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
         "mirror": "panel/brain4/persist/current/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
+    },
+    {
+        "logical_id": "lane1b_overlap_obsledger_current",
+        "source": "runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_obsledger_current.json",
+        "mirror": "panel/brain4/persist/current/shadow_detector_usdjpy_overlap_long_diagnostic_obsledger_current.json",
+    },
+    {
+        "logical_id": "lane1b_overlap_detector_current",
+        "source": "runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_current.json",
+        "mirror": "panel/brain4/persist/current/shadow_detector_usdjpy_overlap_long_diagnostic_current.json",
     },
 ]
 

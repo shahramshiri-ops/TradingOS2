@@ -8,6 +8,7 @@ PROGRAM = "SIG-E-SHADOW-OBSREPORT1"
 PORTFOLIO = Path("runtime/sig_e/shadow_portfolio_current.json")
 LANE_STATES = [
     Path("state/sig_e_shadow_detector_observation/usdjpy_london_long_obsledger_v1.json"),
+    Path("state/sig_e_shadow_detector_observation/usdjpy_overlap_long_diagnostic_obsledger_v1.json"),
     Path("state/sig_e_shadow_detector_observation/usdjpy_asia_short_obsledger_v1.json"),
     Path("state/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json"),
 ]

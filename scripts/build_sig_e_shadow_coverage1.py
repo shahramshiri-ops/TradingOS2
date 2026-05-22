@@ -23,6 +23,11 @@ LANE_STATES = [
         "display_name": "EURUSD London/Overlap Prior-Day-Low Trap Long H1+M15",
         "state_path": Path("state/sig_e_shadow_detector_observation/eurusd_london_pdlow_trap_long_obsledger_v1.json"),
     },
+    {
+        "lane_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15",
+        "display_name": "USDJPY Overlap Long Diagnostic H1+M15",
+        "state_path": Path("state/sig_e_shadow_detector_observation/usdjpy_overlap_long_diagnostic_obsledger_v1.json"),
+    },
 ]
 
 RUNTIME_OUT = Path("runtime/sig_e/shadow_coverage1_current.json")
