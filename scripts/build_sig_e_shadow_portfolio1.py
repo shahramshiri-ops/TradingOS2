@@ -54,6 +54,29 @@ LANES = [
     },
 ]
 
+DATA_OR_FIELD_STATUSES = {
+    "DATA_STALE",
+    "LIVE_OHLC_SOURCE_MISSING",
+    "FIELD_MAPPING_INCOMPLETE",
+    "INPUT_INSUFFICIENT",
+    "LIVE_H1_HISTORY_INSUFFICIENT",
+    "LIVE_M15_HISTORY_INSUFFICIENT",
+}
+
+NORMAL_NON_MATCH_STATUSES = {
+    "REGIME_NOT_MATCHED",
+    "SESSION_NOT_MATCHED",
+    "SETUP_NOT_FORMED",
+    "H1_TRIGGER_NOT_CONFIRMED",
+    "M15_FAILURE_BLOCKED",
+}
+
+PROGRESS_STATUSES = {
+    "H1_TRIGGER_WAIT",
+    "M15_TRIGGER_WAIT",
+    "M15_NO_FAILURE_POLICY_WAIT",
+}
+
 def now_utc():
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
@@ -92,6 +115,9 @@ def summarize_lane(lane):
     surface_snapshot = None
     checks = []
     detector_authority_ok = False
+    data_counts = None
+    source_paths = None
+    ohlc_source_diagnostics = None
 
     if isinstance(detector, dict):
         detector_status = detector.get("detector_status")
@@ -104,6 +130,9 @@ def summarize_lane(lane):
         surface_snapshot = detector.get("surface_snapshot")
         checks = detector.get("checks") if isinstance(detector.get("checks"), list) else []
         detector_authority_ok = false_authority_ok(detector)
+        data_counts = detector.get("data_counts")
+        source_paths = detector.get("source_paths")
+        ohlc_source_diagnostics = detector.get("ohlc_source_diagnostics")
 
     ledger_summary = {}
     ledger_status = None
@@ -134,11 +163,11 @@ def summarize_lane(lane):
         attention.append("LEDGER_AUTHORITY_CHECK_FAILED")
     if active_match:
         attention.append("SHADOW_MATCH_ACTIVE_CAVEATED" if caveated else "SHADOW_MATCH_ACTIVE_PRIMARY")
-    elif detector_status in {"H1_TRIGGER_WAIT", "M15_TRIGGER_WAIT", "M15_NO_FAILURE_POLICY_WAIT"}:
+    elif detector_status in PROGRESS_STATUSES:
         attention.append("WATCH_PROGRESSING_THROUGH_TRIGGER_CHAIN")
-    elif detector_status in {"DATA_STALE", "LIVE_OHLC_SOURCE_MISSING", "FIELD_MAPPING_INCOMPLETE", "INPUT_INSUFFICIENT"}:
+    elif detector_status in DATA_OR_FIELD_STATUSES:
         attention.append("DATA_OR_FIELD_ATTENTION")
-    elif detector_status in {"REGIME_NOT_MATCHED", "SESSION_NOT_MATCHED", "SETUP_NOT_FORMED", "H1_TRIGGER_NOT_CONFIRMED", "M15_FAILURE_BLOCKED"}:
+    elif detector_status in NORMAL_NON_MATCH_STATUSES:
         attention.append("NO_ACTION_NORMAL_NON_MATCH")
 
     return {
@@ -160,6 +189,9 @@ def summarize_lane(lane):
         "is_signal": is_signal,
         "is_trade_proposal": is_trade_proposal,
         "surface_snapshot": surface_snapshot,
+        "data_counts": data_counts,
+        "source_paths": source_paths,
+        "ohlc_source_diagnostics": ohlc_source_diagnostics,
         "checks": checks,
         "ledger_status": ledger_status,
         "ledger_summary": ledger_summary,
@@ -249,14 +281,8 @@ def main():
         "authority": AUTHORITY,
         "boundary": BOUNDARY,
         "not_authorized": [
-            "signal",
-            "manual trade proposal",
-            "entry/stop/target",
-            "risk sizing",
-            "broker/execution",
-            "auto execution",
-            "memory promotion",
-            "rule rewrite",
+            "signal", "manual trade proposal", "entry/stop/target", "risk sizing",
+            "broker/execution", "auto execution", "memory promotion", "rule rewrite"
         ],
         "next_allowed_use": "LIVE_SHADOW_OBSERVATION_REVIEW_ONLY",
     }
@@ -279,8 +305,6 @@ def main():
     print("PORTFOLIO_STATUS=" + str(summary["portfolio_status"]))
     print("DETECTOR_COUNT=" + str(summary["detector_count"]))
     print("ACTIVE_SHADOW_MATCH_COUNT=" + str(summary["active_shadow_match_count"]))
-    print("Runtime out:", RUNTIME_OUT)
-    print("Panel out:", PANEL_OUT)
 
 if __name__ == "__main__":
     main()
