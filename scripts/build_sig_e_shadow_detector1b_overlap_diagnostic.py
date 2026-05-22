@@ -740,6 +740,57 @@ def build():
     }
     return result
 
+
+def normalize_lane1b_status_hotfix1(result):
+    # SIG-E-SHADOW-LANE1B-STATUS-HOTFIX1:
+    # Status/metadata normalization only. Does not change setup, trigger,
+    # M15 confirmation, shadow-match logic, Lane1, portfolio rules, signals,
+    # trade proposals, or execution authority.
+    if not isinstance(result, dict):
+        return result
+
+    if not result.get("source_spec_id"):
+        result["source_spec_id"] = "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0"
+
+    if result.get("detector_id") == "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0":
+        result.setdefault("classification", "DIAGNOSTIC_ONLY_SHADOW_LANE_NOT_PRIMARY")
+        result["is_signal"] = False
+        result["is_trade_proposal"] = False
+
+    details = {}
+    for chk in result.get("checks", []) or []:
+        if isinstance(chk, dict):
+            cid = str(chk.get("check_id") or "").upper()
+            if "REGIME" in cid:
+                details = chk.get("details") or {}
+                break
+
+    session_ok = details.get("session_ok")
+    alignment_ok = details.get("alignment_ok")
+    vol_ok = details.get("vol_ok")
+
+    if result.get("detector_status") == "SESSION_NOT_MATCHED" and session_ok is True:
+        if alignment_ok is False or vol_ok is False:
+            result["detector_status"] = "REGIME_NOT_MATCHED"
+            result["status_reason"] = "overlap_long_diagnostic_regime_not_matched"
+            result["status_hotfix_applied"] = "SIG-E-SHADOW-LANE1B-STATUS-HOTFIX1"
+            result["status_hotfix_reason"] = "session_ok_true_but_regime_alignment_or_vol_failed"
+
+    result.setdefault("authority", {})
+    for k in [
+        "signal_authorized",
+        "trade_proposal_authorized",
+        "entry_stop_target_authorized",
+        "risk_sizing_authorized",
+        "broker_execution_authorized",
+        "auto_execution_authorized",
+        "primary_lane_authorized",
+        "lane_rule_change_authorized",
+    ]:
+        result["authority"][k] = False
+
+    return result
+
 def main():
     result = build()
     if result.get("detector_status") not in VALID_STATUS:
