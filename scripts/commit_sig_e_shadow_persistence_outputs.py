@@ -53,6 +53,7 @@ SAFE_PATHS = [
     "state/sig_e_shadow_detector1b",
     "outputs/_sig_e_shadow_detector1b_overlap",
     "outputs/_sig_e_shadow_lane1b_status_hotfix1",
+    "outputs/_sig_e_shadow_lane1b_gateflow_hotfix2",
     "outputs/_sig_e_shadow_detector1b_overlap_obsledger",
     "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_current.json",
     "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json",
