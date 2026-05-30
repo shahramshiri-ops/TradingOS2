@@ -1,37 +1,38 @@
 {
   "program": "SIG-E-SHADOW-PORTFOLIO1",
-  "created_utc": "2026-05-30T08:17:10Z",
-  "portfolio_status": "NO_ACTIVE_SHADOW_MATCH",
+  "created_utc": "2026-05-30T08:27:21Z",
+  "portfolio_status": "PRIMARY_SHADOW_MATCH_ACTIVE_REVIEW_ONLY",
   "summary": {
-    "portfolio_status": "NO_ACTIVE_SHADOW_MATCH",
+    "portfolio_status": "PRIMARY_SHADOW_MATCH_ACTIVE_REVIEW_ONLY",
     "detector_count": 4,
     "detector_status_counts": {
-      "H1_TRIGGER_NOT_CONFIRMED": 2,
+      "SHADOW_MATCH_CONFIRMED": 1,
       "SESSION_NOT_MATCHED": 1,
-      "REFERENCE_LEVEL_UNAVAILABLE": 1
+      "REFERENCE_LEVEL_UNAVAILABLE": 1,
+      "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 1
     },
     "classification_counts": {
       "PRIMARY_SHADOW_OBSERVATION": 2,
       "CAVEATED_OBSERVATION_ONLY": 1,
       "DIAGNOSTIC_SHADOW_OBSERVATION": 1
     },
-    "active_shadow_match_count": 0,
-    "active_primary_shadow_match_count": 0,
+    "active_shadow_match_count": 2,
+    "active_primary_shadow_match_count": 2,
     "active_caveated_shadow_match_count": 0,
     "data_or_field_attention_count": 0,
-    "total_refresh_records": 4558,
-    "total_near_misses": 1306,
-    "total_shadow_events": 3,
-    "total_pending_shadow_events": 3,
+    "total_refresh_records": 4562,
+    "total_near_misses": 1309,
+    "total_shadow_events": 4,
+    "total_pending_shadow_events": 4,
     "total_closed_shadow_events": 0,
     "portfolio_outcome_counts": {},
     "lanes_requiring_attention": [
       {
         "lane_id": "SIGE_SD1_USDJPY_LONDON_LONG_H1_M15",
         "flags": [
-          "NO_ACTION_NORMAL_NON_MATCH"
+          "SHADOW_MATCH_ACTIVE_PRIMARY"
         ],
-        "status": "H1_TRIGGER_NOT_CONFIRMED"
+        "status": "SHADOW_MATCH_CONFIRMED"
       },
       {
         "lane_id": "SIGE_SD2_USDJPY_ASIA_SHORT_H1_M15_CAVEATED",
@@ -43,9 +44,9 @@
       {
         "lane_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15",
         "flags": [
-          "NO_ACTION_NORMAL_NON_MATCH"
+          "SHADOW_MATCH_ACTIVE_PRIMARY"
         ],
-        "status": "H1_TRIGGER_NOT_CONFIRMED"
+        "status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED"
       }
     ]
   },
@@ -60,11 +61,11 @@
       "ledger_file": "runtime/sig_e/shadow_detector_usdjpy_london_long_obsledger_current.json",
       "detector_file_loaded": true,
       "ledger_file_loaded": true,
-      "detector_run_id": "SIGE_SD1_USDJPY_20260530T081709Z",
-      "detector_created_utc": "2026-05-30T08:17:09Z",
-      "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
-      "status_reason": "next_h1_bar_did_not_confirm_long_direction",
-      "is_shadow_match": false,
+      "detector_run_id": "SIGE_SD1_USDJPY_20260530T082720Z",
+      "detector_created_utc": "2026-05-30T08:27:20Z",
+      "detector_status": "SHADOW_MATCH_CONFIRMED",
+      "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+      "is_shadow_match": true,
       "is_caveated": false,
       "is_signal": false,
       "is_trade_proposal": false,
@@ -74,7 +75,7 @@
         "h1_surface_source": "runtime/sig_e/market_state_current.json",
         "m15_surface_source": "runtime/sig_e/market_state_current.json",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "h1_surface_score": 345,
         "m15_surface_score": 345
       },
@@ -82,7 +83,7 @@
         "h1_rows_loaded": 803,
         "m15_rows_loaded": 3206,
         "h1_latest_bar_open_ts_utc": "2026-05-30T08:00:00Z",
-        "m15_latest_bar_open_ts_utc": "2026-05-30T08:00:00Z"
+        "m15_latest_bar_open_ts_utc": "2026-05-30T08:15:00Z"
       },
       "source_paths": {
         "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
@@ -115,7 +116,7 @@
             "source": "refresh_report",
             "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
             "rows": 3206,
-            "latest_bar_open_ts_utc": "2026-05-30T08:00:00Z",
+            "latest_bar_open_ts_utc": "2026-05-30T08:15:00Z",
             "score": 1008206,
             "forbidden": false
           }
@@ -160,25 +161,36 @@
             },
             "range_expansion": {
               "setup_range": 0.01865000000000805,
-              "prior_range_avg": 0.014197499999994534,
-              "range_expansion_ratio": 1.313611551330532
+              "prior_range_avg": 0.012882499999996355,
+              "range_expansion_ratio": 1.4477003687182866
             }
           }
         },
         {
           "check_id": "NEXT_H1_DIRECTION_CONFIRM",
-          "passed": false,
+          "passed": true,
           "details": {
             "trigger_h1_open_ts_utc": "2026-05-30T08:00:00Z",
             "open": 159.28743,
-            "close": 159.28462,
-            "direction": "NOT_UP"
+            "close": 159.28793,
+            "direction": "UP"
+          }
+        },
+        {
+          "check_id": "M15_INSIDE_H1_DIRECTIONAL_CLOSE_CONFIRM",
+          "passed": true,
+          "details": {
+            "h1_window_start": "2026-05-30T08:00:00Z",
+            "h1_window_end": "2026-05-30T09:00:00Z",
+            "m15_inside_count": 2,
+            "m15_confirm_count": 1,
+            "first_confirm_m15_open_ts_utc": "2026-05-30T08:15:00Z"
           }
         }
       ],
       "ledger_status": "PASS",
       "ledger_summary": {
-        "refresh_count_total": 1151,
+        "refresh_count_total": 1152,
         "status_counts_total": {
           "REGIME_NOT_MATCHED": 69,
           "INPUT_INSUFFICIENT": 4,
@@ -187,43 +199,44 @@
           "SESSION_NOT_MATCHED": 938,
           "H1_TRIGGER_WAIT": 5,
           "H1_TRIGGER_NOT_CONFIRMED": 8,
-          "SHADOW_MATCH_CONFIRMED": 8
+          "SHADOW_MATCH_CONFIRMED": 9
         },
         "status_counts_last_100": {
-          "SESSION_NOT_MATCHED": 98,
+          "SESSION_NOT_MATCHED": 97,
           "H1_TRIGGER_WAIT": 1,
-          "H1_TRIGGER_NOT_CONFIRMED": 1
+          "H1_TRIGGER_NOT_CONFIRMED": 1,
+          "SHADOW_MATCH_CONFIRMED": 1
         },
         "top_status_reasons": {
           "session_not_london": 938,
           "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 115,
           "d1_h4_alignment_not_matched": 69,
+          "regime_setup_h1_trigger_m15_trigger_all_confirmed": 9,
           "next_h1_bar_did_not_confirm_long_direction": 8,
-          "regime_setup_h1_trigger_m15_trigger_all_confirmed": 8,
           "latest_h1_bar_forms_setup_waiting_for_next_h1_close": 5,
           "not_enough_h1_rows_for_setup_trigger_window": 4,
           "live_h1_or_m15_ohlc_source_missing_no_historical_fallback_allowed": 4
         },
-        "near_miss_count": 205,
-        "shadow_event_count": 3,
-        "pending_shadow_event_count": 3,
+        "near_miss_count": 206,
+        "shadow_event_count": 4,
+        "pending_shadow_event_count": 4,
         "closed_shadow_event_count": 0,
         "outcome_counts": {},
-        "last_status": "H1_TRIGGER_NOT_CONFIRMED",
-        "last_status_reason": "next_h1_bar_did_not_confirm_long_direction",
-        "last_shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260528T110000"
+        "last_status": "SHADOW_MATCH_CONFIRMED",
+        "last_status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+        "last_shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260530T080000"
       },
       "latest_near_miss": {
-        "observation_run_id": "GH_26679017449_1",
-        "record_id": "GH_26679017449_1|SIGE_SD1_USDJPY_20260530T081709Z",
+        "observation_run_id": "GH_26679210988_1",
+        "record_id": "GH_26679210988_1|SIGE_SD1_USDJPY_20260530T082720Z",
         "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
         "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
-        "detector_run_id": "SIGE_SD1_USDJPY_20260530T081709Z",
-        "created_utc": "2026-05-30T08:17:09Z",
-        "detector_created_utc": "2026-05-30T08:17:09Z",
-        "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
-        "status_reason": "next_h1_bar_did_not_confirm_long_direction",
-        "is_shadow_match": false,
+        "detector_run_id": "SIGE_SD1_USDJPY_20260530T082720Z",
+        "created_utc": "2026-05-30T08:27:20Z",
+        "detector_created_utc": "2026-05-30T08:27:20Z",
+        "detector_status": "SHADOW_MATCH_CONFIRMED",
+        "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+        "is_shadow_match": true,
         "instrument": "USDJPY",
         "direction": "LONG",
         "session_bucket": "LONDON",
@@ -234,26 +247,26 @@
         "range_state": "COMPRESSION",
         "tradeability_context": "REGIME_SUPPORTIVE",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "setup_h1_open_ts_utc": "2026-05-30T07:00:00Z",
         "trigger_h1_open_ts_utc": "2026-05-30T08:00:00Z",
-        "m15_confirm_ts_utc": null,
-        "shadow_event_id": null,
-        "near_miss_score": 3
+        "m15_confirm_ts_utc": "2026-05-30T08:15:00Z",
+        "shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260530T080000",
+        "near_miss_score": 5
       },
       "latest_shadow_event": {
         "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
         "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
-        "shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260528T110000",
-        "created_utc": "2026-05-28T11:37:09Z",
+        "shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260530T080000",
+        "created_utc": "2026-05-30T08:27:20Z",
         "instrument": "USDJPY",
         "direction": "LONG",
         "detector_status": "SHADOW_MATCH_CONFIRMED",
-        "setup_h1_open_ts_utc": "2026-05-28T10:00:00Z",
-        "trigger_h1_open_ts_utc": "2026-05-28T11:00:00Z",
-        "m15_confirm_ts_utc": "2026-05-28T11:15:00Z",
+        "setup_h1_open_ts_utc": "2026-05-30T07:00:00Z",
+        "trigger_h1_open_ts_utc": "2026-05-30T08:00:00Z",
+        "m15_confirm_ts_utc": "2026-05-30T08:15:00Z",
         "observation_horizon_h1_bars": 16,
-        "observation_end_ts_utc": "2026-05-29T03:00:00Z",
+        "observation_end_ts_utc": "2026-05-31T00:00:00Z",
         "outcome_status": "PENDING",
         "source_paths": {
           "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
@@ -285,7 +298,7 @@
       "detector_authority_ok": true,
       "ledger_authority_ok": true,
       "attention_flags": [
-        "NO_ACTION_NORMAL_NON_MATCH"
+        "SHADOW_MATCH_ACTIVE_PRIMARY"
       ]
     },
     {
@@ -298,8 +311,8 @@
       "ledger_file": "runtime/sig_e/shadow_detector_usdjpy_asia_short_obsledger_current.json",
       "detector_file_loaded": true,
       "ledger_file_loaded": true,
-      "detector_run_id": "SIGE_SD2_USDJPY_20260530T081709Z",
-      "detector_created_utc": "2026-05-30T08:17:09Z",
+      "detector_run_id": "SIGE_SD2_USDJPY_20260530T082721Z",
+      "detector_created_utc": "2026-05-30T08:27:21Z",
       "detector_status": "SESSION_NOT_MATCHED",
       "status_reason": "session_not_asia",
       "is_shadow_match": false,
@@ -312,7 +325,7 @@
         "h1_surface_source": "runtime/sig_e/market_state_current.json",
         "m15_surface_source": "runtime/sig_e/market_state_current.json",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "h1_surface_score": 342,
         "m15_surface_score": 342
       },
@@ -342,9 +355,9 @@
       ],
       "ledger_status": "PASS",
       "ledger_summary": {
-        "refresh_count_total": 1151,
+        "refresh_count_total": 1152,
         "status_counts_total": {
-          "SESSION_NOT_MATCHED": 809,
+          "SESSION_NOT_MATCHED": 810,
           "REGIME_NOT_MATCHED": 342
         },
         "near_miss_count": 342,
@@ -397,8 +410,8 @@
       "ledger_file": "runtime/sig_e/shadow_detector_eurusd_london_pdlow_trap_long_obsledger_current.json",
       "detector_file_loaded": true,
       "ledger_file_loaded": true,
-      "detector_run_id": "SIGE_SD3_EURUSD_20260530T081709Z",
-      "detector_created_utc": "2026-05-30T08:17:09Z",
+      "detector_run_id": "SIGE_SD3_EURUSD_20260530T082721Z",
+      "detector_created_utc": "2026-05-30T08:27:21Z",
       "detector_status": "REFERENCE_LEVEL_UNAVAILABLE",
       "status_reason": "prior_utc_day_low_unavailable_from_live_h1",
       "is_shadow_match": false,
@@ -411,7 +424,7 @@
         "h1_surface_source": "runtime/sig_e/market_state_current.json",
         "m15_surface_source": "runtime/sig_e/market_state_current.json",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "h1_surface_score": 338,
         "m15_surface_score": 338
       },
@@ -419,7 +432,7 @@
         "h1_rows_loaded": 794,
         "m15_rows_loaded": 3169,
         "h1_latest_bar_open_ts_utc": "2026-05-30T08:00:00Z",
-        "m15_latest_bar_open_ts_utc": "2026-05-30T08:00:00Z"
+        "m15_latest_bar_open_ts_utc": "2026-05-30T08:15:00Z"
       },
       "source_paths": {
         "h1_ohlc_path": "data/live_resampled/EURUSD_H1_from_M5.csv.gz",
@@ -452,7 +465,7 @@
             "source": "refresh_report",
             "path": "data/live_resampled/EURUSD_M15_from_M5.csv.gz",
             "rows": 3169,
-            "latest_bar_open_ts_utc": "2026-05-30T08:00:00Z",
+            "latest_bar_open_ts_utc": "2026-05-30T08:15:00Z",
             "score": 1008169,
             "forbidden": false
           }
@@ -481,26 +494,26 @@
       ],
       "ledger_status": "PASS",
       "ledger_summary": {
-        "refresh_count_total": 1135,
+        "refresh_count_total": 1136,
         "status_counts_total": {
           "REGIME_NOT_MATCHED": 318,
           "SESSION_NOT_MATCHED": 746,
-          "REFERENCE_LEVEL_UNAVAILABLE": 71
+          "REFERENCE_LEVEL_UNAVAILABLE": 72
         },
-        "near_miss_count": 389,
+        "near_miss_count": 390,
         "shadow_event_count": 0,
         "last_status": "REFERENCE_LEVEL_UNAVAILABLE",
         "last_status_reason": "prior_utc_day_low_unavailable_from_live_h1",
         "last_shadow_event_id": null
       },
       "latest_near_miss": {
-        "observation_run_id": "GH_26679017449_1",
-        "record_id": "GH_26679017449_1|SIGE_SD3_EURUSD_20260530T081709Z",
+        "observation_run_id": "GH_26679210988_1",
+        "record_id": "GH_26679210988_1|SIGE_SD3_EURUSD_20260530T082721Z",
         "detector_id": "SIG_E_SHADOW_DETECTOR_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15_v1_0",
         "source_spec_id": "SIG_E_RUNTIME_SPEC_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15_v1_0",
-        "detector_run_id": "SIGE_SD3_EURUSD_20260530T081709Z",
-        "created_utc": "2026-05-30T08:17:10Z",
-        "detector_created_utc": "2026-05-30T08:17:09Z",
+        "detector_run_id": "SIGE_SD3_EURUSD_20260530T082721Z",
+        "created_utc": "2026-05-30T08:27:21Z",
+        "detector_created_utc": "2026-05-30T08:27:21Z",
         "detector_status": "REFERENCE_LEVEL_UNAVAILABLE",
         "status_reason": "prior_utc_day_low_unavailable_from_live_h1",
         "is_shadow_match": false,
@@ -514,7 +527,7 @@
         "range_state": "COMPRESSION",
         "tradeability_context": "DATA_INSUFFICIENT",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "setup_h1_open_ts_utc": null,
         "trigger_h1_open_ts_utc": null,
         "m15_confirm_ts_utc": null,
@@ -537,11 +550,11 @@
       "ledger_file": "runtime/sig_e/shadow_detector_usdjpy_overlap_long_diagnostic_obsledger_current.json",
       "detector_file_loaded": true,
       "ledger_file_loaded": true,
-      "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260530T081710Z",
-      "detector_created_utc": "2026-05-30T08:17:10Z",
-      "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
-      "status_reason": "next_h1_bar_did_not_confirm_long_direction",
-      "is_shadow_match": false,
+      "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260530T082721Z",
+      "detector_created_utc": "2026-05-30T08:27:21Z",
+      "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+      "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+      "is_shadow_match": true,
       "is_caveated": false,
       "is_signal": false,
       "is_trade_proposal": false,
@@ -551,7 +564,7 @@
         "h1_surface_source": "runtime/sig_e/market_state_current.json",
         "m15_surface_source": "runtime/sig_e/market_state_current.json",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "h1_surface_score": 345,
         "m15_surface_score": 345
       },
@@ -559,7 +572,7 @@
         "h1_rows_loaded": 803,
         "m15_rows_loaded": 3206,
         "h1_latest_bar_open_ts_utc": "2026-05-30T08:00:00Z",
-        "m15_latest_bar_open_ts_utc": "2026-05-30T08:00:00Z"
+        "m15_latest_bar_open_ts_utc": "2026-05-30T08:15:00Z"
       },
       "source_paths": {
         "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
@@ -592,7 +605,7 @@
             "source": "refresh_report",
             "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
             "rows": 3206,
-            "latest_bar_open_ts_utc": "2026-05-30T08:00:00Z",
+            "latest_bar_open_ts_utc": "2026-05-30T08:15:00Z",
             "score": 1008206,
             "forbidden": false
           }
@@ -637,51 +650,62 @@
             },
             "range_expansion": {
               "setup_range": 0.01865000000000805,
-              "prior_range_avg": 0.014197499999994534,
-              "range_expansion_ratio": 1.313611551330532
+              "prior_range_avg": 0.012882499999996355,
+              "range_expansion_ratio": 1.4477003687182866
             }
           }
         },
         {
           "check_id": "NEXT_H1_DIRECTION_CONFIRM",
-          "passed": false,
+          "passed": true,
           "details": {
             "trigger_h1_open_ts_utc": "2026-05-30T08:00:00Z",
             "open": 159.28743,
-            "close": 159.28462,
-            "direction": "NOT_UP"
+            "close": 159.28793,
+            "direction": "UP"
+          }
+        },
+        {
+          "check_id": "M15_INSIDE_H1_DIRECTIONAL_CLOSE_CONFIRM",
+          "passed": true,
+          "details": {
+            "h1_window_start": "2026-05-30T08:00:00Z",
+            "h1_window_end": "2026-05-30T09:00:00Z",
+            "m15_inside_count": 2,
+            "m15_confirm_count": 1,
+            "first_confirm_m15_open_ts_utc": "2026-05-30T08:15:00Z"
           }
         }
       ],
       "ledger_status": "PASS",
       "ledger_summary": {
-        "refresh_count_total": 1121,
+        "refresh_count_total": 1122,
         "status_counts_total": {
           "SESSION_NOT_MATCHED": 751,
           "REGIME_NOT_MATCHED": 130,
           "SETUP_NOT_FORMED": 212,
           "H1_TRIGGER_WAIT": 6,
           "H1_TRIGGER_NOT_CONFIRMED": 10,
-          "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 12
+          "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 13
         },
-        "near_miss_count": 370,
-        "diagnostic_shadow_event_count": 5,
-        "last_status": "H1_TRIGGER_NOT_CONFIRMED",
-        "last_status_reason": "next_h1_bar_did_not_confirm_long_direction",
-        "last_shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_20260529T160000"
+        "near_miss_count": 371,
+        "diagnostic_shadow_event_count": 6,
+        "last_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+        "last_status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+        "last_shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONDON_LONG_20260530T080000"
       },
       "latest_near_miss": {
-        "observation_run_id": "GH_26679017449_1",
-        "record_id": "GH_26679017449_1|SIGE_SD1B_USDJPY_OVERLAP_20260530T081710Z",
+        "observation_run_id": "GH_26679210988_1",
+        "record_id": "GH_26679210988_1|SIGE_SD1B_USDJPY_OVERLAP_20260530T082721Z",
         "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
         "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-        "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260530T081710Z",
-        "created_utc": "2026-05-30T08:17:10Z",
-        "detector_created_utc": "2026-05-30T08:17:10Z",
-        "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
-        "status_reason": "next_h1_bar_did_not_confirm_long_direction",
-        "is_shadow_match": false,
-        "is_diagnostic_shadow_match": false,
+        "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260530T082721Z",
+        "created_utc": "2026-05-30T08:27:21Z",
+        "detector_created_utc": "2026-05-30T08:27:21Z",
+        "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+        "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+        "is_shadow_match": true,
+        "is_diagnostic_shadow_match": true,
         "instrument": "USDJPY",
         "direction": "LONG",
         "classification": "DIAGNOSTIC_ONLY_SHADOW_LANE_NOT_PRIMARY",
@@ -693,24 +717,24 @@
         "range_state": "COMPRESSION",
         "tradeability_context": "REGIME_SUPPORTIVE",
         "h1_bar_open_ts_utc": "2026-05-30T07:00:00Z",
-        "m15_bar_open_ts_utc": "2026-05-30T07:45:00Z",
+        "m15_bar_open_ts_utc": "2026-05-30T08:00:00Z",
         "setup_h1_open_ts_utc": "2026-05-30T07:00:00Z",
         "trigger_h1_open_ts_utc": "2026-05-30T08:00:00Z",
-        "m15_confirm_ts_utc": null,
-        "shadow_event_id": null,
-        "near_miss_score": 3
+        "m15_confirm_ts_utc": "2026-05-30T08:15:00Z",
+        "shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONDON_LONG_20260530T080000",
+        "near_miss_score": 5
       },
       "latest_shadow_event": {
         "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
         "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-        "shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_20260529T160000",
-        "created_utc": "2026-05-29T16:16:47Z",
+        "shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONDON_LONG_20260530T080000",
+        "created_utc": "2026-05-30T08:27:21Z",
         "instrument": "USDJPY",
         "direction": "LONG",
         "classification": "DIAGNOSTIC_ONLY_SHADOW_LANE_NOT_PRIMARY",
         "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
-        "setup_h1_open_ts_utc": "2026-05-29T15:00:00Z",
-        "trigger_h1_open_ts_utc": "2026-05-29T16:00:00Z",
+        "setup_h1_open_ts_utc": "2026-05-30T07:00:00Z",
+        "trigger_h1_open_ts_utc": "2026-05-30T08:00:00Z",
         "observation_horizon_h1_bars": 12,
         "outcome_status": "PENDING",
         "authority": {
@@ -743,7 +767,7 @@
       "detector_authority_ok": true,
       "ledger_authority_ok": true,
       "attention_flags": [
-        "NO_ACTION_NORMAL_NON_MATCH"
+        "SHADOW_MATCH_ACTIVE_PRIMARY"
       ]
     }
   ],
