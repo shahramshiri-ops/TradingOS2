@@ -1,6 +1,6 @@
 {
   "status_version": "SIG_E_REGIME1_MARKET_STATE_v1_0",
-  "created_utc": "2026-06-04T01:56:46Z",
+  "created_utc": "2026-06-04T02:02:30Z",
   "program": "SIG-E-REGIME1",
   "target_architecture": "E_MANUAL_SEMI_AUTOMATED_TRADING_DECISION_SYSTEM",
   "current_runtime_posture": "MARKET_STATE_CONTEXT_ONLY_CURRENT_RUNTIME_NOT_SIGNAL",
@@ -12,12 +12,12 @@
   },
   "source_context": {
     "context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_5_OPS20_CONSOLIDATED_H1_SESSION_ASIAN_WEEKLY",
-    "context_created_utc": "2026-06-04T01:56:44Z",
+    "context_created_utc": "2026-06-04T02:02:27Z",
     "source_authority": "SIG_BRAIN5_UPSTREAM_CONTEXT_BUILDER|READ_ONLY_DERIVED_CONTEXT|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
     "refresh_status_summary": {
-      "created_utc": "2026-06-04T01:56:45Z",
-      "last_successful_refresh_utc": "2026-06-04T01:56:45Z",
-      "provider_max_latest_bar_open_ts_utc": "2026-06-04T01:45:00Z",
+      "created_utc": "2026-06-04T02:02:29Z",
+      "last_successful_refresh_utc": "2026-06-04T02:02:29Z",
+      "provider_max_latest_bar_open_ts_utc": "2026-06-04T01:50:00Z",
       "lag_reason_code": "M15_CONTEXT_ALIGNED_WITH_PROVIDER_M5"
     }
   },
@@ -34,13 +34,14 @@
     },
     "by_tradeability_context": {
       "DATA_INSUFFICIENT": 1,
-      "REGIME_MIXED": 2,
-      "REGIME_SUPPORTIVE": 2
+      "REGIME_MIXED": 1,
+      "REGIME_SUPPORTIVE": 3
     },
     "by_trend_state": {
       "DOWN": 2,
-      "MIXED": 2,
-      "NEUTRAL": 1
+      "MIXED": 1,
+      "NEUTRAL": 1,
+      "UP": 1
     },
     "by_range_state": {
       "COMPRESSION": 5
@@ -114,14 +115,14 @@
       "direction_inputs": {
         "d1": "UNKNOWN",
         "h4": "UP",
-        "h1": "DOWN",
+        "h1": "UP",
         "m15": "NEUTRAL",
         "current": "NEUTRAL"
       },
-      "trend_state": "MIXED",
+      "trend_state": "UP",
       "range_state": "COMPRESSION",
       "volatility_state": "LOW",
-      "htf_alignment": "H4_H1_CONFLICT",
+      "htf_alignment": "H4_H1_ALIGNED_UP",
       "liquidity_context": {
         "tags": [
           "NONE"
@@ -133,14 +134,14 @@
           "sweep_reference_type_up": "NONE"
         }
       },
-      "tradeability_context": "REGIME_MIXED",
+      "tradeability_context": "REGIME_SUPPORTIVE",
       "setup_relevance_hints": [
-        "CHOP_AVOID_TREND_FOLLOWING_CONTEXT"
+        "INSUFFICIENT_CONTEXT"
       ],
       "regime_metrics": {
         "m15_range_ratio_12": 0.3786393070392136
       },
-      "regime_explanation": "trend=MIXED; range=COMPRESSION; volatility=LOW; alignment=H4_H1_CONFLICT | tradeability_context=REGIME_MIXED; this is not a trade veto by itself, only regime context",
+      "regime_explanation": "trend=UP; range=COMPRESSION; volatility=LOW; alignment=H4_H1_ALIGNED_UP",
       "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
       "boundary": {
         "signal_authorized": false,
@@ -188,7 +189,7 @@
         "INSUFFICIENT_CONTEXT"
       ],
       "regime_metrics": {
-        "h1_range_to_atr_proxy": 0.5106707317072942
+        "h1_range_to_atr_proxy": 0.5151864667435363
       },
       "regime_explanation": "trend=DOWN; range=COMPRESSION; volatility=LOW; alignment=H4_H1_ALIGNED_DOWN | tradeability_context=DATA_INSUFFICIENT; this is not a trade veto by itself, only regime context",
       "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
