@@ -2,12 +2,12 @@
   "program": "SIG-E-RUNTIME-SHADOW-DETECTOR3",
   "detector_id": "SIG_E_SHADOW_DETECTOR_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD3_EURUSD_20260605T125641Z",
-  "created_utc": "2026-06-05T12:56:41Z",
+  "detector_run_id": "SIGE_SD3_EURUSD_20260605T130652Z",
+  "created_utc": "2026-06-05T13:06:52Z",
   "instrument": "EURUSD",
   "direction": "LONG",
-  "detector_status": "REFERENCE_LEVEL_UNAVAILABLE",
-  "status_reason": "prior_utc_day_low_unavailable_from_live_h1",
+  "detector_status": "REGIME_NOT_MATCHED",
+  "status_reason": "eurusd_long_trap_regime_not_matched",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -43,27 +43,27 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-06-05T11:00:00Z",
-    "m15_bar_open_ts_utc": "2026-06-05T12:30:00Z",
+    "h1_bar_open_ts_utc": "2026-06-05T12:00:00Z",
+    "m15_bar_open_ts_utc": "2026-06-05T12:45:00Z",
     "h1_surface_score": 338,
     "m15_surface_score": 338
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": true,
+      "passed": false,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
-        "session_bucket": "LONDON",
+        "session_bucket": "LONDON_NY_OVERLAP",
         "d1_trend_state": "NEUTRAL",
-        "h4_trend_state": "UP",
-        "htf_alignment": "H4_H1_ALIGNED_UP",
-        "volatility_state_or_d1_vol_bucket": "LOW",
-        "tradeability_context": "REGIME_SUPPORTIVE",
-        "range_state": "COMPRESSION",
+        "h4_trend_state": "DOWN",
+        "htf_alignment": "H4_H1_ALIGNED_DOWN",
+        "volatility_state_or_d1_vol_bucket": "SHOCK",
+        "tradeability_context": "REGIME_BLOCKED",
+        "range_state": "EXPANSION_AFTER_COMPRESSION",
         "session_ok": true,
-        "alignment_ok": true,
+        "alignment_ok": false,
         "vol_ok": true,
         "selected_surface_score": 338
       }
@@ -80,53 +80,5 @@
   ],
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
-  },
-  "source_paths": {
-    "h1_ohlc_path": "data/live_resampled/EURUSD_H1_from_M5.csv.gz",
-    "m15_ohlc_path": "data/live_resampled/EURUSD_M15_from_M5.csv.gz",
-    "live_source_policy": "live_only_no_data_canonical_fallback",
-    "h1_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows",
-    "m15_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows"
-  },
-  "ohlc_source_diagnostics": {
-    "h1_candidates_top": [
-      {
-        "source": "refresh_report",
-        "path": "data/live_resampled/EURUSD_H1_from_M5.csv.gz",
-        "rows": 793,
-        "latest_bar_open_ts_utc": "2026-06-05T12:00:00Z",
-        "score": 1005793,
-        "forbidden": false
-      },
-      {
-        "source": "glob_live",
-        "path": "runtime/sig_shadow/price_bridge_h1/EURUSD_H1.csv",
-        "rows": 4,
-        "latest_bar_open_ts_utc": "2026-05-21T13:00:00Z",
-        "score": 1000004,
-        "forbidden": false
-      }
-    ],
-    "m15_candidates_top": [
-      {
-        "source": "refresh_report",
-        "path": "data/live_resampled/EURUSD_M15_from_M5.csv.gz",
-        "rows": 3169,
-        "latest_bar_open_ts_utc": "2026-06-05T12:45:00Z",
-        "score": 1008169,
-        "forbidden": false
-      }
-    ]
-  },
-  "data_counts": {
-    "h1_rows_loaded": 793,
-    "m15_rows_loaded": 3169,
-    "h1_latest_bar_open_ts_utc": "2026-06-05T12:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-06-05T12:45:00Z"
-  },
-  "reference_level": {
-    "type": "prior_utc_day_low",
-    "target_prior_utc_date": "2026-06-04",
-    "prior_day_h1_count": 0
   }
 }
