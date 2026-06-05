@@ -2,12 +2,12 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260605T100658Z",
-  "created_utc": "2026-06-05T10:06:58Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260605T101653Z",
+  "created_utc": "2026-06-05T10:16:53Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "H1_TRIGGER_WAIT",
-  "status_reason": "latest_h1_bar_forms_setup_waiting_for_next_h1_close",
+  "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
+  "status_reason": "next_h1_bar_did_not_confirm_long_direction",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -83,21 +83,31 @@
     },
     {
       "check_id": "H1_SETUP_PREVIOUS_BAR",
-      "passed": false,
+      "passed": true,
       "details": {
-        "setup_h1_open_ts_utc": "2026-06-05T08:00:00Z",
+        "setup_h1_open_ts_utc": "2026-06-05T09:00:00Z",
         "lower_rejection": {
-          "range": 0.031109999999983984,
-          "lower_wick": 0.014279999999985193,
-          "lower_wick_to_range": 0.4590163934423833,
-          "close_location": 0.8334940533590997,
+          "range": 0.05943999999999505,
+          "lower_wick": 0.044089999999982865,
+          "lower_wick_to_range": 0.7417563930011194,
+          "close_location": 0.7900403768504081,
           "bullish_close": true
         },
         "range_expansion": {
-          "setup_range": 0.031109999999983984,
-          "prior_range_avg": 0.054339999999989175,
-          "range_expansion_ratio": 0.5725064409273128
+          "setup_range": 0.05943999999999505,
+          "prior_range_avg": 0.03837249999998704,
+          "range_expansion_ratio": 1.5490259951792331
         }
+      }
+    },
+    {
+      "check_id": "NEXT_H1_DIRECTION_CONFIRM",
+      "passed": false,
+      "details": {
+        "trigger_h1_open_ts_utc": "2026-06-05T10:00:00Z",
+        "open": 159.94857,
+        "close": 159.94498,
+        "direction": "NOT_UP"
       }
     }
   ],
@@ -126,9 +136,9 @@
       {
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
-        "rows": 802,
-        "latest_bar_open_ts_utc": "2026-06-05T09:00:00Z",
-        "score": 1005802,
+        "rows": 803,
+        "latest_bar_open_ts_utc": "2026-06-05T10:00:00Z",
+        "score": 1005803,
         "forbidden": false
       },
       {
@@ -145,35 +155,20 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
         "rows": 3206,
-        "latest_bar_open_ts_utc": "2026-06-05T09:45:00Z",
+        "latest_bar_open_ts_utc": "2026-06-05T10:00:00Z",
         "score": 1008206,
         "forbidden": false
       }
     ]
   },
   "data_counts": {
-    "h1_rows_loaded": 802,
+    "h1_rows_loaded": 803,
     "m15_rows_loaded": 3206,
-    "h1_latest_bar_open_ts_utc": "2026-06-05T09:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-06-05T09:45:00Z"
+    "h1_latest_bar_open_ts_utc": "2026-06-05T10:00:00Z",
+    "m15_latest_bar_open_ts_utc": "2026-06-05T10:00:00Z"
   },
-  "setup_h1_open_ts_utc": "2026-06-05T08:00:00Z",
-  "trigger_h1_open_ts_utc": "2026-06-05T09:00:00Z",
-  "current_setup_candidate": {
-    "setup_h1_open_ts_utc": "2026-06-05T09:00:00Z",
-    "lower_rejection": {
-      "range": 0.05943999999999505,
-      "lower_wick": 0.044089999999982865,
-      "lower_wick_to_range": 0.7417563930011194,
-      "close_location": 0.7900403768504081,
-      "bullish_close": true
-    },
-    "range_expansion": {
-      "setup_range": 0.05943999999999505,
-      "prior_range_avg": 0.03837249999998704,
-      "range_expansion_ratio": 1.5490259951792331
-    }
-  },
-  "gateflow_hotfix2_checked_utc": "2026-06-05T10:06:58Z",
+  "setup_h1_open_ts_utc": "2026-06-05T09:00:00Z",
+  "trigger_h1_open_ts_utc": "2026-06-05T10:00:00Z",
+  "gateflow_hotfix2_checked_utc": "2026-06-05T10:16:54Z",
   "gateflow_hotfix2_action": "NO_GATEFLOW_REPAIR_REGIME_NOT_PASSED"
 }
