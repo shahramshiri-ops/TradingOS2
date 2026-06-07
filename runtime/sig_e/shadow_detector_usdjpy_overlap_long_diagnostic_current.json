@@ -2,17 +2,17 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260607T125641Z",
-  "created_utc": "2026-06-07T12:56:41Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260607T130649Z",
+  "created_utc": "2026-06-07T13:06:49Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
-  "status_reason": "next_h1_bar_did_not_confirm_long_direction",
-  "is_shadow_match": false,
+  "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+  "status_reason": "usdjpy_overlap_lower_rejection_expansion_long_diagnostic_shadow_match_confirmed",
+  "is_shadow_match": true,
   "is_signal": false,
   "is_trade_proposal": false,
   "classification": "DIAGNOSTIC_ONLY_SHADOW_LANE_NOT_PRIMARY",
-  "is_diagnostic_shadow_match": false,
+  "is_diagnostic_shadow_match": true,
   "authority": {
     "signal_authorized": false,
     "trade_proposal_authorized": false,
@@ -51,63 +51,78 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-06-07T11:00:00Z",
-    "m15_bar_open_ts_utc": "2026-06-07T12:30:00Z",
+    "h1_bar_open_ts_utc": "2026-06-07T12:00:00Z",
+    "m15_bar_open_ts_utc": "2026-06-07T12:45:00Z",
     "h1_surface_score": 345,
     "m15_surface_score": 345
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": false,
+      "passed": true,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
-        "session_bucket": "LONDON",
+        "session_bucket": "LONDON_NY_OVERLAP",
         "d1_trend_state": "NEUTRAL",
         "h4_trend_state": "UP",
         "htf_alignment": "H4_H1_ALIGNED_UP",
-        "volatility_state_or_d1_vol_bucket": "NORMAL",
+        "volatility_state_or_d1_vol_bucket": "LOW",
         "volatility_source_policy": null,
         "tradeability_context": "REGIME_SUPPORTIVE",
-        "range_state": "EXPANSION_AFTER_COMPRESSION",
+        "range_state": "COMPRESSION",
         "h4_h1_up_context": null,
-        "session_ok": false,
+        "session_ok": true,
         "alignment_ok": true,
         "vol_known": true,
         "vol_ok": true,
         "missing_regime_fields": [],
         "selected_surface_score": 345,
-        "volatility_caveat": "Runtime proxy/UNKNOWN must not be treated as historical D1 LOW proof"
+        "volatility_caveat": null
       }
     },
     {
-      "check_id": "H1_SETUP_PREVIOUS_BAR",
+      "check_id": "H1_SETUP_PREVIOUS_BAR_LOWER_REJECTION_EXPANSION",
       "passed": true,
       "details": {
         "setup_h1_open_ts_utc": "2026-06-07T11:00:00Z",
-        "lower_rejection": {
-          "range": 1.2023899999999799,
-          "lower_wick": 0.7434800000000052,
-          "lower_wick_to_range": 0.6183351491612685,
-          "close_location": 0.6207802792771173,
-          "bullish_close": true
-        },
-        "range_expansion": {
-          "setup_range": 1.2023899999999799,
-          "prior_range_avg": 0.032175000000002285,
-          "range_expansion_ratio": 37.37031857031529
+        "open": 160.33,
+        "high": 160.78891,
+        "low": 159.58652,
+        "close": 160.33294,
+        "range": 1.2023899999999799,
+        "prior_12_range_median": 0.08334499999999423,
+        "range_expansion_ratio": 14.426660267563298,
+        "lower_wick": 0.7434800000000052,
+        "lower_wick_to_range": 0.6183351491612685,
+        "close_location": 0.6207802792771173,
+        "bullish_close": true,
+        "requirements": {
+          "lower_wick_to_range_min": 0.3,
+          "range_expansion_ratio_min": 1.15,
+          "close_location_min": 0.5
         }
       }
     },
     {
-      "check_id": "NEXT_H1_DIRECTION_CONFIRM",
-      "passed": false,
+      "check_id": "NEXT_H1_BULLISH_CLOSE_CONFIRM",
+      "passed": true,
       "details": {
         "trigger_h1_open_ts_utc": "2026-06-07T12:00:00Z",
         "open": 160.32933,
-        "close": 160.3288,
-        "direction": "NOT_UP"
+        "close": 160.3336,
+        "bullish_close": true
+      }
+    },
+    {
+      "check_id": "M15_BULLISH_CLOSE_INSIDE_TRIGGER_H1",
+      "passed": true,
+      "details": {
+        "h1_window_start": "2026-06-07T12:00:00Z",
+        "h1_window_end": "2026-06-07T13:00:00Z",
+        "m15_inside_count": 4,
+        "m15_confirm_count": 3,
+        "first_confirm_m15_open_ts_utc": "2026-06-07T12:00:00Z"
       }
     }
   ],
@@ -124,12 +139,11 @@
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
   },
+  "gateflow_hotfix2_checked_utc": "2026-06-07T13:06:49Z",
   "source_paths": {
     "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
     "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
-    "live_source_policy": "live_only_no_data_canonical_fallback",
-    "h1_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows",
-    "m15_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows"
+    "live_source_policy": "live_only_no_data_canonical_fallback"
   },
   "ohlc_source_diagnostics": {
     "h1_candidates_top": [
@@ -169,6 +183,14 @@
   },
   "setup_h1_open_ts_utc": "2026-06-07T11:00:00Z",
   "trigger_h1_open_ts_utc": "2026-06-07T12:00:00Z",
-  "gateflow_hotfix2_checked_utc": "2026-06-07T12:56:41Z",
-  "gateflow_hotfix2_action": "NO_GATEFLOW_REPAIR_REGIME_NOT_PASSED"
+  "m15_confirm_ts_utc": "2026-06-07T12:00:00Z",
+  "shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_20260607T120000",
+  "observation_horizon": {
+    "horizon_h1_bars": 12,
+    "observation_end_ts_utc": "2026-06-08T00:00:00Z",
+    "outcome_tracking_authorized": true,
+    "trade_execution_authorized": false,
+    "primary_lane_authorized": false
+  },
+  "gateflow_hotfix2_action": "REGIME_PASS_TO_DIAGNOSTIC_SHADOW_MATCH_CONFIRMED"
 }
