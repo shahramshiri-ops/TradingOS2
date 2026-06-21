@@ -1,38 +1,39 @@
 {
   "program": "SIG-E-SHADOW-COVERAGE1",
-  "created_utc": "2026-06-21T12:16:48Z",
+  "created_utc": "2026-06-21T12:26:42Z",
   "coverage_status": "OK_COVERAGE_MONITOR_READY",
-  "portfolio_status": "NO_ACTIVE_SHADOW_MATCH",
+  "portfolio_status": "PRIMARY_SHADOW_MATCH_ACTIVE_REVIEW_ONLY",
   "portfolio_summary": {
-    "portfolio_status": "NO_ACTIVE_SHADOW_MATCH",
+    "portfolio_status": "PRIMARY_SHADOW_MATCH_ACTIVE_REVIEW_ONLY",
     "detector_count": 4,
     "detector_status_counts": {
-      "H1_TRIGGER_NOT_CONFIRMED": 2,
+      "SHADOW_MATCH_CONFIRMED": 1,
       "SESSION_NOT_MATCHED": 1,
-      "REGIME_NOT_MATCHED": 1
+      "REGIME_NOT_MATCHED": 1,
+      "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 1
     },
     "classification_counts": {
       "PRIMARY_SHADOW_OBSERVATION": 2,
       "CAVEATED_OBSERVATION_ONLY": 1,
       "DIAGNOSTIC_SHADOW_OBSERVATION": 1
     },
-    "active_shadow_match_count": 0,
-    "active_primary_shadow_match_count": 0,
+    "active_shadow_match_count": 2,
+    "active_primary_shadow_match_count": 2,
     "active_caveated_shadow_match_count": 0,
     "data_or_field_attention_count": 0,
-    "total_refresh_records": 17590,
-    "total_near_misses": 5391,
-    "total_shadow_events": 12,
-    "total_pending_shadow_events": 12,
+    "total_refresh_records": 17594,
+    "total_near_misses": 5394,
+    "total_shadow_events": 13,
+    "total_pending_shadow_events": 13,
     "total_closed_shadow_events": 0,
     "portfolio_outcome_counts": {},
     "lanes_requiring_attention": [
       {
         "lane_id": "SIGE_SD1_USDJPY_LONDON_LONG_H1_M15",
         "flags": [
-          "NO_ACTION_NORMAL_NON_MATCH"
+          "SHADOW_MATCH_ACTIVE_PRIMARY"
         ],
-        "status": "H1_TRIGGER_NOT_CONFIRMED"
+        "status": "SHADOW_MATCH_CONFIRMED"
       },
       {
         "lane_id": "SIGE_SD2_USDJPY_ASIA_SHORT_H1_M15_CAVEATED",
@@ -51,19 +52,19 @@
       {
         "lane_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15",
         "flags": [
-          "NO_ACTION_NORMAL_NON_MATCH"
+          "SHADOW_MATCH_ACTIVE_PRIMARY"
         ],
-        "status": "H1_TRIGGER_NOT_CONFIRMED"
+        "status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED"
       }
     ]
   },
   "summary": {
     "lane_count": 4,
     "state_loaded_count": 4,
-    "total_refresh_records_last_24h": 576,
-    "total_refresh_records_all_time": 17590,
-    "total_shadow_matches_all_time": 33,
-    "active_shadow_match_count": 0,
+    "total_refresh_records_last_24h": 572,
+    "total_refresh_records_all_time": 17594,
+    "total_shadow_matches_all_time": 34,
+    "active_shadow_match_count": 2,
     "data_or_field_attention_count": 0
   },
   "lanes": [
@@ -74,100 +75,78 @@
       "state_loaded": true,
       "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
       "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
-      "refresh_count_total": 4409,
-      "last_updated_utc": "2026-06-21T12:16:46Z",
+      "refresh_count_total": 4410,
+      "last_updated_utc": "2026-06-21T12:26:40Z",
       "windows": {
         "last_24h": {
-          "record_count": 144,
+          "record_count": 143,
           "status_counts": {
-            "SETUP_NOT_FORMED": 29,
+            "SETUP_NOT_FORMED": 27,
             "SESSION_NOT_MATCHED": 113,
             "H1_TRIGGER_WAIT": 1,
-            "H1_TRIGGER_NOT_CONFIRMED": 1
+            "H1_TRIGGER_NOT_CONFIRMED": 1,
+            "SHADOW_MATCH_CONFIRMED": 1
           },
           "top_reasons": {
             "session_not_london": 113,
-            "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 29,
+            "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 27,
             "latest_h1_bar_forms_setup_waiting_for_next_h1_close": 1,
-            "next_h1_bar_did_not_confirm_long_direction": 1
+            "next_h1_bar_did_not_confirm_long_direction": 1,
+            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 1
           },
           "terminal_stage_counts": {
-            "SETUP_FAIL": 29,
+            "SETUP_FAIL": 27,
             "SESSION_FAIL": 113,
             "H1_TRIGGER_WAIT": 1,
-            "H1_TRIGGER_FAIL": 1
+            "H1_TRIGGER_FAIL": 1,
+            "SHADOW_MATCH": 1
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 144
+              "PASS": 143
             },
             "session_gate": {
-              "PASS": 31,
+              "PASS": 30,
               "FAIL": 113
             },
             "regime_gate": {
-              "PASS": 31,
+              "PASS": 30,
               "UNKNOWN": 113
             },
             "data_gate": {
-              "PASS": 31,
+              "PASS": 30,
               "UNKNOWN": 113
             },
             "setup_gate": {
-              "FAIL": 29,
+              "FAIL": 27,
               "UNKNOWN": 113,
               "PASS_CURRENT_BAR_WAIT": 1,
-              "PASS": 1
+              "PASS": 2
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 142,
+              "UNKNOWN": 140,
               "WAIT": 1,
-              "FAIL": 1
+              "FAIL": 1,
+              "PASS": 1
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 142,
+              "PASS": 1
             },
             "shadow_match_gate": {
-              "FAIL": 144
+              "FAIL": 142,
+              "PASS": 1
             }
           },
-          "eligible_for_setup_eval_count": 31,
-          "eligible_for_trigger_eval_count": 2,
-          "eligible_for_match_eval_count": 0,
-          "shadow_match_count": 0,
-          "setup_eval_rate_pct": 21.53,
-          "trigger_eval_rate_pct": 1.39,
-          "match_eval_rate_pct": 0.0,
-          "shadow_match_rate_pct": 0.0,
+          "eligible_for_setup_eval_count": 30,
+          "eligible_for_trigger_eval_count": 3,
+          "eligible_for_match_eval_count": 1,
+          "shadow_match_count": 1,
+          "setup_eval_rate_pct": 20.98,
+          "trigger_eval_rate_pct": 2.1,
+          "match_eval_rate_pct": 0.7,
+          "shadow_match_rate_pct": 0.7,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:36Z",
-              "detector_created_utc": "2026-06-21T10:46:36Z",
-              "detector_status": "SETUP_NOT_FORMED",
-              "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "SETUP_FAIL",
-              "gate_snapshot": {
-                "status": "SETUP_NOT_FORMED",
-                "reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "PASS",
-                "data_gate": "PASS",
-                "setup_gate": "FAIL",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SETUP_FAIL",
-                "eligible_for_setup_eval": true,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -419,25 +398,53 @@
                 "eligible_for_trigger_eval": true,
                 "eligible_for_match_eval": false
               }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:40Z",
+              "detector_created_utc": "2026-06-21T12:26:40Z",
+              "detector_status": "SHADOW_MATCH_CONFIRMED",
+              "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "SHADOW_MATCH",
+              "gate_snapshot": {
+                "status": "SHADOW_MATCH_CONFIRMED",
+                "reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+                "freshness_gate": "PASS",
+                "session_gate": "PASS",
+                "regime_gate": "PASS",
+                "data_gate": "PASS",
+                "setup_gate": "PASS",
+                "h1_trigger_gate": "PASS",
+                "m15_confirm_gate": "PASS",
+                "shadow_match_gate": "PASS",
+                "terminal_stage": "SHADOW_MATCH",
+                "eligible_for_setup_eval": true,
+                "eligible_for_trigger_eval": true,
+                "eligible_for_match_eval": true
+              }
             }
           ]
         },
         "last_7d": {
-          "record_count": 1033,
+          "record_count": 1034,
           "status_counts": {
             "REGIME_NOT_MATCHED": 71,
             "SESSION_NOT_MATCHED": 820,
             "SETUP_NOT_FORMED": 120,
             "H1_TRIGGER_WAIT": 9,
             "H1_TRIGGER_NOT_CONFIRMED": 6,
-            "SHADOW_MATCH_CONFIRMED": 7
+            "SHADOW_MATCH_CONFIRMED": 8
           },
           "top_reasons": {
             "session_not_london": 820,
             "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 120,
             "d1_h4_alignment_not_matched": 71,
             "latest_h1_bar_forms_setup_waiting_for_next_h1_close": 9,
-            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 7,
+            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 8,
             "next_h1_bar_did_not_confirm_long_direction": 6
           },
           "terminal_stage_counts": {
@@ -446,83 +453,55 @@
             "SETUP_FAIL": 120,
             "H1_TRIGGER_WAIT": 9,
             "H1_TRIGGER_FAIL": 6,
-            "SHADOW_MATCH": 7
+            "SHADOW_MATCH": 8
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 1033
+              "PASS": 1034
             },
             "session_gate": {
-              "PASS": 213,
+              "PASS": 214,
               "FAIL": 820
             },
             "regime_gate": {
               "FAIL": 71,
               "UNKNOWN": 820,
-              "PASS": 142
+              "PASS": 143
             },
             "data_gate": {
               "UNKNOWN": 891,
-              "PASS": 142
+              "PASS": 143
             },
             "setup_gate": {
               "UNKNOWN": 891,
               "FAIL": 120,
               "PASS_CURRENT_BAR_WAIT": 9,
-              "PASS": 13
+              "PASS": 14
             },
             "h1_trigger_gate": {
               "UNKNOWN": 1011,
               "WAIT": 9,
               "FAIL": 6,
-              "PASS": 7
+              "PASS": 8
             },
             "m15_confirm_gate": {
               "UNKNOWN": 1026,
-              "PASS": 7
+              "PASS": 8
             },
             "shadow_match_gate": {
               "FAIL": 1026,
-              "PASS": 7
+              "PASS": 8
             }
           },
-          "eligible_for_setup_eval_count": 142,
-          "eligible_for_trigger_eval_count": 22,
-          "eligible_for_match_eval_count": 7,
-          "shadow_match_count": 7,
-          "setup_eval_rate_pct": 13.75,
-          "trigger_eval_rate_pct": 2.13,
-          "match_eval_rate_pct": 0.68,
-          "shadow_match_rate_pct": 0.68,
+          "eligible_for_setup_eval_count": 143,
+          "eligible_for_trigger_eval_count": 23,
+          "eligible_for_match_eval_count": 8,
+          "shadow_match_count": 8,
+          "setup_eval_rate_pct": 13.83,
+          "trigger_eval_rate_pct": 2.22,
+          "match_eval_rate_pct": 0.77,
+          "shadow_match_rate_pct": 0.77,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:36Z",
-              "detector_created_utc": "2026-06-21T10:46:36Z",
-              "detector_status": "SETUP_NOT_FORMED",
-              "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "SETUP_FAIL",
-              "gate_snapshot": {
-                "status": "SETUP_NOT_FORMED",
-                "reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "PASS",
-                "data_gate": "PASS",
-                "setup_gate": "FAIL",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SETUP_FAIL",
-                "eligible_for_setup_eval": true,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -774,11 +753,39 @@
                 "eligible_for_trigger_eval": true,
                 "eligible_for_match_eval": false
               }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:40Z",
+              "detector_created_utc": "2026-06-21T12:26:40Z",
+              "detector_status": "SHADOW_MATCH_CONFIRMED",
+              "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "SHADOW_MATCH",
+              "gate_snapshot": {
+                "status": "SHADOW_MATCH_CONFIRMED",
+                "reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+                "freshness_gate": "PASS",
+                "session_gate": "PASS",
+                "regime_gate": "PASS",
+                "data_gate": "PASS",
+                "setup_gate": "PASS",
+                "h1_trigger_gate": "PASS",
+                "m15_confirm_gate": "PASS",
+                "shadow_match_gate": "PASS",
+                "terminal_stage": "SHADOW_MATCH",
+                "eligible_for_setup_eval": true,
+                "eligible_for_trigger_eval": true,
+                "eligible_for_match_eval": true
+              }
             }
           ]
         },
         "all_time": {
-          "record_count": 4409,
+          "record_count": 4410,
           "status_counts": {
             "REGIME_NOT_MATCHED": 289,
             "INPUT_INSUFFICIENT": 4,
@@ -787,13 +794,13 @@
             "SESSION_NOT_MATCHED": 3502,
             "H1_TRIGGER_WAIT": 22,
             "H1_TRIGGER_NOT_CONFIRMED": 28,
-            "SHADOW_MATCH_CONFIRMED": 33
+            "SHADOW_MATCH_CONFIRMED": 34
           },
           "top_reasons": {
             "session_not_london": 3502,
             "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 527,
             "d1_h4_alignment_not_matched": 289,
-            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 33,
+            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 34,
             "next_h1_bar_did_not_confirm_long_direction": 28,
             "latest_h1_bar_forms_setup_waiting_for_next_h1_close": 22,
             "not_enough_h1_rows_for_setup_trigger_window": 4,
@@ -806,86 +813,58 @@
             "SESSION_FAIL": 3502,
             "H1_TRIGGER_WAIT": 22,
             "H1_TRIGGER_FAIL": 28,
-            "SHADOW_MATCH": 33
+            "SHADOW_MATCH": 34
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 4409
+              "PASS": 4410
             },
             "session_gate": {
-              "PASS": 899,
+              "PASS": 900,
               "PASS_OR_UNKNOWN": 8,
               "FAIL": 3502
             },
             "regime_gate": {
               "FAIL": 289,
               "PASS_OR_UNKNOWN": 8,
-              "PASS": 610,
+              "PASS": 611,
               "UNKNOWN": 3502
             },
             "data_gate": {
               "UNKNOWN": 3791,
               "FAIL": 8,
-              "PASS": 610
+              "PASS": 611
             },
             "setup_gate": {
               "UNKNOWN": 3799,
               "FAIL": 527,
               "PASS_CURRENT_BAR_WAIT": 22,
-              "PASS": 61
+              "PASS": 62
             },
             "h1_trigger_gate": {
               "UNKNOWN": 4326,
               "WAIT": 22,
               "FAIL": 28,
-              "PASS": 33
+              "PASS": 34
             },
             "m15_confirm_gate": {
               "UNKNOWN": 4376,
-              "PASS": 33
+              "PASS": 34
             },
             "shadow_match_gate": {
               "FAIL": 4376,
-              "PASS": 33
+              "PASS": 34
             }
           },
-          "eligible_for_setup_eval_count": 610,
-          "eligible_for_trigger_eval_count": 83,
-          "eligible_for_match_eval_count": 33,
-          "shadow_match_count": 33,
-          "setup_eval_rate_pct": 13.84,
-          "trigger_eval_rate_pct": 1.88,
-          "match_eval_rate_pct": 0.75,
-          "shadow_match_rate_pct": 0.75,
+          "eligible_for_setup_eval_count": 611,
+          "eligible_for_trigger_eval_count": 84,
+          "eligible_for_match_eval_count": 34,
+          "shadow_match_count": 34,
+          "setup_eval_rate_pct": 13.85,
+          "trigger_eval_rate_pct": 1.9,
+          "match_eval_rate_pct": 0.77,
+          "shadow_match_rate_pct": 0.77,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:36Z",
-              "detector_created_utc": "2026-06-21T10:46:36Z",
-              "detector_status": "SETUP_NOT_FORMED",
-              "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "SETUP_FAIL",
-              "gate_snapshot": {
-                "status": "SETUP_NOT_FORMED",
-                "reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "PASS",
-                "data_gate": "PASS",
-                "setup_gate": "FAIL",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SETUP_FAIL",
-                "eligible_for_setup_eval": true,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -1136,6 +1115,34 @@
                 "eligible_for_setup_eval": true,
                 "eligible_for_trigger_eval": true,
                 "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:40Z",
+              "detector_created_utc": "2026-06-21T12:26:40Z",
+              "detector_status": "SHADOW_MATCH_CONFIRMED",
+              "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "SHADOW_MATCH",
+              "gate_snapshot": {
+                "status": "SHADOW_MATCH_CONFIRMED",
+                "reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+                "freshness_gate": "PASS",
+                "session_gate": "PASS",
+                "regime_gate": "PASS",
+                "data_gate": "PASS",
+                "setup_gate": "PASS",
+                "h1_trigger_gate": "PASS",
+                "m15_confirm_gate": "PASS",
+                "shadow_match_gate": "PASS",
+                "terminal_stage": "SHADOW_MATCH",
+                "eligible_for_setup_eval": true,
+                "eligible_for_trigger_eval": true,
+                "eligible_for_match_eval": true
               }
             }
           ]
@@ -1153,49 +1160,49 @@
       "state_loaded": true,
       "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
       "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
-      "refresh_count_total": 4409,
-      "last_updated_utc": "2026-06-21T12:16:46Z",
+      "refresh_count_total": 4410,
+      "last_updated_utc": "2026-06-21T12:26:41Z",
       "windows": {
         "last_24h": {
-          "record_count": 144,
+          "record_count": 143,
           "status_counts": {
-            "SESSION_NOT_MATCHED": 103,
+            "SESSION_NOT_MATCHED": 102,
             "REGIME_NOT_MATCHED": 41
           },
           "top_reasons": {
-            "session_not_asia": 103,
+            "session_not_asia": 102,
             "d1_h4_down_alignment_not_matched": 41
           },
           "terminal_stage_counts": {
-            "SESSION_FAIL": 103,
+            "SESSION_FAIL": 102,
             "REGIME_FAIL": 41
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 144
+              "PASS": 143
             },
             "session_gate": {
-              "FAIL": 103,
+              "FAIL": 102,
               "PASS": 41
             },
             "regime_gate": {
-              "UNKNOWN": 103,
+              "UNKNOWN": 102,
               "FAIL": 41
             },
             "data_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "setup_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "shadow_match_gate": {
-              "FAIL": 144
+              "FAIL": 143
             }
           },
           "eligible_for_setup_eval_count": 0,
@@ -1207,34 +1214,6 @@
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:37Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "SESSION_NOT_MATCHED",
-              "status_reason": "session_not_asia",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": null,
-              "terminal_stage": "SESSION_FAIL",
-              "gate_snapshot": {
-                "status": "SESSION_NOT_MATCHED",
-                "reason": "session_not_asia",
-                "freshness_gate": "PASS",
-                "session_gate": "FAIL",
-                "regime_gate": "UNKNOWN",
-                "data_gate": "UNKNOWN",
-                "setup_gate": "UNKNOWN",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SESSION_FAIL",
-                "eligible_for_setup_eval": false,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -1462,6 +1441,34 @@
             {
               "created_utc": "2026-06-21T12:16:46Z",
               "detector_created_utc": "2026-06-21T12:16:46Z",
+              "detector_status": "SESSION_NOT_MATCHED",
+              "status_reason": "session_not_asia",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": null,
+              "terminal_stage": "SESSION_FAIL",
+              "gate_snapshot": {
+                "status": "SESSION_NOT_MATCHED",
+                "reason": "session_not_asia",
+                "freshness_gate": "PASS",
+                "session_gate": "FAIL",
+                "regime_gate": "UNKNOWN",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "SESSION_FAIL",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:41Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
               "detector_status": "SESSION_NOT_MATCHED",
               "status_reason": "session_not_asia",
               "session_bucket": "LONDON",
@@ -1490,45 +1497,45 @@
           ]
         },
         "last_7d": {
-          "record_count": 1033,
+          "record_count": 1034,
           "status_counts": {
-            "SESSION_NOT_MATCHED": 736,
+            "SESSION_NOT_MATCHED": 737,
             "REGIME_NOT_MATCHED": 297
           },
           "top_reasons": {
-            "session_not_asia": 736,
+            "session_not_asia": 737,
             "d1_h4_down_alignment_not_matched": 297
           },
           "terminal_stage_counts": {
-            "SESSION_FAIL": 736,
+            "SESSION_FAIL": 737,
             "REGIME_FAIL": 297
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 1033
+              "PASS": 1034
             },
             "session_gate": {
-              "FAIL": 736,
+              "FAIL": 737,
               "PASS": 297
             },
             "regime_gate": {
-              "UNKNOWN": 736,
+              "UNKNOWN": 737,
               "FAIL": 297
             },
             "data_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "setup_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "shadow_match_gate": {
-              "FAIL": 1033
+              "FAIL": 1034
             }
           },
           "eligible_for_setup_eval_count": 0,
@@ -1540,34 +1547,6 @@
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:37Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "SESSION_NOT_MATCHED",
-              "status_reason": "session_not_asia",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": null,
-              "terminal_stage": "SESSION_FAIL",
-              "gate_snapshot": {
-                "status": "SESSION_NOT_MATCHED",
-                "reason": "session_not_asia",
-                "freshness_gate": "PASS",
-                "session_gate": "FAIL",
-                "regime_gate": "UNKNOWN",
-                "data_gate": "UNKNOWN",
-                "setup_gate": "UNKNOWN",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SESSION_FAIL",
-                "eligible_for_setup_eval": false,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -1795,6 +1774,34 @@
             {
               "created_utc": "2026-06-21T12:16:46Z",
               "detector_created_utc": "2026-06-21T12:16:46Z",
+              "detector_status": "SESSION_NOT_MATCHED",
+              "status_reason": "session_not_asia",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": null,
+              "terminal_stage": "SESSION_FAIL",
+              "gate_snapshot": {
+                "status": "SESSION_NOT_MATCHED",
+                "reason": "session_not_asia",
+                "freshness_gate": "PASS",
+                "session_gate": "FAIL",
+                "regime_gate": "UNKNOWN",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "SESSION_FAIL",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:41Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
               "detector_status": "SESSION_NOT_MATCHED",
               "status_reason": "session_not_asia",
               "session_bucket": "LONDON",
@@ -1823,45 +1830,45 @@
           ]
         },
         "all_time": {
-          "record_count": 4409,
+          "record_count": 4410,
           "status_counts": {
-            "SESSION_NOT_MATCHED": 3138,
+            "SESSION_NOT_MATCHED": 3139,
             "REGIME_NOT_MATCHED": 1271
           },
           "top_reasons": {
-            "session_not_asia": 3138,
+            "session_not_asia": 3139,
             "d1_h4_down_alignment_not_matched": 1271
           },
           "terminal_stage_counts": {
-            "SESSION_FAIL": 3138,
+            "SESSION_FAIL": 3139,
             "REGIME_FAIL": 1271
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 4409
+              "PASS": 4410
             },
             "session_gate": {
-              "FAIL": 3138,
+              "FAIL": 3139,
               "PASS": 1271
             },
             "regime_gate": {
-              "UNKNOWN": 3138,
+              "UNKNOWN": 3139,
               "FAIL": 1271
             },
             "data_gate": {
-              "UNKNOWN": 4409
+              "UNKNOWN": 4410
             },
             "setup_gate": {
-              "UNKNOWN": 4409
+              "UNKNOWN": 4410
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 4409
+              "UNKNOWN": 4410
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 4409
+              "UNKNOWN": 4410
             },
             "shadow_match_gate": {
-              "FAIL": 4409
+              "FAIL": 4410
             }
           },
           "eligible_for_setup_eval_count": 0,
@@ -1873,34 +1880,6 @@
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:37Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "SESSION_NOT_MATCHED",
-              "status_reason": "session_not_asia",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": null,
-              "terminal_stage": "SESSION_FAIL",
-              "gate_snapshot": {
-                "status": "SESSION_NOT_MATCHED",
-                "reason": "session_not_asia",
-                "freshness_gate": "PASS",
-                "session_gate": "FAIL",
-                "regime_gate": "UNKNOWN",
-                "data_gate": "UNKNOWN",
-                "setup_gate": "UNKNOWN",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SESSION_FAIL",
-                "eligible_for_setup_eval": false,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -2128,6 +2107,34 @@
             {
               "created_utc": "2026-06-21T12:16:46Z",
               "detector_created_utc": "2026-06-21T12:16:46Z",
+              "detector_status": "SESSION_NOT_MATCHED",
+              "status_reason": "session_not_asia",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": null,
+              "terminal_stage": "SESSION_FAIL",
+              "gate_snapshot": {
+                "status": "SESSION_NOT_MATCHED",
+                "reason": "session_not_asia",
+                "freshness_gate": "PASS",
+                "session_gate": "FAIL",
+                "regime_gate": "UNKNOWN",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "SESSION_FAIL",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:41Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
               "detector_status": "SESSION_NOT_MATCHED",
               "status_reason": "session_not_asia",
               "session_bucket": "LONDON",
@@ -2168,49 +2175,49 @@
       "state_loaded": true,
       "detector_id": "SIG_E_SHADOW_DETECTOR_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15_v1_0",
       "source_spec_id": "SIG_E_RUNTIME_SPEC_EURUSD_LONDON_PDLOW_TRAP_LONG_H1_M15_v1_0",
-      "refresh_count_total": 4393,
-      "last_updated_utc": "2026-06-21T12:16:46Z",
+      "refresh_count_total": 4394,
+      "last_updated_utc": "2026-06-21T12:26:41Z",
       "windows": {
         "last_24h": {
-          "record_count": 144,
+          "record_count": 143,
           "status_counts": {
-            "REGIME_NOT_MATCHED": 55,
+            "REGIME_NOT_MATCHED": 54,
             "SESSION_NOT_MATCHED": 89
           },
           "top_reasons": {
             "session_not_london_or_overlap": 89,
-            "eurusd_long_trap_regime_not_matched": 55
+            "eurusd_long_trap_regime_not_matched": 54
           },
           "terminal_stage_counts": {
-            "REGIME_FAIL": 55,
+            "REGIME_FAIL": 54,
             "SESSION_FAIL": 89
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 144
+              "PASS": 143
             },
             "session_gate": {
-              "PASS": 55,
+              "PASS": 54,
               "FAIL": 89
             },
             "regime_gate": {
-              "FAIL": 55,
+              "FAIL": 54,
               "UNKNOWN": 89
             },
             "data_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "setup_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "shadow_match_gate": {
-              "FAIL": 144
+              "FAIL": 143
             }
           },
           "eligible_for_setup_eval_count": 0,
@@ -2222,34 +2229,6 @@
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:37Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "REGIME_NOT_MATCHED",
-              "status_reason": "eurusd_long_trap_regime_not_matched",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "DOWN",
-              "htf_alignment": "H4_H1_CONFLICT",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "REGIME_FAIL",
-              "gate_snapshot": {
-                "status": "REGIME_NOT_MATCHED",
-                "reason": "eurusd_long_trap_regime_not_matched",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "FAIL",
-                "data_gate": "UNKNOWN",
-                "setup_gate": "UNKNOWN",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "REGIME_FAIL",
-                "eligible_for_setup_eval": false,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -2477,6 +2456,34 @@
             {
               "created_utc": "2026-06-21T12:16:46Z",
               "detector_created_utc": "2026-06-21T12:16:46Z",
+              "detector_status": "REGIME_NOT_MATCHED",
+              "status_reason": "eurusd_long_trap_regime_not_matched",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "DOWN",
+              "htf_alignment": "H4_H1_ALIGNED_DOWN",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "REGIME_FAIL",
+              "gate_snapshot": {
+                "status": "REGIME_NOT_MATCHED",
+                "reason": "eurusd_long_trap_regime_not_matched",
+                "freshness_gate": "PASS",
+                "session_gate": "PASS",
+                "regime_gate": "FAIL",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "REGIME_FAIL",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:41Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
               "detector_status": "REGIME_NOT_MATCHED",
               "status_reason": "eurusd_long_trap_regime_not_matched",
               "session_bucket": "LONDON",
@@ -2505,45 +2512,45 @@
           ]
         },
         "last_7d": {
-          "record_count": 1033,
+          "record_count": 1034,
           "status_counts": {
-            "REGIME_NOT_MATCHED": 386,
+            "REGIME_NOT_MATCHED": 387,
             "SESSION_NOT_MATCHED": 647
           },
           "top_reasons": {
             "session_not_london_or_overlap": 647,
-            "eurusd_long_trap_regime_not_matched": 386
+            "eurusd_long_trap_regime_not_matched": 387
           },
           "terminal_stage_counts": {
-            "REGIME_FAIL": 386,
+            "REGIME_FAIL": 387,
             "SESSION_FAIL": 647
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 1033
+              "PASS": 1034
             },
             "session_gate": {
-              "PASS": 386,
+              "PASS": 387,
               "FAIL": 647
             },
             "regime_gate": {
-              "FAIL": 386,
+              "FAIL": 387,
               "UNKNOWN": 647
             },
             "data_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "setup_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "shadow_match_gate": {
-              "FAIL": 1033
+              "FAIL": 1034
             }
           },
           "eligible_for_setup_eval_count": 0,
@@ -2555,34 +2562,6 @@
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:37Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "REGIME_NOT_MATCHED",
-              "status_reason": "eurusd_long_trap_regime_not_matched",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "DOWN",
-              "htf_alignment": "H4_H1_CONFLICT",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "REGIME_FAIL",
-              "gate_snapshot": {
-                "status": "REGIME_NOT_MATCHED",
-                "reason": "eurusd_long_trap_regime_not_matched",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "FAIL",
-                "data_gate": "UNKNOWN",
-                "setup_gate": "UNKNOWN",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "REGIME_FAIL",
-                "eligible_for_setup_eval": false,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -2810,6 +2789,34 @@
             {
               "created_utc": "2026-06-21T12:16:46Z",
               "detector_created_utc": "2026-06-21T12:16:46Z",
+              "detector_status": "REGIME_NOT_MATCHED",
+              "status_reason": "eurusd_long_trap_regime_not_matched",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "DOWN",
+              "htf_alignment": "H4_H1_ALIGNED_DOWN",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "REGIME_FAIL",
+              "gate_snapshot": {
+                "status": "REGIME_NOT_MATCHED",
+                "reason": "eurusd_long_trap_regime_not_matched",
+                "freshness_gate": "PASS",
+                "session_gate": "PASS",
+                "regime_gate": "FAIL",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "REGIME_FAIL",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:41Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
               "detector_status": "REGIME_NOT_MATCHED",
               "status_reason": "eurusd_long_trap_regime_not_matched",
               "session_bucket": "LONDON",
@@ -2838,51 +2845,51 @@
           ]
         },
         "all_time": {
-          "record_count": 4393,
+          "record_count": 4394,
           "status_counts": {
-            "REGIME_NOT_MATCHED": 1462,
+            "REGIME_NOT_MATCHED": 1463,
             "SESSION_NOT_MATCHED": 2773,
             "REFERENCE_LEVEL_UNAVAILABLE": 158
           },
           "top_reasons": {
             "session_not_london_or_overlap": 2773,
-            "eurusd_long_trap_regime_not_matched": 1462,
+            "eurusd_long_trap_regime_not_matched": 1463,
             "prior_utc_day_low_unavailable_from_live_h1": 158
           },
           "terminal_stage_counts": {
-            "REGIME_FAIL": 1462,
+            "REGIME_FAIL": 1463,
             "SESSION_FAIL": 2773,
             "DATA_OR_REFERENCE_FAIL": 158
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 4393
+              "PASS": 4394
             },
             "session_gate": {
-              "PASS": 1462,
+              "PASS": 1463,
               "FAIL": 2773,
               "PASS_OR_UNKNOWN": 158
             },
             "regime_gate": {
-              "FAIL": 1462,
+              "FAIL": 1463,
               "UNKNOWN": 2773,
               "PASS_OR_UNKNOWN": 158
             },
             "data_gate": {
-              "UNKNOWN": 4235,
+              "UNKNOWN": 4236,
               "FAIL": 158
             },
             "setup_gate": {
-              "UNKNOWN": 4393
+              "UNKNOWN": 4394
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 4393
+              "UNKNOWN": 4394
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 4393
+              "UNKNOWN": 4394
             },
             "shadow_match_gate": {
-              "FAIL": 4393
+              "FAIL": 4394
             }
           },
           "eligible_for_setup_eval_count": 0,
@@ -2894,34 +2901,6 @@
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:37Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "REGIME_NOT_MATCHED",
-              "status_reason": "eurusd_long_trap_regime_not_matched",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "DOWN",
-              "htf_alignment": "H4_H1_CONFLICT",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "REGIME_FAIL",
-              "gate_snapshot": {
-                "status": "REGIME_NOT_MATCHED",
-                "reason": "eurusd_long_trap_regime_not_matched",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "FAIL",
-                "data_gate": "UNKNOWN",
-                "setup_gate": "UNKNOWN",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "REGIME_FAIL",
-                "eligible_for_setup_eval": false,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:44Z",
               "detector_created_utc": "2026-06-21T10:56:44Z",
@@ -3149,6 +3128,34 @@
             {
               "created_utc": "2026-06-21T12:16:46Z",
               "detector_created_utc": "2026-06-21T12:16:46Z",
+              "detector_status": "REGIME_NOT_MATCHED",
+              "status_reason": "eurusd_long_trap_regime_not_matched",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "DOWN",
+              "htf_alignment": "H4_H1_ALIGNED_DOWN",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "REGIME_FAIL",
+              "gate_snapshot": {
+                "status": "REGIME_NOT_MATCHED",
+                "reason": "eurusd_long_trap_regime_not_matched",
+                "freshness_gate": "PASS",
+                "session_gate": "PASS",
+                "regime_gate": "FAIL",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "REGIME_FAIL",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:41Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
               "detector_status": "REGIME_NOT_MATCHED",
               "status_reason": "eurusd_long_trap_regime_not_matched",
               "session_bucket": "LONDON",
@@ -3189,105 +3196,81 @@
       "state_loaded": true,
       "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
       "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-      "refresh_count_total": 4379,
-      "last_updated_utc": "2026-06-21T12:16:47Z",
+      "refresh_count_total": 4380,
+      "last_updated_utc": "2026-06-21T12:26:42Z",
       "windows": {
         "last_24h": {
-          "record_count": 144,
+          "record_count": 143,
           "status_counts": {
-            "SETUP_NOT_FORMED": 47,
+            "SETUP_NOT_FORMED": 45,
             "REGIME_NOT_MATCHED": 6,
             "SESSION_NOT_MATCHED": 89,
             "H1_TRIGGER_WAIT": 1,
-            "H1_TRIGGER_NOT_CONFIRMED": 1
+            "H1_TRIGGER_NOT_CONFIRMED": 1,
+            "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 1
           },
           "top_reasons": {
             "session_not_london_ny_overlap": 89,
-            "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 29,
+            "previous_h1_bar_did_not_match_lower_rejection_expansion_setup": 27,
             "previous_h1_bar_did_not_match_overlap_lower_rejection_expansion_setup": 18,
             "overlap_long_diagnostic_regime_not_matched": 6,
             "latest_h1_bar_forms_setup_waiting_for_next_h1_close": 1,
-            "next_h1_bar_did_not_confirm_long_direction": 1
+            "next_h1_bar_did_not_confirm_long_direction": 1,
+            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 1
           },
           "terminal_stage_counts": {
-            "SETUP_FAIL": 47,
+            "SETUP_FAIL": 45,
             "REGIME_FAIL": 6,
             "SESSION_FAIL": 89,
             "H1_TRIGGER_WAIT": 1,
-            "H1_TRIGGER_FAIL": 1
+            "H1_TRIGGER_FAIL": 1,
+            "UNKNOWN_OR_UNMAPPED": 1
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 144
+              "PASS": 143
             },
             "session_gate": {
-              "PASS": 55,
-              "FAIL": 89
+              "PASS": 53,
+              "FAIL": 89,
+              "UNKNOWN": 1
             },
             "regime_gate": {
-              "PASS": 49,
+              "PASS": 47,
               "FAIL": 6,
-              "UNKNOWN": 89
+              "UNKNOWN": 90
             },
             "data_gate": {
-              "PASS": 49,
-              "UNKNOWN": 95
+              "PASS": 47,
+              "UNKNOWN": 96
             },
             "setup_gate": {
-              "FAIL": 47,
-              "UNKNOWN": 95,
+              "FAIL": 45,
+              "UNKNOWN": 96,
               "PASS_CURRENT_BAR_WAIT": 1,
               "PASS": 1
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 142,
+              "UNKNOWN": 141,
               "WAIT": 1,
               "FAIL": 1
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 144
+              "UNKNOWN": 143
             },
             "shadow_match_gate": {
-              "FAIL": 144
+              "FAIL": 143
             }
           },
-          "eligible_for_setup_eval_count": 49,
+          "eligible_for_setup_eval_count": 47,
           "eligible_for_trigger_eval_count": 2,
           "eligible_for_match_eval_count": 0,
           "shadow_match_count": 0,
-          "setup_eval_rate_pct": 34.03,
-          "trigger_eval_rate_pct": 1.39,
+          "setup_eval_rate_pct": 32.87,
+          "trigger_eval_rate_pct": 1.4,
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:38Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "SETUP_NOT_FORMED",
-              "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "SETUP_FAIL",
-              "gate_snapshot": {
-                "status": "SETUP_NOT_FORMED",
-                "reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "PASS",
-                "data_gate": "PASS",
-                "setup_gate": "FAIL",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SETUP_FAIL",
-                "eligible_for_setup_eval": true,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:45Z",
               "detector_created_utc": "2026-06-21T10:56:45Z",
@@ -3539,18 +3522,46 @@
                 "eligible_for_trigger_eval": true,
                 "eligible_for_match_eval": false
               }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:42Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
+              "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+              "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "UNKNOWN_OR_UNMAPPED",
+              "gate_snapshot": {
+                "status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+                "reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+                "freshness_gate": "PASS",
+                "session_gate": "UNKNOWN",
+                "regime_gate": "UNKNOWN",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "UNKNOWN_OR_UNMAPPED",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
             }
           ]
         },
         "last_7d": {
-          "record_count": 1033,
+          "record_count": 1034,
           "status_counts": {
             "REGIME_NOT_MATCHED": 156,
             "SETUP_NOT_FORMED": 189,
             "H1_TRIGGER_WAIT": 12,
             "H1_TRIGGER_NOT_CONFIRMED": 15,
             "SESSION_NOT_MATCHED": 647,
-            "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 14
+            "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 15
           },
           "top_reasons": {
             "session_not_london_ny_overlap": 647,
@@ -3560,8 +3571,8 @@
             "previous_h1_bar_did_not_match_overlap_lower_rejection_expansion_setup": 69,
             "next_h1_bar_did_not_confirm_bullish_overlap_followthrough": 9,
             "latest_h1_bar_forms_setup_waiting_for_next_h1_close": 9,
+            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 8,
             "usdjpy_overlap_lower_rejection_expansion_long_diagnostic_shadow_match_confirmed": 7,
-            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 7,
             "next_h1_bar_did_not_confirm_long_direction": 6,
             "latest_h1_bar_forms_overlap_lower_rejection_expansion_setup_waiting_for_next_h1_close": 3
           },
@@ -3571,81 +3582,53 @@
             "H1_TRIGGER_WAIT": 12,
             "H1_TRIGGER_FAIL": 15,
             "SESSION_FAIL": 647,
-            "UNKNOWN_OR_UNMAPPED": 14
+            "UNKNOWN_OR_UNMAPPED": 15
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 1033
+              "PASS": 1034
             },
             "session_gate": {
               "PASS": 372,
               "FAIL": 647,
-              "UNKNOWN": 14
+              "UNKNOWN": 15
             },
             "regime_gate": {
               "FAIL": 156,
               "PASS": 216,
-              "UNKNOWN": 661
+              "UNKNOWN": 662
             },
             "data_gate": {
-              "UNKNOWN": 817,
+              "UNKNOWN": 818,
               "PASS": 216
             },
             "setup_gate": {
-              "UNKNOWN": 817,
+              "UNKNOWN": 818,
               "FAIL": 189,
               "PASS_CURRENT_BAR_WAIT": 12,
               "PASS": 15
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 1006,
+              "UNKNOWN": 1007,
               "WAIT": 12,
               "FAIL": 15
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 1033
+              "UNKNOWN": 1034
             },
             "shadow_match_gate": {
-              "FAIL": 1033
+              "FAIL": 1034
             }
           },
           "eligible_for_setup_eval_count": 216,
           "eligible_for_trigger_eval_count": 27,
           "eligible_for_match_eval_count": 0,
           "shadow_match_count": 0,
-          "setup_eval_rate_pct": 20.91,
+          "setup_eval_rate_pct": 20.89,
           "trigger_eval_rate_pct": 2.61,
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:38Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "SETUP_NOT_FORMED",
-              "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "SETUP_FAIL",
-              "gate_snapshot": {
-                "status": "SETUP_NOT_FORMED",
-                "reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "PASS",
-                "data_gate": "PASS",
-                "setup_gate": "FAIL",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SETUP_FAIL",
-                "eligible_for_setup_eval": true,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:45Z",
               "detector_created_utc": "2026-06-21T10:56:45Z",
@@ -3897,18 +3880,46 @@
                 "eligible_for_trigger_eval": true,
                 "eligible_for_match_eval": false
               }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:42Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
+              "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+              "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "UNKNOWN_OR_UNMAPPED",
+              "gate_snapshot": {
+                "status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+                "reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+                "freshness_gate": "PASS",
+                "session_gate": "UNKNOWN",
+                "regime_gate": "UNKNOWN",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "UNKNOWN_OR_UNMAPPED",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
+                "eligible_for_match_eval": false
+              }
             }
           ]
         },
         "all_time": {
-          "record_count": 4379,
+          "record_count": 4380,
           "status_counts": {
             "SESSION_NOT_MATCHED": 2778,
             "REGIME_NOT_MATCHED": 515,
             "SETUP_NOT_FORMED": 922,
             "H1_TRIGGER_WAIT": 47,
             "H1_TRIGGER_NOT_CONFIRMED": 57,
-            "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 60
+            "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED": 61
           },
           "top_reasons": {
             "session_not_london_ny_overlap": 2778,
@@ -3916,7 +3927,7 @@
             "previous_h1_bar_did_not_match_overlap_lower_rejection_expansion_setup": 401,
             "d1_h4_alignment_not_matched": 287,
             "overlap_long_diagnostic_regime_not_matched": 228,
-            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 33,
+            "regime_setup_h1_trigger_m15_trigger_all_confirmed": 34,
             "next_h1_bar_did_not_confirm_bullish_overlap_followthrough": 29,
             "next_h1_bar_did_not_confirm_long_direction": 28,
             "usdjpy_overlap_lower_rejection_expansion_long_diagnostic_shadow_match_confirmed": 27,
@@ -3929,81 +3940,53 @@
             "SETUP_FAIL": 922,
             "H1_TRIGGER_WAIT": 47,
             "H1_TRIGGER_FAIL": 57,
-            "UNKNOWN_OR_UNMAPPED": 60
+            "UNKNOWN_OR_UNMAPPED": 61
           },
           "gate_counts": {
             "freshness_gate": {
-              "PASS": 4379
+              "PASS": 4380
             },
             "session_gate": {
               "FAIL": 2778,
               "PASS": 1541,
-              "UNKNOWN": 60
+              "UNKNOWN": 61
             },
             "regime_gate": {
-              "UNKNOWN": 2838,
+              "UNKNOWN": 2839,
               "FAIL": 515,
               "PASS": 1026
             },
             "data_gate": {
-              "UNKNOWN": 3353,
+              "UNKNOWN": 3354,
               "PASS": 1026
             },
             "setup_gate": {
-              "UNKNOWN": 3353,
+              "UNKNOWN": 3354,
               "FAIL": 922,
               "PASS_CURRENT_BAR_WAIT": 47,
               "PASS": 57
             },
             "h1_trigger_gate": {
-              "UNKNOWN": 4275,
+              "UNKNOWN": 4276,
               "WAIT": 47,
               "FAIL": 57
             },
             "m15_confirm_gate": {
-              "UNKNOWN": 4379
+              "UNKNOWN": 4380
             },
             "shadow_match_gate": {
-              "FAIL": 4379
+              "FAIL": 4380
             }
           },
           "eligible_for_setup_eval_count": 1026,
           "eligible_for_trigger_eval_count": 104,
           "eligible_for_match_eval_count": 0,
           "shadow_match_count": 0,
-          "setup_eval_rate_pct": 23.43,
+          "setup_eval_rate_pct": 23.42,
           "trigger_eval_rate_pct": 2.37,
           "match_eval_rate_pct": 0.0,
           "shadow_match_rate_pct": 0.0,
           "latest_gate_records": [
-            {
-              "created_utc": "2026-06-21T10:46:38Z",
-              "detector_created_utc": "2026-06-21T10:46:37Z",
-              "detector_status": "SETUP_NOT_FORMED",
-              "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-              "session_bucket": "LONDON",
-              "d1_trend_state": "NEUTRAL",
-              "h4_trend_state": "UP",
-              "htf_alignment": "H4_H1_ALIGNED_UP",
-              "volatility_state_or_d1_vol_bucket": "LOW",
-              "terminal_stage": "SETUP_FAIL",
-              "gate_snapshot": {
-                "status": "SETUP_NOT_FORMED",
-                "reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
-                "freshness_gate": "PASS",
-                "session_gate": "PASS",
-                "regime_gate": "PASS",
-                "data_gate": "PASS",
-                "setup_gate": "FAIL",
-                "h1_trigger_gate": "UNKNOWN",
-                "m15_confirm_gate": "UNKNOWN",
-                "shadow_match_gate": "FAIL",
-                "terminal_stage": "SETUP_FAIL",
-                "eligible_for_setup_eval": true,
-                "eligible_for_trigger_eval": false,
-                "eligible_for_match_eval": false
-              }
-            },
             {
               "created_utc": "2026-06-21T10:56:45Z",
               "detector_created_utc": "2026-06-21T10:56:45Z",
@@ -4253,6 +4236,34 @@
                 "terminal_stage": "H1_TRIGGER_FAIL",
                 "eligible_for_setup_eval": true,
                 "eligible_for_trigger_eval": true,
+                "eligible_for_match_eval": false
+              }
+            },
+            {
+              "created_utc": "2026-06-21T12:26:42Z",
+              "detector_created_utc": "2026-06-21T12:26:41Z",
+              "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+              "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+              "session_bucket": "LONDON",
+              "d1_trend_state": "NEUTRAL",
+              "h4_trend_state": "UP",
+              "htf_alignment": "H4_H1_ALIGNED_UP",
+              "volatility_state_or_d1_vol_bucket": "LOW",
+              "terminal_stage": "UNKNOWN_OR_UNMAPPED",
+              "gate_snapshot": {
+                "status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
+                "reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
+                "freshness_gate": "PASS",
+                "session_gate": "UNKNOWN",
+                "regime_gate": "UNKNOWN",
+                "data_gate": "UNKNOWN",
+                "setup_gate": "UNKNOWN",
+                "h1_trigger_gate": "UNKNOWN",
+                "m15_confirm_gate": "UNKNOWN",
+                "shadow_match_gate": "FAIL",
+                "terminal_stage": "UNKNOWN_OR_UNMAPPED",
+                "eligible_for_setup_eval": false,
+                "eligible_for_trigger_eval": false,
                 "eligible_for_match_eval": false
               }
             }
