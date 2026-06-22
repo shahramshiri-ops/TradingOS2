@@ -2,13 +2,13 @@
   "program": "SIG-E-RUNTIME-SHADOW-DETECTOR1",
   "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1_USDJPY_20260622T080650Z",
-  "created_utc": "2026-06-22T08:06:50Z",
+  "detector_run_id": "SIGE_SD1_USDJPY_20260622T081652Z",
+  "created_utc": "2026-06-22T08:16:52Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "SHADOW_MATCH_CONFIRMED",
-  "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
-  "is_shadow_match": true,
+  "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
+  "status_reason": "next_h1_bar_did_not_confirm_long_direction",
+  "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
   "authority": {
@@ -77,40 +77,29 @@
       "check_id": "H1_SETUP_PREVIOUS_BAR",
       "passed": true,
       "details": {
-        "setup_h1_open_ts_utc": "2026-06-22T06:00:00Z",
+        "setup_h1_open_ts_utc": "2026-06-22T07:00:00Z",
         "lower_rejection": {
-          "range": 0.0966799999999921,
-          "lower_wick": 0.06861999999998147,
-          "lower_wick_to_range": 0.7097641704591133,
-          "close_location": 0.7097641704591133,
-          "bullish_close": false
+          "range": 0.13140999999998826,
+          "lower_wick": 0.04095999999998412,
+          "lower_wick_to_range": 0.3116962179437469,
+          "close_location": 0.8098318240620597,
+          "bullish_close": true
         },
         "range_expansion": {
-          "setup_range": 0.0966799999999921,
-          "prior_range_avg": 0.07883749999999168,
-          "range_expansion_ratio": 1.2263199619470724
+          "setup_range": 0.13140999999998826,
+          "prior_range_avg": 0.07926249999999158,
+          "range_expansion_ratio": 1.6579088471850147
         }
       }
     },
     {
       "check_id": "NEXT_H1_DIRECTION_CONFIRM",
-      "passed": true,
+      "passed": false,
       "details": {
-        "trigger_h1_open_ts_utc": "2026-06-22T07:00:00Z",
-        "open": 161.68515,
-        "close": 161.75061,
-        "direction": "UP"
-      }
-    },
-    {
-      "check_id": "M15_INSIDE_H1_DIRECTIONAL_CLOSE_CONFIRM",
-      "passed": true,
-      "details": {
-        "h1_window_start": "2026-06-22T07:00:00Z",
-        "h1_window_end": "2026-06-22T08:00:00Z",
-        "m15_inside_count": 4,
-        "m15_confirm_count": 3,
-        "first_confirm_m15_open_ts_utc": "2026-06-22T07:00:00Z"
+        "trigger_h1_open_ts_utc": "2026-06-22T08:00:00Z",
+        "open": 161.75334,
+        "close": 161.74115,
+        "direction": "NOT_UP"
       }
     }
   ],
@@ -138,9 +127,9 @@
       {
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
-        "rows": 802,
-        "latest_bar_open_ts_utc": "2026-06-22T07:00:00Z",
-        "score": 1005802,
+        "rows": 803,
+        "latest_bar_open_ts_utc": "2026-06-22T08:00:00Z",
+        "score": 1005803,
         "forbidden": false
       },
       {
@@ -157,26 +146,18 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
         "rows": 3206,
-        "latest_bar_open_ts_utc": "2026-06-22T07:45:00Z",
+        "latest_bar_open_ts_utc": "2026-06-22T08:00:00Z",
         "score": 1008206,
         "forbidden": false
       }
     ]
   },
   "data_counts": {
-    "h1_rows_loaded": 802,
+    "h1_rows_loaded": 803,
     "m15_rows_loaded": 3206,
-    "h1_latest_bar_open_ts_utc": "2026-06-22T07:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-06-22T07:45:00Z"
+    "h1_latest_bar_open_ts_utc": "2026-06-22T08:00:00Z",
+    "m15_latest_bar_open_ts_utc": "2026-06-22T08:00:00Z"
   },
-  "setup_h1_open_ts_utc": "2026-06-22T06:00:00Z",
-  "trigger_h1_open_ts_utc": "2026-06-22T07:00:00Z",
-  "shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260622T070000",
-  "m15_confirm_ts_utc": "2026-06-22T07:00:00Z",
-  "observation_horizon": {
-    "horizon_h1_bars": 16,
-    "observation_end_ts_utc": "2026-06-22T23:00:00Z",
-    "outcome_tracking_authorized": true,
-    "trade_execution_authorized": false
-  }
+  "setup_h1_open_ts_utc": "2026-06-22T07:00:00Z",
+  "trigger_h1_open_ts_utc": "2026-06-22T08:00:00Z"
 }
