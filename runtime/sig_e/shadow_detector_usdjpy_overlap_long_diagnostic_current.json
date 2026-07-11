@@ -2,12 +2,12 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260711T092727Z",
-  "created_utc": "2026-07-11T09:27:27Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260711T093720Z",
+  "created_utc": "2026-07-11T09:37:20Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "SETUP_NOT_FORMED",
-  "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
+  "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
+  "status_reason": "next_h1_bar_did_not_confirm_long_direction",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -52,7 +52,7 @@
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
     "h1_bar_open_ts_utc": "2026-07-11T08:00:00Z",
-    "m15_bar_open_ts_utc": "2026-07-11T09:00:00Z",
+    "m15_bar_open_ts_utc": "2026-07-11T09:15:00Z",
     "h1_surface_score": 345,
     "m15_surface_score": 345
   },
@@ -83,7 +83,7 @@
     },
     {
       "check_id": "H1_SETUP_PREVIOUS_BAR",
-      "passed": false,
+      "passed": true,
       "details": {
         "setup_h1_open_ts_utc": "2026-07-11T08:00:00Z",
         "lower_rejection": {
@@ -95,9 +95,19 @@
         },
         "range_expansion": {
           "setup_range": 0.040840000000002874,
-          "prior_range_avg": 0.0363049999999987,
-          "range_expansion_ratio": 1.1249139237020889
+          "prior_range_avg": 0.03388999999999953,
+          "range_expansion_ratio": 1.205075243434743
         }
+      }
+    },
+    {
+      "check_id": "NEXT_H1_DIRECTION_CONFIRM",
+      "passed": false,
+      "details": {
+        "trigger_h1_open_ts_utc": "2026-07-11T09:00:00Z",
+        "open": 161.73686,
+        "close": 161.736,
+        "direction": "NOT_UP"
       }
     }
   ],
@@ -159,6 +169,6 @@
   },
   "setup_h1_open_ts_utc": "2026-07-11T08:00:00Z",
   "trigger_h1_open_ts_utc": "2026-07-11T09:00:00Z",
-  "gateflow_hotfix2_checked_utc": "2026-07-11T09:27:27Z",
+  "gateflow_hotfix2_checked_utc": "2026-07-11T09:37:20Z",
   "gateflow_hotfix2_action": "NO_GATEFLOW_REPAIR_REGIME_NOT_PASSED"
 }
