@@ -1,11 +1,11 @@
 {
   "program": "SIG-E-SHADOW-LANE1-OVERLAP-PREFLIGHT1",
-  "created_utc": "2026-07-12T16:37:00Z",
+  "created_utc": "2026-07-12T16:47:12Z",
   "preflight_status": "OK_PREFLIGHT_READY",
   "lane_id": "SIGE_SD1_USDJPY_LONDON_LONG_H1_M15",
   "display_name": "USDJPY London Long H1+M15",
   "state_file": "state/sig_e_shadow_detector_observation/usdjpy_london_long_obsledger_v1.json",
-  "source_refresh_record_count": 7484,
+  "source_refresh_record_count": 7485,
   "portfolio_status": "NO_ACTIVE_SHADOW_MATCH",
   "coverage_status": "OK_COVERAGE_MONITOR_READY",
   "method": {
@@ -39,11 +39,11 @@
       },
       "overlap_session_reject_count": 25,
       "overlap_session_reject_rate_pct": 18.25,
-      "overlap_rejects_regime_preflight_pass_count": 15,
-      "overlap_rejects_regime_preflight_fail_count": 10,
-      "overlap_rejects_regime_preflight_pass_rate_pct": 60.0,
-      "verdict": "OVERLAP_VARIANT_PREFLIGHT_POSITIVE",
-      "interpretation": "Many rejected overlap records appear regime-eligible under Lane1-style long conditions. A separate Lane1B overlap shadow variant is worth a controlled patch.",
+      "overlap_rejects_regime_preflight_pass_count": 14,
+      "overlap_rejects_regime_preflight_fail_count": 11,
+      "overlap_rejects_regime_preflight_pass_rate_pct": 56.0,
+      "verdict": "OVERLAP_VARIANT_PREFLIGHT_MIXED",
+      "interpretation": "Some overlap records appear regime-eligible, but evidence is mixed. Continue observation or create only a diagnostic-only lane.",
       "latest_overlap_preflight_pass_records": [
         {
           "created_utc": "2026-07-12T13:27:04Z",
@@ -228,24 +228,6 @@
       ],
       "latest_overlap_preflight_fail_records": [
         {
-          "created_utc": "2026-07-12T15:06:57Z",
-          "detector_created_utc": "2026-07-12T15:06:57Z",
-          "session_bucket": "LONDON_NY_OVERLAP",
-          "detector_status": "SESSION_NOT_MATCHED",
-          "status_reason": "session_not_london",
-          "preflight_regime_pass_if_overlap_allowed": false,
-          "regime_snapshot": {
-            "d1_trend_state": "NEUTRAL",
-            "h4_trend_state": "UP",
-            "htf_alignment": "H4_H1_CONFLICT",
-            "volatility_state_or_d1_vol_bucket": "NORMAL",
-            "alignment_ok": false,
-            "vol_known": true,
-            "vol_ok": true
-          },
-          "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
-        },
-        {
           "created_utc": "2026-07-12T15:17:05Z",
           "detector_created_utc": "2026-07-12T15:17:05Z",
           "session_bucket": "LONDON_NY_OVERLAP",
@@ -392,6 +374,24 @@
         {
           "created_utc": "2026-07-12T16:36:58Z",
           "detector_created_utc": "2026-07-12T16:36:58Z",
+          "session_bucket": "LONDON_NY_OVERLAP",
+          "detector_status": "SESSION_NOT_MATCHED",
+          "status_reason": "session_not_london",
+          "preflight_regime_pass_if_overlap_allowed": false,
+          "regime_snapshot": {
+            "d1_trend_state": "NEUTRAL",
+            "h4_trend_state": "UP",
+            "htf_alignment": "H4_H1_CONFLICT",
+            "volatility_state_or_d1_vol_bucket": "LOW",
+            "alignment_ok": false,
+            "vol_known": true,
+            "vol_ok": true
+          },
+          "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
+        },
+        {
+          "created_utc": "2026-07-12T16:47:09Z",
+          "detector_created_utc": "2026-07-12T16:47:09Z",
           "session_bucket": "LONDON_NY_OVERLAP",
           "detector_status": "SESSION_NOT_MATCHED",
           "status_reason": "session_not_london",
@@ -617,24 +617,6 @@
       ],
       "latest_overlap_preflight_fail_records": [
         {
-          "created_utc": "2026-07-12T15:06:57Z",
-          "detector_created_utc": "2026-07-12T15:06:57Z",
-          "session_bucket": "LONDON_NY_OVERLAP",
-          "detector_status": "SESSION_NOT_MATCHED",
-          "status_reason": "session_not_london",
-          "preflight_regime_pass_if_overlap_allowed": false,
-          "regime_snapshot": {
-            "d1_trend_state": "NEUTRAL",
-            "h4_trend_state": "UP",
-            "htf_alignment": "H4_H1_CONFLICT",
-            "volatility_state_or_d1_vol_bucket": "NORMAL",
-            "alignment_ok": false,
-            "vol_known": true,
-            "vol_ok": true
-          },
-          "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
-        },
-        {
           "created_utc": "2026-07-12T15:17:05Z",
           "detector_created_utc": "2026-07-12T15:17:05Z",
           "session_bucket": "LONDON_NY_OVERLAP",
@@ -795,33 +777,51 @@
             "vol_ok": true
           },
           "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
+        },
+        {
+          "created_utc": "2026-07-12T16:47:09Z",
+          "detector_created_utc": "2026-07-12T16:47:09Z",
+          "session_bucket": "LONDON_NY_OVERLAP",
+          "detector_status": "SESSION_NOT_MATCHED",
+          "status_reason": "session_not_london",
+          "preflight_regime_pass_if_overlap_allowed": false,
+          "regime_snapshot": {
+            "d1_trend_state": "NEUTRAL",
+            "h4_trend_state": "UP",
+            "htf_alignment": "H4_H1_CONFLICT",
+            "volatility_state_or_d1_vol_bucket": "LOW",
+            "alignment_ok": false,
+            "vol_known": true,
+            "vol_ok": true
+          },
+          "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
         }
       ]
     },
     "all_time": {
-      "record_count": 7484,
+      "record_count": 7485,
       "status_counts": {
         "REGIME_NOT_MATCHED": 499,
         "INPUT_INSUFFICIENT": 4,
         "LIVE_OHLC_SOURCE_MISSING": 4,
         "SETUP_NOT_FORMED": 873,
-        "SESSION_NOT_MATCHED": 5946,
+        "SESSION_NOT_MATCHED": 5947,
         "H1_TRIGGER_WAIT": 41,
         "H1_TRIGGER_NOT_CONFIRMED": 46,
         "SHADOW_MATCH_CONFIRMED": 71
       },
       "session_counts": {
         "LONDON": 1538,
-        "LONDON_NY_OVERLAP": 1265,
+        "LONDON_NY_OVERLAP": 1266,
         "NEW_YORK": 1572,
         "ROLLOVER_THIN": 957,
         "ASIA": 2152
       },
-      "overlap_session_reject_count": 1265,
-      "overlap_session_reject_rate_pct": 16.9,
+      "overlap_session_reject_count": 1266,
+      "overlap_session_reject_rate_pct": 16.91,
       "overlap_rejects_regime_preflight_pass_count": 798,
-      "overlap_rejects_regime_preflight_fail_count": 467,
-      "overlap_rejects_regime_preflight_pass_rate_pct": 63.08,
+      "overlap_rejects_regime_preflight_fail_count": 468,
+      "overlap_rejects_regime_preflight_pass_rate_pct": 63.03,
       "verdict": "OVERLAP_VARIANT_PREFLIGHT_POSITIVE",
       "interpretation": "Many rejected overlap records appear regime-eligible under Lane1-style long conditions. A separate Lane1B overlap shadow variant is worth a controlled patch.",
       "latest_overlap_preflight_pass_records": [
@@ -1008,24 +1008,6 @@
       ],
       "latest_overlap_preflight_fail_records": [
         {
-          "created_utc": "2026-07-12T15:06:57Z",
-          "detector_created_utc": "2026-07-12T15:06:57Z",
-          "session_bucket": "LONDON_NY_OVERLAP",
-          "detector_status": "SESSION_NOT_MATCHED",
-          "status_reason": "session_not_london",
-          "preflight_regime_pass_if_overlap_allowed": false,
-          "regime_snapshot": {
-            "d1_trend_state": "NEUTRAL",
-            "h4_trend_state": "UP",
-            "htf_alignment": "H4_H1_CONFLICT",
-            "volatility_state_or_d1_vol_bucket": "NORMAL",
-            "alignment_ok": false,
-            "vol_known": true,
-            "vol_ok": true
-          },
-          "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
-        },
-        {
           "created_utc": "2026-07-12T15:17:05Z",
           "detector_created_utc": "2026-07-12T15:17:05Z",
           "session_bucket": "LONDON_NY_OVERLAP",
@@ -1172,6 +1154,24 @@
         {
           "created_utc": "2026-07-12T16:36:58Z",
           "detector_created_utc": "2026-07-12T16:36:58Z",
+          "session_bucket": "LONDON_NY_OVERLAP",
+          "detector_status": "SESSION_NOT_MATCHED",
+          "status_reason": "session_not_london",
+          "preflight_regime_pass_if_overlap_allowed": false,
+          "regime_snapshot": {
+            "d1_trend_state": "NEUTRAL",
+            "h4_trend_state": "UP",
+            "htf_alignment": "H4_H1_CONFLICT",
+            "volatility_state_or_d1_vol_bucket": "LOW",
+            "alignment_ok": false,
+            "vol_known": true,
+            "vol_ok": true
+          },
+          "important_caveat": "This is a session/regime what-if only. It does not evaluate setup, H1 trigger, M15 confirm, or shadow outcome."
+        },
+        {
+          "created_utc": "2026-07-12T16:47:09Z",
+          "detector_created_utc": "2026-07-12T16:47:09Z",
           "session_bucket": "LONDON_NY_OVERLAP",
           "detector_status": "SESSION_NOT_MATCHED",
           "status_reason": "session_not_london",
