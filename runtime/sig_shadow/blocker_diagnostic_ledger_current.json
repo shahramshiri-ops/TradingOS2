@@ -1,7 +1,7 @@
 {
   "ledger_version": "SIG_SHADOW_READY_01_BLOCKER_DIAGNOSTIC_LEDGER_v1_0",
-  "created_utc": "2026-07-13T12:56:55Z",
-  "updated_utc": "2026-07-13T12:56:55Z",
+  "created_utc": "2026-07-13T13:07:02Z",
+  "updated_utc": "2026-07-13T13:07:02Z",
   "authority": "SHADOW_READY_01|LIVE_SHADOW_READINESS_HARDENING|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING",
   "signal_authorized": false,
   "trade_instruction_authorized": false,
@@ -30,7 +30,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_62c9b222a82f1824",
+      "diagnostic_id": "BD_968d8a702532d3fb",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_FAILED_BREAKOUT_TRAP_PRIOR_DAY_LOW_LONG_DIRECTIONAL_WATCH_v1_0",
@@ -46,10 +46,10 @@
       "near_miss_strength": "NEAR_MISS_MEDIUM",
       "missing_inputs": [],
       "failed_conditions": [
-        "session_bucket eq ASIA observed=LONDON",
+        "session_bucket eq ASIA observed=LONDON_NY_OVERLAP",
         "d1_trend_state eq DOWN observed=FLAT",
         "failed_breakout_event_type eq FAILED_DOWNSIDE_BREAKOUT_RECLAIM_INSIDE observed=NONE",
-        "failed_breakout_level_type eq PRIOR_DAY_LOW observed=NONE"
+        "failed_breakout_level_type eq PRIOR_DAY_LOW observed=LONDON_MORNING_LOW"
       ],
       "candidate_created": false,
       "reason": "diagnostic only; no candidate generated before all conditions cleared",
@@ -61,7 +61,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_17b2b9c3efed1e42",
+      "diagnostic_id": "BD_757eb1df1f55494c",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_LONDON_NY_OVERLAP_LONDON_LOW_SWEEP_RECLAIM_LONG_D1UP_H4UP_CAVEATED_WATCH_v1_0",
@@ -88,41 +88,7 @@
       "rule_rewrite_authorized": false
     },
     {
-      "diagnostic_id": "BD_d6020eabbad8ad73",
-      "diagnostic_source": "NEAR_MISS_LEDGER",
-      "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
-      "memory_id": "EURUSD_H1_TARGETED_LONDON_MORNING_LOW_FAILED_DOWNSIDE_LONG_DIRECTIONAL_WATCH_v1_0",
-      "setup_cluster_id": "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0",
-      "instrument": "EURUSD",
-      "timeframe": "H1",
-      "blocking_or_gating_categories": [
-        "SESSION_OR_TIME_WINDOW",
-        "D1_H4_REGIME_MISMATCH",
-        "REFERENCE_LEVEL_NOT_READY",
-        "SWEEP_RECLAIM_NOT_CONFIRMED",
-        "DIRECTION_OR_CLOSE_CONFIRMATION_MISSING"
-      ],
-      "near_miss_strength": "NEAR_MISS_MEDIUM",
-      "missing_inputs": [],
-      "failed_conditions": [
-        "session_bucket eq LONDON_NY_OVERLAP observed=LONDON",
-        "d1_trend_state eq NEUTRAL observed=FLAT",
-        "h1_failed_breakout_or_session_sweep_state eq LONDON_MORNING_LOW_FAILED_DOWNSIDE_RECLAIM_INSIDE observed=NONE",
-        "failed_breakout_level_type eq LONDON_MORNING_LOW observed=NONE",
-        "failed_breakout_failure_side eq FAILED_DOWNSIDE observed=NONE",
-        "directional_side eq LONG observed=NONE"
-      ],
-      "candidate_created": false,
-      "reason": "diagnostic only; no candidate generated before all conditions cleared",
-      "signal_authorized": false,
-      "trade_instruction_authorized": false,
-      "broker_execution_authorized": false,
-      "action_surface_authorized": false,
-      "auto_learning_authorized": false,
-      "rule_rewrite_authorized": false
-    },
-    {
-      "diagnostic_id": "BD_f1afcd4b67031f17",
+      "diagnostic_id": "BD_b3ccc67f0688d8b1",
       "diagnostic_source": "NEAR_MISS_LEDGER",
       "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
       "memory_id": "EURUSD_H1_LONDON_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
@@ -148,6 +114,33 @@
       "action_surface_authorized": false,
       "auto_learning_authorized": false,
       "rule_rewrite_authorized": false
+    },
+    {
+      "diagnostic_id": "BD_a78f0fefcafa8a3f",
+      "diagnostic_source": "NEAR_MISS_LEDGER",
+      "diagnostic_type": "PRE_CANDIDATE_BLOCKER_OR_GATING_DIAGNOSTIC",
+      "memory_id": "XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_DIRECTIONAL_WATCH_v1_0",
+      "setup_cluster_id": "OUT_OF_CORE_OBSERVATION",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "blocking_or_gating_categories": [
+        "D1_H4_REGIME_MISMATCH",
+        "SWEEP_RECLAIM_NOT_CONFIRMED"
+      ],
+      "near_miss_strength": "NEAR_MISS_HIGH",
+      "missing_inputs": [],
+      "failed_conditions": [
+        "d1_trend_safe eq DOWN observed=UP",
+        "weekly_open_reclaim_short_state eq WEEKLY_OPEN_RECLAIM_SHORT observed=NONE"
+      ],
+      "candidate_created": false,
+      "reason": "diagnostic only; no candidate generated before all conditions cleared",
+      "signal_authorized": false,
+      "trade_instruction_authorized": false,
+      "broker_execution_authorized": false,
+      "action_surface_authorized": false,
+      "auto_learning_authorized": false,
+      "rule_rewrite_authorized": false
     }
   ],
   "summary": {
@@ -159,8 +152,8 @@
       "ACTUAL_BLOCKED_CANDIDATE": 1
     },
     "by_cluster": {
-      "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0": 3,
-      "OUT_OF_CORE_OBSERVATION": 1,
+      "OUT_OF_CORE_OBSERVATION": 2,
+      "SETUP_CLUSTER_EURUSD_H1_LOW_SWEEP_FAILED_BREAKOUT_LONG_v1_0": 2,
       "UNKNOWN": 1
     },
     "purpose": "diagnostic_only_no_rule_change_no_signal"

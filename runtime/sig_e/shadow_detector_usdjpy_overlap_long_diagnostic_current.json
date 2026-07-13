@@ -2,12 +2,12 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260713T125707Z",
-  "created_utc": "2026-07-13T12:57:07Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260713T130710Z",
+  "created_utc": "2026-07-13T13:07:10Z",
   "instrument": "USDJPY",
   "direction": "LONG",
   "detector_status": "SETUP_NOT_FORMED",
-  "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
+  "status_reason": "previous_h1_bar_did_not_match_overlap_lower_rejection_expansion_setup",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -51,19 +51,19 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-07-13T11:00:00Z",
-    "m15_bar_open_ts_utc": "2026-07-13T12:30:00Z",
+    "h1_bar_open_ts_utc": "2026-07-13T12:00:00Z",
+    "m15_bar_open_ts_utc": "2026-07-13T12:45:00Z",
     "h1_surface_score": 345,
     "m15_surface_score": 345
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": false,
+      "passed": true,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
-        "session_bucket": "LONDON",
+        "session_bucket": "LONDON_NY_OVERLAP",
         "d1_trend_state": "NEUTRAL",
         "h4_trend_state": "UP",
         "htf_alignment": "H4_H1_ALIGNED_UP",
@@ -72,7 +72,7 @@
         "tradeability_context": "REGIME_SUPPORTIVE",
         "range_state": "COMPRESSION",
         "h4_h1_up_context": null,
-        "session_ok": false,
+        "session_ok": true,
         "alignment_ok": true,
         "vol_known": true,
         "vol_ok": true,
@@ -82,21 +82,25 @@
       }
     },
     {
-      "check_id": "H1_SETUP_PREVIOUS_BAR",
+      "check_id": "H1_SETUP_PREVIOUS_BAR_LOWER_REJECTION_EXPANSION",
       "passed": false,
       "details": {
         "setup_h1_open_ts_utc": "2026-07-13T11:00:00Z",
-        "lower_rejection": {
-          "range": 0.11151000000000977,
-          "lower_wick": 0.04650000000000887,
-          "lower_wick_to_range": 0.4170029593758837,
-          "close_location": 0.8447672854451841,
-          "bullish_close": true
-        },
-        "range_expansion": {
-          "setup_range": 0.11151000000000977,
-          "prior_range_avg": 0.11861999999999284,
-          "range_expansion_ratio": 0.9400606980274532
+        "open": 162.08014,
+        "high": 162.14515,
+        "low": 162.03364,
+        "close": 162.12784,
+        "range": 0.11151000000000977,
+        "prior_12_range_median": 0.12277499999999009,
+        "range_expansion_ratio": 0.9082467929140198,
+        "lower_wick": 0.04650000000000887,
+        "lower_wick_to_range": 0.4170029593758837,
+        "close_location": 0.8447672854451841,
+        "bullish_close": true,
+        "requirements": {
+          "lower_wick_to_range_min": 0.3,
+          "range_expansion_ratio_min": 1.15,
+          "close_location_min": 0.5
         }
       }
     }
@@ -114,12 +118,11 @@
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
   },
+  "gateflow_hotfix2_checked_utc": "2026-07-13T13:07:10Z",
   "source_paths": {
     "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
     "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
-    "live_source_policy": "live_only_no_data_canonical_fallback",
-    "h1_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows",
-    "m15_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows"
+    "live_source_policy": "live_only_no_data_canonical_fallback"
   },
   "ohlc_source_diagnostics": {
     "h1_candidates_top": [
@@ -159,6 +162,5 @@
   },
   "setup_h1_open_ts_utc": "2026-07-13T11:00:00Z",
   "trigger_h1_open_ts_utc": "2026-07-13T12:00:00Z",
-  "gateflow_hotfix2_checked_utc": "2026-07-13T12:57:07Z",
-  "gateflow_hotfix2_action": "NO_GATEFLOW_REPAIR_REGIME_NOT_PASSED"
+  "gateflow_hotfix2_action": "REGIME_PASS_TO_SETUP_NOT_FORMED"
 }
