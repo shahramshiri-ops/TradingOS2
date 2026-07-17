@@ -2,17 +2,17 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260717T133650Z",
-  "created_utc": "2026-07-17T13:36:50Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260717T134655Z",
+  "created_utc": "2026-07-17T13:46:55Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "DIAGNOSTIC_SHADOW_MATCH_CONFIRMED",
-  "status_reason": "usdjpy_overlap_lower_rejection_expansion_long_diagnostic_shadow_match_confirmed",
-  "is_shadow_match": true,
+  "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
+  "status_reason": "next_h1_bar_did_not_confirm_bullish_overlap_followthrough",
+  "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
   "classification": "DIAGNOSTIC_ONLY_SHADOW_LANE_NOT_PRIMARY",
-  "is_diagnostic_shadow_match": true,
+  "is_diagnostic_shadow_match": false,
   "authority": {
     "signal_authorized": false,
     "trade_proposal_authorized": false,
@@ -106,23 +106,12 @@
     },
     {
       "check_id": "NEXT_H1_BULLISH_CLOSE_CONFIRM",
-      "passed": true,
+      "passed": false,
       "details": {
         "trigger_h1_open_ts_utc": "2026-07-17T13:00:00Z",
         "open": 162.41212,
-        "close": 162.41818,
-        "bullish_close": true
-      }
-    },
-    {
-      "check_id": "M15_BULLISH_CLOSE_INSIDE_TRIGGER_H1",
-      "passed": true,
-      "details": {
-        "h1_window_start": "2026-07-17T13:00:00Z",
-        "h1_window_end": "2026-07-17T14:00:00Z",
-        "m15_inside_count": 2,
-        "m15_confirm_count": 2,
-        "first_confirm_m15_open_ts_utc": "2026-07-17T13:00:00Z"
+        "close": 162.36267,
+        "bullish_close": false
       }
     }
   ],
@@ -139,7 +128,7 @@
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
   },
-  "gateflow_hotfix2_checked_utc": "2026-07-17T13:36:50Z",
+  "gateflow_hotfix2_checked_utc": "2026-07-17T13:46:56Z",
   "source_paths": {
     "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
     "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
@@ -169,7 +158,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
         "rows": 3206,
-        "latest_bar_open_ts_utc": "2026-07-17T13:15:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T13:30:00Z",
         "score": 1008206,
         "forbidden": false
       }
@@ -179,18 +168,9 @@
     "h1_rows_loaded": 803,
     "m15_rows_loaded": 3206,
     "h1_latest_bar_open_ts_utc": "2026-07-17T13:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-07-17T13:15:00Z"
+    "m15_latest_bar_open_ts_utc": "2026-07-17T13:30:00Z"
   },
   "setup_h1_open_ts_utc": "2026-07-17T12:00:00Z",
   "trigger_h1_open_ts_utc": "2026-07-17T13:00:00Z",
-  "m15_confirm_ts_utc": "2026-07-17T13:00:00Z",
-  "shadow_event_id": "SIGE_SD1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_20260717T130000",
-  "observation_horizon": {
-    "horizon_h1_bars": 12,
-    "observation_end_ts_utc": "2026-07-18T01:00:00Z",
-    "outcome_tracking_authorized": true,
-    "trade_execution_authorized": false,
-    "primary_lane_authorized": false
-  },
-  "gateflow_hotfix2_action": "REGIME_PASS_TO_DIAGNOSTIC_SHADOW_MATCH_CONFIRMED"
+  "gateflow_hotfix2_action": "REGIME_PASS_SETUP_PASS_H1_TRIGGER_FAIL"
 }
