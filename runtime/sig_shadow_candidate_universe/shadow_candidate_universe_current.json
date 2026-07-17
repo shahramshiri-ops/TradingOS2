@@ -1,68 +1,70 @@
 {
   "payload_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-  "created_utc": "2026-07-17T17:57:33Z",
+  "created_utc": "2026-07-17T18:06:56Z",
   "authority": "SHADOW_CANDIDATE_UNIVERSE_01|RESEARCH_SHADOW_ONLY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
   "registry_version": "SHADOW_CANDIDATE_UNIVERSE_01_REGISTRY_v1_0",
-  "source_payload_created_utc": "2026-07-17T17:57:18Z",
+  "source_payload_created_utc": "2026-07-17T18:06:39Z",
   "source_payload_version": "SIG_BRAIN4_RUNTIME_PAYLOAD_v1_4_EVENT_LIFECYCLE_OPS21",
   "summary": {
     "candidate_spec_count": 35,
     "surface_count": 5,
-    "active_shadow_candidate_count": 0,
-    "near_miss_count": 9,
+    "active_shadow_candidate_count": 1,
+    "near_miss_count": 7,
     "status_counts": {
       "DATA_OR_CONTEXT_NOT_READY": 13,
-      "SHADOW_CANDIDATE_NEAR_MISS": 9,
-      "NOT_TRIGGERED": 13
+      "NOT_TRIGGERED": 14,
+      "SHADOW_CANDIDATE_NEAR_MISS": 7,
+      "SHADOW_CANDIDATE_ACTIVE": 1
     },
-    "active_by_family": {},
-    "active_by_instrument": {},
+    "active_by_family": {
+      "H1_COUNTER_HTF_REJECTION": 1
+    },
+    "active_by_instrument": {
+      "USDJPY": 1
+    },
     "state_refresh_count": 306,
-    "state_active_event_count": 23
+    "state_active_event_count": 24
   },
-  "active_candidates": [],
-  "near_miss_examples": [
+  "active_candidates": [
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
-      "candidate_id": "SCU01_USDJPY_H1_SESSION_OPEN_TREND_LONG_v1_0",
+      "created_utc": "2026-07-17T18:06:56Z",
+      "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
-      "candidate_family": "H1_SESSION_OPEN_TREND",
+      "candidate_family": "H1_COUNTER_HTF_REJECTION",
       "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
       "instrument": "USDJPY",
       "timeframe": "H1",
-      "directional_bias": "LONG_BIAS",
-      "candidate_contract_id": "SCU01_H1_SESSION_OPEN_TREND_CONTRACT_v1_0",
-      "setup_cluster_id": "SCU01_CLUSTER_H1_SESSION_OPEN_TREND",
-      "score_not_probability": 48,
-      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
-      "reason_codes": [
-        "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy"
-      ],
-      "passed_clause_count": 5,
-      "failed_clause_count": 1,
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
+      "score_not_probability": 43,
+      "evaluation_status": "SHADOW_CANDIDATE_ACTIVE",
+      "reason_codes": [],
+      "passed_clause_count": 4,
+      "failed_clause_count": 0,
       "missing_field_count": 0,
-      "total_clause_count": 6,
-      "is_shadow_active": false,
-      "is_near_miss": true,
-      "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "total_clause_count": 4,
+      "is_shadow_active": true,
+      "is_near_miss": false,
+      "active_event_id": "SCU_EVT_1e191ea6d8f4a1861c886878",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 162.46876,
+      "observation_reference_price": 162.45875,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
-        "h1_bar_direction": "BULLISH",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -71,7 +73,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 162.46876,
+        "h1_close": 162.45875,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -86,45 +88,25 @@
           "field": "session_bucket",
           "op": "in",
           "expected": [
-            "LONDON",
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
           "actual": "NEW_YORK"
         },
         {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        },
-        {
           "field": "h4_trend_state",
-          "op": "in",
-          "expected": [
-            "UP",
-            "FLAT"
-          ],
+          "op": "eq",
+          "expected": "UP",
           "actual": "UP"
         },
         {
-          "field": "d1_trend_state",
-          "op": "in",
-          "expected": [
-            "UP",
-            "FLAT"
-          ],
-          "actual": "FLAT"
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
         }
       ],
-      "failed_clauses": [
-        {
-          "field": "is_first_h1_bar_of_session",
-          "op": "truthy",
-          "expected": null,
-          "actual": false
-        }
-      ],
+      "failed_clauses": [],
       "boundary": {
         "display_only": true,
         "research_shadow_only": true,
@@ -142,17 +124,19 @@
         "plain_language_fa": "این لایه فقط کاندیدهای پژوهشی shadow را برای observation ثبت می‌کند؛ memory فعال، سیگنال، خرید/فروش، ورود/خروج، حدضرر/هدف، سودآوری یا اجرای معامله نیست."
       },
       "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution."
-    },
+    }
+  ],
+  "near_miss_examples": [
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
-      "candidate_id": "SCU01_USDJPY_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
+      "created_utc": "2026-07-17T18:06:56Z",
+      "candidate_id": "SCU01_USDJPY_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
       "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
       "instrument": "USDJPY",
       "timeframe": "H1",
-      "directional_bias": "LONG_BIAS",
+      "directional_bias": "SHORT_BIAS",
       "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
       "score_not_probability": 50,
@@ -167,23 +151,23 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 162.46876,
+      "observation_reference_price": 162.45875,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
-        "h1_bar_direction": "BULLISH",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -192,7 +176,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 162.46876,
+        "h1_close": 162.45875,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -222,8 +206,8 @@
         {
           "field": "h1_bar_direction",
           "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
+          "expected": "BEARISH",
+          "actual": "BEARISH"
         }
       ],
       "failed_clauses": [
@@ -254,12 +238,121 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
-      "candidate_id": "SCU01_XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
+      "created_utc": "2026-07-17T18:06:56Z",
+      "candidate_id": "SCU01_XAUUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
+      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
+      "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
+      "score_not_probability": 50,
+      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
+      "reason_codes": [
+        "CLAUSE_FAILED:current_h1_expansion_flag:truthy"
+      ],
+      "passed_clause_count": 4,
+      "failed_clause_count": 1,
+      "missing_field_count": 0,
+      "total_clause_count": 5,
+      "is_shadow_active": false,
+      "is_near_miss": true,
+      "active_event_id": null,
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
+      "shadow_horizons": [
+        "H1+1",
+        "H1+2",
+        "H1+4",
+        "H1+8"
+      ],
+      "observation_reference_price": 4009.85791,
+      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
+      "context_excerpt": {
+        "instrument": "XAUUSD",
+        "timeframe": "H1",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
+        "d1_trend_state": "UP",
+        "h4_trend_state": "DOWN",
+        "is_first_h1_bar_of_session": false,
+        "last4_h1_contraction_flag": true,
+        "current_h1_expansion_flag": false,
+        "asian_high_breakout_continuation_by_closed_h1": null,
+        "asian_high_swept_and_reclaimed_by_closed_h1": null,
+        "weekly_open_reclaim_short_state": "NONE",
+        "h1_close": 4009.85791,
+        "data_sufficiency_status": "OK",
+        "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
+      },
+      "passed_clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "expected": "OK",
+          "actual": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": true
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": false
+        }
+      ],
+      "boundary": {
+        "display_only": true,
+        "research_shadow_only": true,
+        "active_memory_authorized": false,
+        "signal_authorized": false,
+        "trade_instruction_authorized": false,
+        "broker_execution_authorized": false,
+        "action_surface_authorized": false,
+        "entry_stop_target_authorized": false,
+        "position_size_authorized": false,
+        "profitability_claim_authorized": false,
+        "auto_learning_authorized": false,
+        "rule_rewrite_authorized": false,
+        "memory_promotion_authorized": false,
+        "plain_language_fa": "این لایه فقط کاندیدهای پژوهشی shadow را برای observation ثبت می‌کند؛ memory فعال، سیگنال، خرید/فروش، ورود/خروج، حدضرر/هدف، سودآوری یا اجرای معامله نیست."
+      },
+      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution."
+    },
+    {
+      "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
+      "created_utc": "2026-07-17T18:06:56Z",
+      "candidate_id": "SCU01_USDJPY_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_WEEKLY_OPEN_REACTION",
       "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
-      "instrument": "XAUUSD",
+      "instrument": "USDJPY",
       "timeframe": "H1",
       "directional_bias": "SHORT_BIAS",
       "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
@@ -276,32 +369,32 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 4015.41378,
+      "observation_reference_price": 162.45875,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
-        "instrument": "XAUUSD",
+        "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BEARISH",
-        "d1_trend_state": "UP",
-        "h4_trend_state": "DOWN",
+        "d1_trend_state": "FLAT",
+        "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": false,
+        "last4_h1_contraction_flag": true,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 4015.41378,
+        "h1_close": 162.45875,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -363,20 +456,20 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
-      "candidate_id": "SCU01_USDJPY_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
+      "created_utc": "2026-07-17T18:06:56Z",
+      "candidate_id": "SCU01_XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
-      "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
+      "candidate_family": "H1_WEEKLY_OPEN_REACTION",
       "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
-      "instrument": "USDJPY",
+      "instrument": "XAUUSD",
       "timeframe": "H1",
-      "directional_bias": "LONG_BIAS",
-      "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
-      "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
-      "score_not_probability": 46,
+      "directional_bias": "SHORT_BIAS",
+      "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
+      "setup_cluster_id": "SCU01_CLUSTER_H1_WEEKLY_OPEN_REACTION",
+      "score_not_probability": 47,
       "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:d1_trend_state:eq"
+        "CLAUSE_FAILED:weekly_open_reclaim_short_state:neq"
       ],
       "passed_clause_count": 4,
       "failed_clause_count": 1,
@@ -385,32 +478,32 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 162.46876,
+      "observation_reference_price": 4009.85791,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
-        "instrument": "USDJPY",
+        "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
-        "h1_bar_direction": "BULLISH",
-        "d1_trend_state": "FLAT",
-        "h4_trend_state": "UP",
+        "h1_bar_direction": "BEARISH",
+        "d1_trend_state": "UP",
+        "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
         "last4_h1_contraction_flag": true,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 162.46876,
+        "h1_close": 4009.85791,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -432,24 +525,24 @@
           "actual": "NEW_YORK"
         },
         {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "UP"
+          "field": "is_weekly_open_bar",
+          "op": "falsey",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
+          "expected": "BEARISH",
+          "actual": "BEARISH"
         }
       ],
       "failed_clauses": [
         {
-          "field": "d1_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "FLAT"
+          "field": "weekly_open_reclaim_short_state",
+          "op": "neq",
+          "expected": "NONE",
+          "actual": "NONE"
         }
       ],
       "boundary": {
@@ -472,7 +565,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
+      "created_utc": "2026-07-17T18:06:56Z",
       "candidate_id": "SCU01_XAUUSD_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -494,32 +587,32 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 4015.41378,
+      "observation_reference_price": 4009.85791,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": false,
+        "last4_h1_contraction_flag": true,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 4015.41378,
+        "h1_close": 4009.85791,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -581,211 +674,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
-      "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
-      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
-      "candidate_family": "H1_COUNTER_HTF_RECLAIM",
-      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
-      "instrument": "USDJPY",
-      "timeframe": "H1",
-      "directional_bias": "LONG_BIAS",
-      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_RECLAIM_CONTRACT_v1_0",
-      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_RECLAIM",
-      "score_not_probability": 43,
-      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
-      "reason_codes": [
-        "CLAUSE_FAILED:h4_trend_state:eq"
-      ],
-      "passed_clause_count": 3,
-      "failed_clause_count": 1,
-      "missing_field_count": 0,
-      "total_clause_count": 4,
-      "is_shadow_active": false,
-      "is_near_miss": true,
-      "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
-      "shadow_horizons": [
-        "H1+1",
-        "H1+2",
-        "H1+4",
-        "H1+8"
-      ],
-      "observation_reference_price": 162.46876,
-      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
-      "context_excerpt": {
-        "instrument": "USDJPY",
-        "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "session_bucket": "NEW_YORK",
-        "h1_bar_direction": "BULLISH",
-        "d1_trend_state": "FLAT",
-        "h4_trend_state": "UP",
-        "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
-        "current_h1_expansion_flag": false,
-        "asian_high_breakout_continuation_by_closed_h1": null,
-        "asian_high_swept_and_reclaimed_by_closed_h1": null,
-        "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 162.46876,
-        "data_sufficiency_status": "OK",
-        "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
-      },
-      "passed_clauses": [
-        {
-          "field": "data_sufficiency_status",
-          "op": "eq",
-          "expected": "OK",
-          "actual": "OK"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "NEW_YORK"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "DOWN",
-          "actual": "UP"
-        }
-      ],
-      "boundary": {
-        "display_only": true,
-        "research_shadow_only": true,
-        "active_memory_authorized": false,
-        "signal_authorized": false,
-        "trade_instruction_authorized": false,
-        "broker_execution_authorized": false,
-        "action_surface_authorized": false,
-        "entry_stop_target_authorized": false,
-        "position_size_authorized": false,
-        "profitability_claim_authorized": false,
-        "auto_learning_authorized": false,
-        "rule_rewrite_authorized": false,
-        "memory_promotion_authorized": false,
-        "plain_language_fa": "این لایه فقط کاندیدهای پژوهشی shadow را برای observation ثبت می‌کند؛ memory فعال، سیگنال، خرید/فروش، ورود/خروج، حدضرر/هدف، سودآوری یا اجرای معامله نیست."
-      },
-      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution."
-    },
-    {
-      "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
-      "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
-      "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
-      "candidate_family": "H1_COUNTER_HTF_REJECTION",
-      "candidate_state": "SHADOW_ONLY_RESEARCH_CANDIDATE_NOT_MEMORY",
-      "instrument": "USDJPY",
-      "timeframe": "H1",
-      "directional_bias": "SHORT_BIAS",
-      "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
-      "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
-      "score_not_probability": 43,
-      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
-      "reason_codes": [
-        "CLAUSE_FAILED:h1_bar_direction:eq"
-      ],
-      "passed_clause_count": 3,
-      "failed_clause_count": 1,
-      "missing_field_count": 0,
-      "total_clause_count": 4,
-      "is_shadow_active": false,
-      "is_near_miss": true,
-      "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
-      "shadow_horizons": [
-        "H1+1",
-        "H1+2",
-        "H1+4",
-        "H1+8"
-      ],
-      "observation_reference_price": 162.46876,
-      "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
-      "context_excerpt": {
-        "instrument": "USDJPY",
-        "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "session_bucket": "NEW_YORK",
-        "h1_bar_direction": "BULLISH",
-        "d1_trend_state": "FLAT",
-        "h4_trend_state": "UP",
-        "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
-        "current_h1_expansion_flag": false,
-        "asian_high_breakout_continuation_by_closed_h1": null,
-        "asian_high_swept_and_reclaimed_by_closed_h1": null,
-        "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 162.46876,
-        "data_sufficiency_status": "OK",
-        "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
-      },
-      "passed_clauses": [
-        {
-          "field": "data_sufficiency_status",
-          "op": "eq",
-          "expected": "OK",
-          "actual": "OK"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "NEW_YORK"
-        },
-        {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "UP"
-        }
-      ],
-      "failed_clauses": [
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "boundary": {
-        "display_only": true,
-        "research_shadow_only": true,
-        "active_memory_authorized": false,
-        "signal_authorized": false,
-        "trade_instruction_authorized": false,
-        "broker_execution_authorized": false,
-        "action_surface_authorized": false,
-        "entry_stop_target_authorized": false,
-        "position_size_authorized": false,
-        "profitability_claim_authorized": false,
-        "auto_learning_authorized": false,
-        "rule_rewrite_authorized": false,
-        "memory_promotion_authorized": false,
-        "plain_language_fa": "این لایه فقط کاندیدهای پژوهشی shadow را برای observation ثبت می‌کند؛ memory فعال، سیگنال، خرید/فروش، ورود/خروج، حدضرر/هدف، سودآوری یا اجرای معامله نیست."
-      },
-      "forbidden_interpretation": "Not a signal, not a trade setup authorization, not entry/stop/target, not probability, not profitability, not broker/execution."
-    },
-    {
-      "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
+      "created_utc": "2026-07-17T18:06:56Z",
       "candidate_id": "SCU01_XAUUSD_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_RECLAIM",
@@ -807,32 +696,32 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 4015.41378,
+      "observation_reference_price": 4009.85791,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": false,
+        "last4_h1_contraction_flag": true,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 4015.41378,
+        "h1_close": 4009.85791,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -887,7 +776,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-07-17T17:57:33Z",
+      "created_utc": "2026-07-17T18:06:56Z",
       "candidate_id": "SCU01_XAUUSD_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_REJECTION",
@@ -909,32 +798,32 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-      "valid_until_utc": "2026-07-18T00:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+      "valid_until_utc": "2026-07-18T01:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 4015.41378,
+      "observation_reference_price": 4009.85791,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-07-17T16:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-07-17T16:00:00Z",
+        "latest_bar_open_ts_utc": "2026-07-17T17:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-07-17T17:00:00Z",
         "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": false,
+        "last4_h1_contraction_flag": true,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 4015.41378,
+        "h1_close": 4009.85791,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
