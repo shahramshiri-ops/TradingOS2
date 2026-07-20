@@ -1,6 +1,6 @@
 {
   "status_version": "SIG_E_REGIME1_MARKET_STATE_v1_0",
-  "created_utc": "2026-07-20T16:57:03Z",
+  "created_utc": "2026-07-20T17:07:01Z",
   "program": "SIG-E-REGIME1",
   "target_architecture": "E_MANUAL_SEMI_AUTOMATED_TRADING_DECISION_SYSTEM",
   "current_runtime_posture": "MARKET_STATE_CONTEXT_ONLY_CURRENT_RUNTIME_NOT_SIGNAL",
@@ -12,12 +12,12 @@
   },
   "source_context": {
     "context_version": "SIG_BRAIN5_LIVE_CONTEXT_v1_5_OPS20_CONSOLIDATED_H1_SESSION_ASIAN_WEEKLY",
-    "context_created_utc": "2026-07-20T16:57:00Z",
+    "context_created_utc": "2026-07-20T17:06:58Z",
     "source_authority": "SIG_BRAIN5_UPSTREAM_CONTEXT_BUILDER|READ_ONLY_DERIVED_CONTEXT|DISPLAY_ONLY|NOT_SIGNAL|NO_BUY_SELL_HOLD|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
     "refresh_status_summary": {
-      "created_utc": "2026-07-20T16:57:01Z",
-      "last_successful_refresh_utc": "2026-07-20T16:57:01Z",
-      "provider_max_latest_bar_open_ts_utc": "2026-07-20T16:45:00Z",
+      "created_utc": "2026-07-20T17:07:00Z",
+      "last_successful_refresh_utc": "2026-07-20T17:07:00Z",
+      "provider_max_latest_bar_open_ts_utc": "2026-07-20T16:55:00Z",
       "lag_reason_code": "M15_CONTEXT_ALIGNED_WITH_PROVIDER_M5"
     }
   },
@@ -38,28 +38,26 @@
       "REGIME_SUPPORTIVE": 3
     },
     "by_trend_state": {
-      "DOWN": 1,
+      "DOWN": 2,
       "MIXED": 2,
-      "UP": 2
+      "UP": 1
     },
     "by_range_state": {
-      "COMPRESSION": 4,
-      "TRENDING": 1
+      "COMPRESSION": 5
     },
     "by_volatility_state": {
-      "LOW": 4,
-      "NORMAL": 1
+      "LOW": 5
     },
     "signal_authorized": false,
     "trade_plan_authorized": false
   },
   "surfaces": [
     {
-      "surface_id": "EURUSD_M15_2026-07-20T16:30:00Z",
+      "surface_id": "EURUSD_M15_2026-07-20T16:45:00Z",
       "instrument": "EURUSD",
       "timeframe": "M15",
-      "bar_open_ts_utc": "2026-07-20T16:30:00Z",
-      "bar_close_ts_utc": "2026-07-20T16:45:00Z",
+      "bar_open_ts_utc": "2026-07-20T16:45:00Z",
+      "bar_close_ts_utc": "2026-07-20T17:00:00Z",
       "session_bucket": "NEW_YORK",
       "data_sufficiency_status": "OK",
       "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS",
@@ -71,8 +69,8 @@
         "current": "NEUTRAL"
       },
       "trend_state": "DOWN",
-      "range_state": "TRENDING",
-      "volatility_state": "NORMAL",
+      "range_state": "COMPRESSION",
+      "volatility_state": "LOW",
       "htf_alignment": "H4_H1_ALIGNED_DOWN",
       "liquidity_context": {
         "tags": [
@@ -87,12 +85,12 @@
       },
       "tradeability_context": "REGIME_SUPPORTIVE",
       "setup_relevance_hints": [
-        "PULLBACK_CONTINUATION_CONTEXT_SUPPORTED"
+        "INSUFFICIENT_CONTEXT"
       ],
       "regime_metrics": {
-        "m15_range_ratio_12": 1.1446153846151426
+        "m15_range_ratio_12": 0.40063593004779785
       },
-      "regime_explanation": "trend=DOWN; range=TRENDING; volatility=NORMAL; alignment=H4_H1_ALIGNED_DOWN",
+      "regime_explanation": "trend=DOWN; range=COMPRESSION; volatility=LOW; alignment=H4_H1_ALIGNED_DOWN",
       "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
       "boundary": {
         "signal_authorized": false,
@@ -105,11 +103,11 @@
       }
     },
     {
-      "surface_id": "USDJPY_M15_2026-07-20T16:30:00Z",
+      "surface_id": "USDJPY_M15_2026-07-20T16:45:00Z",
       "instrument": "USDJPY",
       "timeframe": "M15",
-      "bar_open_ts_utc": "2026-07-20T16:30:00Z",
-      "bar_close_ts_utc": "2026-07-20T16:45:00Z",
+      "bar_open_ts_utc": "2026-07-20T16:45:00Z",
+      "bar_close_ts_utc": "2026-07-20T17:00:00Z",
       "session_bucket": "NEW_YORK",
       "data_sufficiency_status": "OK",
       "context_builder_status": "DERIVED_FROM_READ_ONLY_RECENT_BARS",
@@ -140,7 +138,7 @@
         "INSUFFICIENT_CONTEXT"
       ],
       "regime_metrics": {
-        "m15_range_ratio_12": 0.55279825563301
+        "m15_range_ratio_12": 0.4397762301632935
       },
       "regime_explanation": "trend=UP; range=COMPRESSION; volatility=LOW; alignment=H4_H1_ALIGNED_UP",
       "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
@@ -155,12 +153,12 @@
       }
     },
     {
-      "surface_id": "EURUSD_H1_2026-07-20T15:00:00Z",
+      "surface_id": "EURUSD_H1_2026-07-20T16:00:00Z",
       "instrument": "EURUSD",
       "timeframe": "H1",
-      "bar_open_ts_utc": "2026-07-20T15:00:00Z",
-      "bar_close_ts_utc": "2026-07-20T16:00:00Z",
-      "session_bucket": "LONDON_NY_OVERLAP",
+      "bar_open_ts_utc": "2026-07-20T16:00:00Z",
+      "bar_close_ts_utc": "2026-07-20T17:00:00Z",
+      "session_bucket": "NEW_YORK",
       "data_sufficiency_status": "MISSING_REQUIRED_BARS",
       "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20",
       "direction_inputs": {
@@ -190,7 +188,7 @@
         "CHOP_AVOID_TREND_FOLLOWING_CONTEXT"
       ],
       "regime_metrics": {
-        "h1_range_to_atr_proxy": 0.3264925373134018
+        "h1_range_to_atr_proxy": 0.3358992302309614
       },
       "regime_explanation": "trend=MIXED; range=COMPRESSION; volatility=LOW; alignment=H4_H1_CONFLICT | tradeability_context=DATA_INSUFFICIENT; this is not a trade veto by itself, only regime context",
       "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
@@ -205,70 +203,20 @@
       }
     },
     {
-      "surface_id": "USDJPY_H1_2026-07-20T15:00:00Z",
+      "surface_id": "USDJPY_H1_2026-07-20T16:00:00Z",
       "instrument": "USDJPY",
       "timeframe": "H1",
-      "bar_open_ts_utc": "2026-07-20T15:00:00Z",
-      "bar_close_ts_utc": "2026-07-20T16:00:00Z",
-      "session_bucket": "LONDON_NY_OVERLAP",
+      "bar_open_ts_utc": "2026-07-20T16:00:00Z",
+      "bar_close_ts_utc": "2026-07-20T17:00:00Z",
+      "session_bucket": "NEW_YORK",
       "data_sufficiency_status": "OK",
       "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20",
       "direction_inputs": {
         "d1": "NEUTRAL",
         "h4": "UP",
-        "h1": "UP",
+        "h1": "DOWN",
         "m15": "UNKNOWN",
-        "current": "UP"
-      },
-      "trend_state": "UP",
-      "range_state": "COMPRESSION",
-      "volatility_state": "LOW",
-      "htf_alignment": "H4_H1_ALIGNED_UP",
-      "liquidity_context": {
-        "tags": [
-          "NONE"
-        ],
-        "raw_reference_fields": {
-          "failed_breakout_event_type": null,
-          "session_reference_break_event_type": null,
-          "weekly_open_reclaim_short_state": "NONE",
-          "sweep_reference_type_up": null
-        }
-      },
-      "tradeability_context": "REGIME_SUPPORTIVE",
-      "setup_relevance_hints": [
-        "INSUFFICIENT_CONTEXT"
-      ],
-      "regime_metrics": {
-        "h1_range_to_atr_proxy": 0.050578605472719605
-      },
-      "regime_explanation": "trend=UP; range=COMPRESSION; volatility=LOW; alignment=H4_H1_ALIGNED_UP",
-      "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
-      "boundary": {
-        "signal_authorized": false,
-        "trade_proposal_authorized": false,
-        "entry_stop_target_authorized": false,
-        "risk_or_position_sizing_authorized": false,
-        "broker_execution_authorized": false,
-        "auto_execution_authorized": false,
-        "manual_review_required_for_future_trade_plan": true
-      }
-    },
-    {
-      "surface_id": "XAUUSD_H1_2026-07-20T15:00:00Z",
-      "instrument": "XAUUSD",
-      "timeframe": "H1",
-      "bar_open_ts_utc": "2026-07-20T15:00:00Z",
-      "bar_close_ts_utc": "2026-07-20T16:00:00Z",
-      "session_bucket": "LONDON_NY_OVERLAP",
-      "data_sufficiency_status": "OK",
-      "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20",
-      "direction_inputs": {
-        "d1": "UP",
-        "h4": "DOWN",
-        "h1": "UP",
-        "m15": "UNKNOWN",
-        "current": "UP"
+        "current": "DOWN"
       },
       "trend_state": "MIXED",
       "range_state": "COMPRESSION",
@@ -290,9 +238,59 @@
         "CHOP_AVOID_TREND_FOLLOWING_CONTEXT"
       ],
       "regime_metrics": {
-        "h1_range_to_atr_proxy": 0.14941763636930144
+        "h1_range_to_atr_proxy": 0.054487965046703835
       },
       "regime_explanation": "trend=MIXED; range=COMPRESSION; volatility=LOW; alignment=H4_H1_CONFLICT | tradeability_context=REGIME_MIXED; this is not a trade veto by itself, only regime context",
+      "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
+      "boundary": {
+        "signal_authorized": false,
+        "trade_proposal_authorized": false,
+        "entry_stop_target_authorized": false,
+        "risk_or_position_sizing_authorized": false,
+        "broker_execution_authorized": false,
+        "auto_execution_authorized": false,
+        "manual_review_required_for_future_trade_plan": true
+      }
+    },
+    {
+      "surface_id": "XAUUSD_H1_2026-07-20T16:00:00Z",
+      "instrument": "XAUUSD",
+      "timeframe": "H1",
+      "bar_open_ts_utc": "2026-07-20T16:00:00Z",
+      "bar_close_ts_utc": "2026-07-20T17:00:00Z",
+      "session_bucket": "NEW_YORK",
+      "data_sufficiency_status": "OK",
+      "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20",
+      "direction_inputs": {
+        "d1": "UP",
+        "h4": "DOWN",
+        "h1": "DOWN",
+        "m15": "UNKNOWN",
+        "current": "DOWN"
+      },
+      "trend_state": "DOWN",
+      "range_state": "COMPRESSION",
+      "volatility_state": "LOW",
+      "htf_alignment": "H4_H1_ALIGNED_DOWN",
+      "liquidity_context": {
+        "tags": [
+          "NONE"
+        ],
+        "raw_reference_fields": {
+          "failed_breakout_event_type": null,
+          "session_reference_break_event_type": null,
+          "weekly_open_reclaim_short_state": "NONE",
+          "sweep_reference_type_up": null
+        }
+      },
+      "tradeability_context": "REGIME_SUPPORTIVE",
+      "setup_relevance_hints": [
+        "INSUFFICIENT_CONTEXT"
+      ],
+      "regime_metrics": {
+        "h1_range_to_atr_proxy": 0.138521904334945
+      },
+      "regime_explanation": "trend=DOWN; range=COMPRESSION; volatility=LOW; alignment=H4_H1_ALIGNED_DOWN",
       "authority": "SIG-E-REGIME1|MARKET_STATE_CONTEXT_ONLY|CURRENT_RUNTIME_NOT_SIGNAL|NO_ENTRY_STOP_TARGET|NO_BROKER_EXECUTION",
       "boundary": {
         "signal_authorized": false,
