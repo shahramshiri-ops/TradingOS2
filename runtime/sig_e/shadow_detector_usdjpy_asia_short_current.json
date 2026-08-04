@@ -2,12 +2,12 @@
   "program": "SIG-E-RUNTIME-SHADOW-DETECTOR2",
   "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
-  "detector_run_id": "SIGE_SD2_USDJPY_20260804T014606Z",
-  "created_utc": "2026-08-04T01:46:06Z",
+  "detector_run_id": "SIGE_SD2_USDJPY_20260804T044910Z",
+  "created_utc": "2026-08-04T04:49:10Z",
   "instrument": "USDJPY",
   "direction": "SHORT",
-  "detector_status": "REGIME_NOT_MATCHED",
-  "status_reason": "d1_h4_down_alignment_not_matched",
+  "detector_status": "SETUP_NOT_FORMED",
+  "status_reason": "previous_h1_bar_did_not_match_upper_rejection_short_setup",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -45,29 +45,43 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-08-04T00:00:00Z",
-    "m15_bar_open_ts_utc": "2026-08-04T01:15:00Z",
+    "h1_bar_open_ts_utc": "2026-08-04T03:00:00Z",
+    "m15_bar_open_ts_utc": "2026-08-04T04:15:00Z",
     "h1_surface_score": 342,
     "m15_surface_score": 342
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": false,
+      "passed": true,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
         "session_bucket": "ASIA",
         "d1_trend_state": "NEUTRAL",
-        "h4_trend_state": "UP",
-        "htf_alignment": "H4_H1_CONFLICT",
+        "h4_trend_state": "DOWN",
+        "htf_alignment": "H4_H1_ALIGNED_DOWN",
         "h4_h1_down_context": null,
         "volatility_state_or_d1_vol_bucket": "LOW",
-        "tradeability_context": "REGIME_MIXED",
-        "range_state": "EXPANSION_AFTER_COMPRESSION",
+        "tradeability_context": "REGIME_SUPPORTIVE",
+        "range_state": "COMPRESSION",
         "session_ok": true,
-        "alignment_ok": false,
+        "alignment_ok": true,
         "selected_surface_score": 342
+      }
+    },
+    {
+      "check_id": "H1_SETUP_PREVIOUS_BAR_UPPER_REJECTION_SHORT",
+      "passed": false,
+      "details": {
+        "setup_h1_open_ts_utc": "2026-08-04T03:00:00Z",
+        "upper_rejection": {
+          "range": 0.1879199999999912,
+          "upper_wick": 0.0018699999999967076,
+          "upper_wick_to_range": 0.009951042997002954,
+          "close_location": 0.6608131119625443,
+          "bearish_close": true
+        }
       }
     }
   ],
@@ -82,5 +96,16 @@
   ],
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
-  }
+  },
+  "source_paths": {
+    "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
+    "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
+    "live_source_policy": "live_only_no_data_canonical_fallback"
+  },
+  "data_counts": {
+    "h1_rows_loaded": 803,
+    "m15_rows_loaded": 3000
+  },
+  "setup_h1_open_ts_utc": "2026-08-04T03:00:00Z",
+  "trigger_h1_open_ts_utc": "2026-08-04T04:00:00Z"
 }
