@@ -2,13 +2,13 @@
   "program": "SIG-E-RUNTIME-SHADOW-DETECTOR2",
   "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_ASIA_SHORT_H1_M15_CAVEATED_v1_0",
-  "detector_run_id": "SIGE_SD2_USDJPY_20260805T041810Z",
-  "created_utc": "2026-08-05T04:18:10Z",
+  "detector_run_id": "SIGE_SD2_USDJPY_20260805T070619Z",
+  "created_utc": "2026-08-05T07:06:19Z",
   "instrument": "USDJPY",
   "direction": "SHORT",
-  "detector_status": "CAVEATED_SHADOW_MATCH_CONFIRMED",
-  "status_reason": "caveated_regime_setup_h1_trigger_m15_no_failure_policy_confirmed",
-  "is_shadow_match": true,
+  "detector_status": "REGIME_NOT_MATCHED",
+  "status_reason": "d1_h4_down_alignment_not_matched",
+  "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
   "is_caveated_observation": true,
@@ -45,65 +45,29 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-08-05T03:00:00Z",
-    "m15_bar_open_ts_utc": "2026-08-05T03:45:00Z",
+    "h1_bar_open_ts_utc": "2026-08-05T06:00:00Z",
+    "m15_bar_open_ts_utc": "2026-08-05T06:45:00Z",
     "h1_surface_score": 342,
     "m15_surface_score": 342
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": true,
+      "passed": false,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
         "session_bucket": "ASIA",
         "d1_trend_state": "NEUTRAL",
-        "h4_trend_state": "DOWN",
-        "htf_alignment": "H4_H1_ALIGNED_DOWN",
+        "h4_trend_state": "UP",
+        "htf_alignment": "H4_H1_CONFLICT",
         "h4_h1_down_context": null,
         "volatility_state_or_d1_vol_bucket": "LOW",
-        "tradeability_context": "REGIME_SUPPORTIVE",
+        "tradeability_context": "REGIME_MIXED",
         "range_state": "COMPRESSION",
         "session_ok": true,
-        "alignment_ok": true,
+        "alignment_ok": false,
         "selected_surface_score": 342
-      }
-    },
-    {
-      "check_id": "H1_SETUP_PREVIOUS_BAR_UPPER_REJECTION_SHORT",
-      "passed": true,
-      "details": {
-        "setup_h1_open_ts_utc": "2026-08-05T03:00:00Z",
-        "upper_rejection": {
-          "range": 0.15181000000001177,
-          "upper_wick": 0.08736000000001809,
-          "upper_wick_to_range": 0.5754561623082229,
-          "close_location": 0.4113036031882257,
-          "bearish_close": true
-        }
-      }
-    },
-    {
-      "check_id": "H1_STRONG_REJECTION_CLOSE_CONFIRM",
-      "passed": true,
-      "details": {
-        "trigger_h1_open_ts_utc": "2026-08-05T04:00:00Z",
-        "range": 0.06284999999999741,
-        "body_to_range": 0.5616547334925697,
-        "close_location": 0.43834526650743033,
-        "bearish_close": true
-      }
-    },
-    {
-      "check_id": "M15_NO_EARLY_FAILURE_AFTER_H1_CONFIRM",
-      "passed": true,
-      "details": {
-        "h1_window_start": "2026-08-05T04:00:00Z",
-        "h1_window_end": "2026-08-05T05:00:00Z",
-        "m15_inside_count": 1,
-        "m15_strong_bullish_failure_count": 0,
-        "first_failure_m15_open_ts_utc": null
       }
     }
   ],
@@ -118,23 +82,5 @@
   ],
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
-  },
-  "source_paths": {
-    "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
-    "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
-    "live_source_policy": "live_only_no_data_canonical_fallback"
-  },
-  "data_counts": {
-    "h1_rows_loaded": 803,
-    "m15_rows_loaded": 3000
-  },
-  "setup_h1_open_ts_utc": "2026-08-05T03:00:00Z",
-  "trigger_h1_open_ts_utc": "2026-08-05T04:00:00Z",
-  "shadow_event_id": "SIGE_SD2_USDJPY_ASIA_SHORT_20260805T040000",
-  "observation_horizon": {
-    "horizon_h1_bars": 8,
-    "observation_end_ts_utc": "2026-08-05T12:00:00Z",
-    "outcome_tracking_authorized": true,
-    "trade_execution_authorized": false
   }
 }
