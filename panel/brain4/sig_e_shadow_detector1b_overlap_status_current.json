@@ -2,12 +2,12 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260811T153208Z",
-  "created_utc": "2026-08-11T15:32:08Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260811T162725Z",
+  "created_utc": "2026-08-11T16:27:25Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "SETUP_NOT_FORMED",
-  "status_reason": "previous_h1_bar_did_not_match_overlap_lower_rejection_expansion_setup",
+  "detector_status": "H1_TRIGGER_NOT_CONFIRMED",
+  "status_reason": "next_h1_bar_did_not_confirm_bullish_overlap_followthrough",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -51,8 +51,8 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-08-11T14:00:00Z",
-    "m15_bar_open_ts_utc": "2026-08-11T15:00:00Z",
+    "h1_bar_open_ts_utc": "2026-08-11T15:00:00Z",
+    "m15_bar_open_ts_utc": "2026-08-11T16:00:00Z",
     "h1_surface_score": 345,
     "m15_surface_score": 345
   },
@@ -83,25 +83,35 @@
     },
     {
       "check_id": "H1_SETUP_PREVIOUS_BAR_LOWER_REJECTION_EXPANSION",
-      "passed": false,
+      "passed": true,
       "details": {
-        "setup_h1_open_ts_utc": "2026-08-11T14:00:00Z",
-        "open": 159.23066,
-        "high": 159.28694,
-        "low": 159.20391,
-        "close": 159.25212,
-        "range": 0.08302999999997951,
-        "prior_12_range_median": 0.10926000000000613,
-        "range_expansion_ratio": 0.7599304411493214,
-        "lower_wick": 0.026749999999992724,
-        "lower_wick_to_range": 0.32217270865951253,
-        "close_location": 0.5806335059616416,
+        "setup_h1_open_ts_utc": "2026-08-11T15:00:00Z",
+        "open": 159.24965,
+        "high": 159.32882,
+        "low": 159.2047,
+        "close": 159.27204,
+        "range": 0.1241200000000049,
+        "prior_12_range_median": 0.0956950000000063,
+        "range_expansion_ratio": 1.2970374627723154,
+        "lower_wick": 0.044950000000000045,
+        "lower_wick_to_range": 0.36214953271026645,
+        "close_location": 0.5425394779245799,
         "bullish_close": true,
         "requirements": {
           "lower_wick_to_range_min": 0.3,
           "range_expansion_ratio_min": 1.15,
           "close_location_min": 0.5
         }
+      }
+    },
+    {
+      "check_id": "NEXT_H1_BULLISH_CLOSE_CONFIRM",
+      "passed": false,
+      "details": {
+        "trigger_h1_open_ts_utc": "2026-08-11T16:00:00Z",
+        "open": 159.26974,
+        "close": 159.22528,
+        "bullish_close": false
       }
     }
   ],
@@ -118,7 +128,7 @@
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
   },
-  "gateflow_hotfix2_checked_utc": "2026-08-11T15:32:08Z",
+  "gateflow_hotfix2_checked_utc": "2026-08-11T16:27:25Z",
   "source_paths": {
     "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
     "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
@@ -130,7 +140,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
         "rows": 803,
-        "latest_bar_open_ts_utc": "2026-08-11T15:00:00Z",
+        "latest_bar_open_ts_utc": "2026-08-11T16:00:00Z",
         "score": 1005803,
         "forbidden": false
       },
@@ -148,7 +158,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
         "rows": 3206,
-        "latest_bar_open_ts_utc": "2026-08-11T15:15:00Z",
+        "latest_bar_open_ts_utc": "2026-08-11T16:15:00Z",
         "score": 1008206,
         "forbidden": false
       }
@@ -157,10 +167,10 @@
   "data_counts": {
     "h1_rows_loaded": 803,
     "m15_rows_loaded": 3206,
-    "h1_latest_bar_open_ts_utc": "2026-08-11T15:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-08-11T15:15:00Z"
+    "h1_latest_bar_open_ts_utc": "2026-08-11T16:00:00Z",
+    "m15_latest_bar_open_ts_utc": "2026-08-11T16:15:00Z"
   },
-  "setup_h1_open_ts_utc": "2026-08-11T14:00:00Z",
-  "trigger_h1_open_ts_utc": "2026-08-11T15:00:00Z",
-  "gateflow_hotfix2_action": "REGIME_PASS_TO_SETUP_NOT_FORMED"
+  "setup_h1_open_ts_utc": "2026-08-11T15:00:00Z",
+  "trigger_h1_open_ts_utc": "2026-08-11T16:00:00Z",
+  "gateflow_hotfix2_action": "REGIME_PASS_SETUP_PASS_H1_TRIGGER_FAIL"
 }
