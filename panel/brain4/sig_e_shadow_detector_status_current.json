@@ -2,13 +2,13 @@
   "program": "SIG-E-RUNTIME-SHADOW-DETECTOR1",
   "detector_id": "SIG_E_SHADOW_DETECTOR_USDJPY_LONDON_LONG_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_LONDON_LONG_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1_USDJPY_20260820T115755Z",
-  "created_utc": "2026-08-20T11:57:55Z",
+  "detector_run_id": "SIGE_SD1_USDJPY_20260820T130405Z",
+  "created_utc": "2026-08-20T13:04:05Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "SHADOW_MATCH_CONFIRMED",
-  "status_reason": "regime_setup_h1_trigger_m15_trigger_all_confirmed",
-  "is_shadow_match": true,
+  "detector_status": "SETUP_NOT_FORMED",
+  "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
+  "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
   "authority": {
@@ -43,8 +43,8 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-08-20T10:00:00Z",
-    "m15_bar_open_ts_utc": "2026-08-20T11:30:00Z",
+    "h1_bar_open_ts_utc": "2026-08-20T11:00:00Z",
+    "m15_bar_open_ts_utc": "2026-08-20T12:30:00Z",
     "h1_surface_score": 345,
     "m15_surface_score": 345
   },
@@ -75,42 +75,21 @@
     },
     {
       "check_id": "H1_SETUP_PREVIOUS_BAR",
-      "passed": true,
+      "passed": false,
       "details": {
-        "setup_h1_open_ts_utc": "2026-08-20T10:00:00Z",
+        "setup_h1_open_ts_utc": "2026-08-20T11:00:00Z",
         "lower_rejection": {
-          "range": 0.2730099999999993,
-          "lower_wick": 0.12770000000000437,
-          "lower_wick_to_range": 0.46774843412330935,
-          "close_location": 0.9912457419142476,
+          "range": 0.2259300000000053,
+          "lower_wick": 0.028760000000005448,
+          "lower_wick_to_range": 0.12729606515294462,
+          "close_location": 0.7052626919841646,
           "bullish_close": true
         },
         "range_expansion": {
-          "setup_range": 0.2730099999999993,
-          "prior_range_avg": 0.18807499999999777,
-          "range_expansion_ratio": 1.4516017546191815
+          "setup_range": 0.2259300000000053,
+          "prior_range_avg": 0.20536999999999495,
+          "range_expansion_ratio": 1.1001119929883179
         }
-      }
-    },
-    {
-      "check_id": "NEXT_H1_DIRECTION_CONFIRM",
-      "passed": true,
-      "details": {
-        "trigger_h1_open_ts_utc": "2026-08-20T11:00:00Z",
-        "open": 158.5132,
-        "close": 158.68106,
-        "direction": "UP"
-      }
-    },
-    {
-      "check_id": "M15_INSIDE_H1_DIRECTIONAL_CLOSE_CONFIRM",
-      "passed": true,
-      "details": {
-        "h1_window_start": "2026-08-20T11:00:00Z",
-        "h1_window_end": "2026-08-20T12:00:00Z",
-        "m15_inside_count": 4,
-        "m15_confirm_count": 3,
-        "first_confirm_m15_open_ts_utc": "2026-08-20T11:00:00Z"
       }
     }
   ],
@@ -139,7 +118,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
         "rows": 802,
-        "latest_bar_open_ts_utc": "2026-08-20T11:00:00Z",
+        "latest_bar_open_ts_utc": "2026-08-20T12:00:00Z",
         "score": 1005802,
         "forbidden": false
       },
@@ -157,7 +136,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
         "rows": 3206,
-        "latest_bar_open_ts_utc": "2026-08-20T11:45:00Z",
+        "latest_bar_open_ts_utc": "2026-08-20T12:45:00Z",
         "score": 1008206,
         "forbidden": false
       }
@@ -166,17 +145,9 @@
   "data_counts": {
     "h1_rows_loaded": 802,
     "m15_rows_loaded": 3206,
-    "h1_latest_bar_open_ts_utc": "2026-08-20T11:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-08-20T11:45:00Z"
+    "h1_latest_bar_open_ts_utc": "2026-08-20T12:00:00Z",
+    "m15_latest_bar_open_ts_utc": "2026-08-20T12:45:00Z"
   },
-  "setup_h1_open_ts_utc": "2026-08-20T10:00:00Z",
-  "trigger_h1_open_ts_utc": "2026-08-20T11:00:00Z",
-  "shadow_event_id": "SIGE_SD1_USDJPY_LONDON_LONG_20260820T110000",
-  "m15_confirm_ts_utc": "2026-08-20T11:00:00Z",
-  "observation_horizon": {
-    "horizon_h1_bars": 16,
-    "observation_end_ts_utc": "2026-08-21T03:00:00Z",
-    "outcome_tracking_authorized": true,
-    "trade_execution_authorized": false
-  }
+  "setup_h1_open_ts_utc": "2026-08-20T11:00:00Z",
+  "trigger_h1_open_ts_utc": "2026-08-20T12:00:00Z"
 }
