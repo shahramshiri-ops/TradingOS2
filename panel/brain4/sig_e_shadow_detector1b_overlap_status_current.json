@@ -2,12 +2,12 @@
   "program": "SIG-E-SHADOW-LANE1B-OVERLAP-DIAGNOSTIC1",
   "detector_id": "SIG_E_SHADOW_DETECTOR1B_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
   "source_spec_id": "SIG_E_RUNTIME_SPEC_USDJPY_OVERLAP_LONG_DIAGNOSTIC_H1_M15_v1_0",
-  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260924T100517Z",
-  "created_utc": "2026-09-24T10:05:17Z",
+  "detector_run_id": "SIGE_SD1B_USDJPY_OVERLAP_20260924T145653Z",
+  "created_utc": "2026-09-24T14:56:53Z",
   "instrument": "USDJPY",
   "direction": "LONG",
-  "detector_status": "SETUP_NOT_FORMED",
-  "status_reason": "previous_h1_bar_did_not_match_lower_rejection_expansion_setup",
+  "detector_status": "H1_TRIGGER_WAIT",
+  "status_reason": "latest_h1_bar_forms_overlap_lower_rejection_expansion_setup_waiting_for_next_h1_close",
   "is_shadow_match": false,
   "is_signal": false,
   "is_trade_proposal": false,
@@ -51,28 +51,28 @@
     "m15_surface_available": true,
     "h1_surface_source": "runtime/sig_e/market_state_current.json",
     "m15_surface_source": "runtime/sig_e/market_state_current.json",
-    "h1_bar_open_ts_utc": "2026-09-24T09:00:00Z",
-    "m15_bar_open_ts_utc": "2026-09-24T09:45:00Z",
+    "h1_bar_open_ts_utc": "2026-09-24T13:00:00Z",
+    "m15_bar_open_ts_utc": "2026-09-24T14:30:00Z",
     "h1_surface_score": 345,
     "m15_surface_score": 345
   },
   "checks": [
     {
       "check_id": "REGIME",
-      "passed": false,
+      "passed": true,
       "details": {
         "selected_surface_source": "runtime/sig_e/market_state_current.json",
         "source_priority": 300,
-        "session_bucket": "LONDON",
+        "session_bucket": "LONDON_NY_OVERLAP",
         "d1_trend_state": "NEUTRAL",
         "h4_trend_state": "UP",
         "htf_alignment": "H4_H1_ALIGNED_UP",
         "volatility_state_or_d1_vol_bucket": "LOW",
         "volatility_source_policy": null,
         "tradeability_context": "REGIME_SUPPORTIVE",
-        "range_state": "COMPRESSION",
+        "range_state": "EXPANSION_AFTER_COMPRESSION",
         "h4_h1_up_context": null,
-        "session_ok": false,
+        "session_ok": true,
         "alignment_ok": true,
         "vol_known": true,
         "vol_ok": true,
@@ -82,21 +82,25 @@
       }
     },
     {
-      "check_id": "H1_SETUP_PREVIOUS_BAR",
+      "check_id": "H1_SETUP_PREVIOUS_BAR_LOWER_REJECTION_EXPANSION",
       "passed": false,
       "details": {
-        "setup_h1_open_ts_utc": "2026-09-24T08:00:00Z",
-        "lower_rejection": {
-          "range": 0.36818999999999846,
-          "lower_wick": 0.06675999999998794,
-          "lower_wick_to_range": 0.18131942746948101,
-          "close_location": 0.9081180912029255,
-          "bullish_close": true
-        },
-        "range_expansion": {
-          "setup_range": 0.36818999999999846,
-          "prior_range_avg": 0.29272000000000276,
-          "range_expansion_ratio": 1.257823175731057
+        "setup_h1_open_ts_utc": "2026-09-24T13:00:00Z",
+        "open": 158.69314,
+        "high": 158.91305,
+        "low": 158.61884,
+        "close": 158.7412,
+        "range": 0.29420999999999253,
+        "prior_12_range_median": 0.10854499999999234,
+        "range_expansion_ratio": 2.710488737390145,
+        "lower_wick": 0.07429999999999382,
+        "lower_wick_to_range": 0.2525407022194885,
+        "close_location": 0.41589340946939046,
+        "bullish_close": true,
+        "requirements": {
+          "lower_wick_to_range_min": 0.3,
+          "range_expansion_ratio_min": 1.15,
+          "close_location_min": 0.5
         }
       }
     }
@@ -114,12 +118,11 @@
   "freshness_check": {
     "status": "FRESHNESS_NOT_BLOCKING"
   },
+  "gateflow_hotfix2_checked_utc": "2026-09-24T14:56:54Z",
   "source_paths": {
     "h1_ohlc_path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
     "m15_ohlc_path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
-    "live_source_policy": "live_only_no_data_canonical_fallback",
-    "h1_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows",
-    "m15_selection_policy": "prefer_live_accumulated_resampled_store_with_most_rows"
+    "live_source_policy": "live_only_no_data_canonical_fallback"
   },
   "ohlc_source_diagnostics": {
     "h1_candidates_top": [
@@ -127,7 +130,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_H1_from_M5.csv.gz",
         "rows": 802,
-        "latest_bar_open_ts_utc": "2026-09-24T09:00:00Z",
+        "latest_bar_open_ts_utc": "2026-09-24T14:00:00Z",
         "score": 1005802,
         "forbidden": false
       },
@@ -145,7 +148,7 @@
         "source": "refresh_report",
         "path": "data/live_resampled/USDJPY_M15_from_M5.csv.gz",
         "rows": 3206,
-        "latest_bar_open_ts_utc": "2026-09-24T09:45:00Z",
+        "latest_bar_open_ts_utc": "2026-09-24T14:45:00Z",
         "score": 1008206,
         "forbidden": false
       }
@@ -154,11 +157,29 @@
   "data_counts": {
     "h1_rows_loaded": 802,
     "m15_rows_loaded": 3206,
-    "h1_latest_bar_open_ts_utc": "2026-09-24T09:00:00Z",
-    "m15_latest_bar_open_ts_utc": "2026-09-24T09:45:00Z"
+    "h1_latest_bar_open_ts_utc": "2026-09-24T14:00:00Z",
+    "m15_latest_bar_open_ts_utc": "2026-09-24T14:45:00Z"
   },
-  "setup_h1_open_ts_utc": "2026-09-24T08:00:00Z",
-  "trigger_h1_open_ts_utc": "2026-09-24T09:00:00Z",
-  "gateflow_hotfix2_checked_utc": "2026-09-24T10:05:17Z",
-  "gateflow_hotfix2_action": "NO_GATEFLOW_REPAIR_REGIME_NOT_PASSED"
+  "setup_h1_open_ts_utc": "2026-09-24T13:00:00Z",
+  "trigger_h1_open_ts_utc": "2026-09-24T14:00:00Z",
+  "gateflow_hotfix2_action": "REGIME_PASS_TO_SETUP_NOT_FORMED",
+  "current_setup_candidate": {
+    "setup_h1_open_ts_utc": "2026-09-24T14:00:00Z",
+    "open": 158.75466,
+    "high": 158.90427,
+    "low": 158.6692,
+    "close": 158.89552,
+    "range": 0.23507000000000744,
+    "prior_12_range_median": 0.1250649999999922,
+    "range_expansion_ratio": 1.8795826170393162,
+    "lower_wick": 0.08546000000001186,
+    "lower_wick_to_range": 0.36355128259671227,
+    "close_location": 0.9627770451355265,
+    "bullish_close": true,
+    "requirements": {
+      "lower_wick_to_range_min": 0.3,
+      "range_expansion_ratio_min": 1.15,
+      "close_location_min": 0.5
+    }
+  }
 }
