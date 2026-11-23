@@ -1,12 +1,12 @@
 {
   "payload_version": "SHADOW_CANDIDATE_UNIVERSE_01_EVALUATIONS_v1_0",
-  "created_utc": "2026-11-23T07:18:58Z",
+  "created_utc": "2026-11-23T19:21:12Z",
   "authority": "SHADOW_CANDIDATE_UNIVERSE_01|RESEARCH_SHADOW_ONLY|NOT_SIGNAL|NO_BUY_SELL|NO_ENTRY_STOP_TARGET|NO_POSITION_SIZE|NO_BROKER_EXECUTION|NO_AUTO_LEARNING|NO_RULE_REWRITE",
   "row_count": 35,
   "rows": [
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_SESSION_OPEN_TREND_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_SESSION_OPEN_TREND",
@@ -21,49 +21,58 @@
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
         "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:h4_trend_state:in",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 4,
+      "passed_clause_count": 3,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 6,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h1_bar_direction",
           "op": "eq",
@@ -92,16 +101,6 @@
           "op": "truthy",
           "expected": null,
           "actual": false
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
         },
         {
           "field": "h4_trend_state",
@@ -133,7 +132,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_SESSION_OPEN_TREND_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_SESSION_OPEN_TREND",
@@ -148,49 +147,58 @@
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
         "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:h1_bar_direction:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 4,
+      "passed_clause_count": 3,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 6,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h4_trend_state",
           "op": "in",
@@ -224,16 +232,6 @@
           "actual": false
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
-        },
-        {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
@@ -260,7 +258,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_SESSION_OPEN_TREND_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_SESSION_OPEN_TREND",
@@ -274,7 +272,7 @@
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
         "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy",
-        "CLAUSE_FAILED:session_bucket:in"
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 4,
       "failed_clause_count": 2,
@@ -283,23 +281,23 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -308,7 +306,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -320,10 +318,14 @@
           "actual": "OK"
         },
         {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
         },
         {
           "field": "h4_trend_state",
@@ -352,14 +354,10 @@
           "actual": false
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -382,7 +380,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_SESSION_OPEN_TREND_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_SESSION_OPEN_TREND",
@@ -396,34 +394,32 @@
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
         "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy",
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:h1_bar_direction:eq",
         "CLAUSE_FAILED:h4_trend_state:in"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 4,
+      "passed_clause_count": 4,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 6,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -432,7 +428,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -442,6 +438,22 @@
           "op": "eq",
           "expected": "OK",
           "actual": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
         },
         {
           "field": "d1_trend_state",
@@ -461,22 +473,6 @@
           "actual": false
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
-        },
-        {
           "field": "h4_trend_state",
           "op": "in",
           "expected": [
@@ -506,7 +502,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_SESSION_OPEN_TREND_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_SESSION_OPEN_TREND",
@@ -520,7 +516,7 @@
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
         "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy",
-        "CLAUSE_FAILED:session_bucket:in",
+        "CLAUSE_FAILED:h1_bar_direction:eq",
         "CLAUSE_FAILED:h4_trend_state:in"
       ],
       "passed_clause_count": 3,
@@ -530,32 +526,32 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -567,10 +563,14 @@
           "actual": "OK"
         },
         {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
         },
         {
           "field": "d1_trend_state",
@@ -590,14 +590,10 @@
           "actual": false
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         },
         {
           "field": "h4_trend_state",
@@ -629,7 +625,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_SESSION_OPEN_TREND_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_SESSION_OPEN_TREND",
@@ -643,43 +639,41 @@
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
         "CLAUSE_FAILED:is_first_h1_bar_of_session:truthy",
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:h1_bar_direction:eq",
         "CLAUSE_FAILED:d1_trend_state:in"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 4,
+      "passed_clause_count": 4,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 6,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -689,6 +683,22 @@
           "op": "eq",
           "expected": "OK",
           "actual": "OK"
+        },
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
         },
         {
           "field": "h4_trend_state",
@@ -706,22 +716,6 @@
           "op": "truthy",
           "expected": null,
           "actual": false
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
         },
         {
           "field": "d1_trend_state",
@@ -753,7 +747,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
@@ -767,7 +761,7 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
+        "CLAUSE_FAILED:last4_h1_contraction_flag:truthy",
         "CLAUSE_FAILED:current_h1_expansion_flag:truthy",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
@@ -778,43 +772,47 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
         {
-          "field": "last4_h1_contraction_flag",
-          "op": "truthy",
-          "expected": null,
-          "actual": true
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
         },
         {
           "field": "h1_bar_direction",
@@ -831,14 +829,10 @@
           "actual": "MISSING_REQUIRED_BARS"
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "current_h1_expansion_flag",
@@ -867,7 +861,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
@@ -881,7 +875,7 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
+        "CLAUSE_FAILED:last4_h1_contraction_flag:truthy",
         "CLAUSE_FAILED:current_h1_expansion_flag:truthy",
         "CLAUSE_FAILED:h1_bar_direction:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
@@ -893,43 +887,47 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
         {
-          "field": "last4_h1_contraction_flag",
-          "op": "truthy",
-          "expected": null,
-          "actual": true
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
         }
       ],
       "failed_clauses": [
@@ -940,14 +938,10 @@
           "actual": "MISSING_REQUIRED_BARS"
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "current_h1_expansion_flag",
@@ -982,7 +976,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
@@ -995,8 +989,8 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:current_h1_expansion_flag:truthy"
+        "CLAUSE_FAILED:current_h1_expansion_flag:truthy",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 3,
       "failed_clause_count": 2,
@@ -1005,23 +999,23 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -1030,7 +1024,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1042,20 +1036,6 @@
           "actual": "OK"
         },
         {
-          "field": "last4_h1_contraction_flag",
-          "op": "truthy",
-          "expected": null,
-          "actual": true
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -1063,13 +1043,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": true
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "current_h1_expansion_flag",
           "op": "truthy",
           "expected": null,
           "actual": false
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -1092,7 +1086,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
@@ -1103,36 +1097,34 @@
       "candidate_contract_id": "SCU01_H1_VOL_EXPANSION_AFTER_CONTRACTION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_VOL_EXPANSION_AFTER_CONTRACTION",
       "score_not_probability": 50,
-      "evaluation_status": "NOT_TRIGGERED",
+      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:current_h1_expansion_flag:truthy",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:current_h1_expansion_flag:truthy"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 3,
+      "passed_clause_count": 4,
+      "failed_clause_count": 1,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
-      "is_near_miss": false,
+      "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -1141,7 +1133,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1153,14 +1145,6 @@
           "actual": "OK"
         },
         {
-          "field": "last4_h1_contraction_flag",
-          "op": "truthy",
-          "expected": null,
-          "actual": true
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -1168,19 +1152,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
         {
-          "field": "current_h1_expansion_flag",
+          "field": "last4_h1_contraction_flag",
           "op": "truthy",
           "expected": null,
-          "actual": false
+          "actual": true
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
-          "actual": "BULLISH"
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "current_h1_expansion_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": false
         }
       ],
       "boundary": {
@@ -1203,7 +1195,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
@@ -1216,42 +1208,43 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:current_h1_expansion_flag:truthy"
+        "CLAUSE_FAILED:last4_h1_contraction_flag:truthy",
+        "CLAUSE_FAILED:current_h1_expansion_flag:truthy",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
-      "passed_clause_count": 3,
-      "failed_clause_count": 2,
+      "passed_clause_count": 2,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1263,20 +1256,6 @@
           "actual": "OK"
         },
         {
-          "field": "last4_h1_contraction_flag",
-          "op": "truthy",
-          "expected": null,
-          "actual": true
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -1284,13 +1263,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "current_h1_expansion_flag",
           "op": "truthy",
           "expected": null,
           "actual": false
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -1313,7 +1306,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_VOL_EXPANSION_AFTER_CONTRACTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_VOL_EXPANSION_AFTER_CONTRACTION",
@@ -1326,43 +1319,42 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:current_h1_expansion_flag:truthy",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:last4_h1_contraction_flag:truthy",
+        "CLAUSE_FAILED:current_h1_expansion_flag:truthy"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 3,
+      "passed_clause_count": 3,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1374,14 +1366,6 @@
           "actual": "OK"
         },
         {
-          "field": "last4_h1_contraction_flag",
-          "op": "truthy",
-          "expected": null,
-          "actual": true
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -1389,19 +1373,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "last4_h1_contraction_flag",
+          "op": "truthy",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "current_h1_expansion_flag",
           "op": "truthy",
           "expected": null,
           "actual": false
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
         }
       ],
       "boundary": {
@@ -1424,7 +1416,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_ASIAN_RANGE_REACTION",
@@ -1438,50 +1430,58 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_asian_range_available:truthy",
         "CLAUSE_FAILED:asian_high_breakout_continuation_by_closed_h1:truthy",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 2,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h1_bar_direction",
           "op": "eq",
@@ -1495,15 +1495,6 @@
           "op": "eq",
           "expected": "OK",
           "actual": "MISSING_REQUIRED_BARS"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
         },
         {
           "field": "same_utc_date_asian_range_available",
@@ -1538,7 +1529,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_ASIAN_RANGE_REACTION",
@@ -1552,58 +1543,50 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_asian_range_available:truthy",
         "CLAUSE_FAILED:asian_high_swept_and_reclaimed_by_closed_h1:truthy",
         "CLAUSE_FAILED:h1_bar_direction:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 0,
-      "failed_clause_count": 5,
+      "passed_clause_count": 1,
+      "failed_clause_count": 4,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
-      "passed_clauses": [],
-      "failed_clauses": [
-        {
-          "field": "data_sufficiency_status",
-          "op": "eq",
-          "expected": "OK",
-          "actual": "MISSING_REQUIRED_BARS"
-        },
+      "passed_clauses": [
         {
           "field": "session_bucket",
           "op": "in",
@@ -1611,7 +1594,15 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "expected": "OK",
+          "actual": "MISSING_REQUIRED_BARS"
         },
         {
           "field": "same_utc_date_asian_range_available",
@@ -1652,7 +1643,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_ASIAN_RANGE_REACTION",
@@ -1665,9 +1656,9 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_asian_range_available:truthy",
-        "CLAUSE_FAILED:asian_high_breakout_continuation_by_closed_h1:truthy"
+        "CLAUSE_FAILED:asian_high_breakout_continuation_by_closed_h1:truthy",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 2,
       "failed_clause_count": 3,
@@ -1676,23 +1667,23 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -1701,7 +1692,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1713,22 +1704,16 @@
           "actual": "OK"
         },
         {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
-        },
+          "actual": "NEW_YORK"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "same_utc_date_asian_range_available",
           "op": "truthy",
@@ -1740,6 +1725,12 @@
           "op": "truthy",
           "expected": null,
           "actual": null
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -1762,7 +1753,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_ASIAN_RANGE_REACTION",
@@ -1775,35 +1766,33 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_asian_range_available:truthy",
-        "CLAUSE_FAILED:asian_high_swept_and_reclaimed_by_closed_h1:truthy",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:asian_high_swept_and_reclaimed_by_closed_h1:truthy"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 3,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -1812,7 +1801,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1822,9 +1811,7 @@
           "op": "eq",
           "expected": "OK",
           "actual": "OK"
-        }
-      ],
-      "failed_clauses": [
+        },
         {
           "field": "session_bucket",
           "op": "in",
@@ -1832,8 +1819,16 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "same_utc_date_asian_range_available",
           "op": "truthy",
@@ -1845,12 +1840,6 @@
           "op": "truthy",
           "expected": null,
           "actual": null
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
         }
       ],
       "boundary": {
@@ -1873,7 +1862,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_ASIAN_HIGH_BREAKOUT_CONTINUATION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_ASIAN_RANGE_REACTION",
@@ -1886,9 +1875,9 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_asian_range_available:truthy",
-        "CLAUSE_FAILED:asian_high_breakout_continuation_by_closed_h1:truthy"
+        "CLAUSE_FAILED:asian_high_breakout_continuation_by_closed_h1:truthy",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 2,
       "failed_clause_count": 3,
@@ -1897,32 +1886,32 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -1934,22 +1923,16 @@
           "actual": "OK"
         },
         {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
-        },
+          "actual": "NEW_YORK"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "same_utc_date_asian_range_available",
           "op": "truthy",
@@ -1961,6 +1944,12 @@
           "op": "truthy",
           "expected": null,
           "actual": null
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -1983,7 +1972,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_ASIAN_HIGH_SWEEP_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_ASIAN_RANGE_REACTION",
@@ -1996,44 +1985,42 @@
       "score_not_probability": 50,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_asian_range_available:truthy",
-        "CLAUSE_FAILED:asian_high_swept_and_reclaimed_by_closed_h1:truthy",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:asian_high_swept_and_reclaimed_by_closed_h1:truthy"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 3,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -2043,9 +2030,7 @@
           "op": "eq",
           "expected": "OK",
           "actual": "OK"
-        }
-      ],
-      "failed_clauses": [
+        },
         {
           "field": "session_bucket",
           "op": "in",
@@ -2053,8 +2038,16 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "same_utc_date_asian_range_available",
           "op": "truthy",
@@ -2066,12 +2059,6 @@
           "op": "truthy",
           "expected": null,
           "actual": null
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
         }
       ],
       "boundary": {
@@ -2094,7 +2081,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_WEEKLY_OPEN_REACTION",
@@ -2108,50 +2095,59 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:weekly_open_reclaim_short_state:neq",
         "CLAUSE_FAILED:h1_bar_direction:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 2,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "is_weekly_open_bar",
           "op": "falsey",
@@ -2167,16 +2163,6 @@
           "actual": "MISSING_REQUIRED_BARS"
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
-        },
-        {
           "field": "weekly_open_reclaim_short_state",
           "op": "neq",
           "expected": "NONE",
@@ -2209,7 +2195,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_WEEKLY_OPEN_REACTION",
@@ -2220,36 +2206,34 @@
       "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_WEEKLY_OPEN_REACTION",
       "score_not_probability": 47,
-      "evaluation_status": "NOT_TRIGGERED",
+      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:weekly_open_reclaim_short_state:neq",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:weekly_open_reclaim_short_state:neq"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 3,
+      "passed_clause_count": 4,
+      "failed_clause_count": 1,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
-      "is_near_miss": false,
+      "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -2258,7 +2242,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -2270,14 +2254,6 @@
           "actual": "OK"
         },
         {
-          "field": "is_weekly_open_bar",
-          "op": "falsey",
-          "expected": null,
-          "actual": false
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -2285,19 +2261,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
         {
-          "field": "weekly_open_reclaim_short_state",
-          "op": "neq",
-          "expected": "NONE",
-          "actual": "NONE"
+          "field": "is_weekly_open_bar",
+          "op": "falsey",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
-          "actual": "BULLISH"
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "weekly_open_reclaim_short_state",
+          "op": "neq",
+          "expected": "NONE",
+          "actual": "NONE"
         }
       ],
       "boundary": {
@@ -2320,7 +2304,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_WEEKLY_OPEN_RECLAIM_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_WEEKLY_OPEN_REACTION",
@@ -2331,45 +2315,43 @@
       "candidate_contract_id": "SCU01_H1_WEEKLY_OPEN_REACTION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_WEEKLY_OPEN_REACTION",
       "score_not_probability": 47,
-      "evaluation_status": "NOT_TRIGGERED",
+      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:weekly_open_reclaim_short_state:neq",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:weekly_open_reclaim_short_state:neq"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 3,
+      "passed_clause_count": 4,
+      "failed_clause_count": 1,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
-      "is_near_miss": false,
+      "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -2381,14 +2363,6 @@
           "actual": "OK"
         },
         {
-          "field": "is_weekly_open_bar",
-          "op": "falsey",
-          "expected": null,
-          "actual": false
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -2396,19 +2370,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
         {
-          "field": "weekly_open_reclaim_short_state",
-          "op": "neq",
-          "expected": "NONE",
-          "actual": "NONE"
+          "field": "is_weekly_open_bar",
+          "op": "falsey",
+          "expected": null,
+          "actual": false
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
-          "actual": "BULLISH"
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "weekly_open_reclaim_short_state",
+          "op": "neq",
+          "expected": "NONE",
+          "actual": "NONE"
         }
       ],
       "boundary": {
@@ -2431,7 +2413,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_LONDON_LOW_SWEEP_RECLAIM_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_FAILED_BREAKOUT_TRAP",
@@ -2445,50 +2427,58 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:same_utc_date_london_range_available:truthy",
         "CLAUSE_FAILED:london_low_swept_and_reclaimed_by_closed_h1:truthy",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 2,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h1_bar_direction",
           "op": "eq",
@@ -2502,15 +2492,6 @@
           "op": "eq",
           "expected": "OK",
           "actual": "MISSING_REQUIRED_BARS"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
         },
         {
           "field": "same_utc_date_london_range_available",
@@ -2545,7 +2526,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_FAILED_DOWNSIDE_STATE_RECLAIM_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_FAILED_BREAKOUT_TRAP",
@@ -2559,49 +2540,58 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:h1_failed_breakout_or_session_sweep_state:contains",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 3,
+      "passed_clause_count": 2,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 4,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h1_bar_direction",
           "op": "eq",
@@ -2615,16 +2605,6 @@
           "op": "eq",
           "expected": "OK",
           "actual": "MISSING_REQUIRED_BARS"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
         },
         {
           "field": "h1_failed_breakout_or_session_sweep_state",
@@ -2653,7 +2633,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -2667,50 +2647,59 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:d1_trend_state:eq",
         "CLAUSE_FAILED:h4_trend_state:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 2,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h1_bar_direction",
           "op": "eq",
@@ -2724,16 +2713,6 @@
           "op": "eq",
           "expected": "OK",
           "actual": "MISSING_REQUIRED_BARS"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
         },
         {
           "field": "d1_trend_state",
@@ -2768,7 +2747,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -2782,50 +2761,59 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:d1_trend_state:eq",
         "CLAUSE_FAILED:h1_bar_direction:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 2,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON",
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h4_trend_state",
           "op": "eq",
@@ -2841,16 +2829,6 @@
           "actual": "MISSING_REQUIRED_BARS"
         },
         {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON",
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
-        },
-        {
           "field": "d1_trend_state",
           "op": "eq",
           "expected": "DOWN",
@@ -2883,7 +2861,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -2896,8 +2874,8 @@
       "score_not_probability": 46,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:d1_trend_state:eq"
+        "CLAUSE_FAILED:d1_trend_state:eq",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 3,
       "failed_clause_count": 2,
@@ -2906,23 +2884,23 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -2931,7 +2909,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -2943,20 +2921,6 @@
           "actual": "OK"
         },
         {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "UP"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -2964,13 +2928,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "expected": "UP",
+          "actual": "UP"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "d1_trend_state",
           "op": "eq",
           "expected": "UP",
           "actual": "FLAT"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -2993,7 +2971,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -3006,35 +2984,33 @@
       "score_not_probability": 46,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:d1_trend_state:eq",
-        "CLAUSE_FAILED:h4_trend_state:eq",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:h4_trend_state:eq"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 4,
+      "passed_clause_count": 3,
+      "failed_clause_count": 2,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -3043,7 +3019,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3053,9 +3029,7 @@
           "op": "eq",
           "expected": "OK",
           "actual": "OK"
-        }
-      ],
-      "failed_clauses": [
+        },
         {
           "field": "session_bucket",
           "op": "in",
@@ -3064,8 +3038,16 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BEARISH",
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "d1_trend_state",
           "op": "eq",
@@ -3077,12 +3059,6 @@
           "op": "eq",
           "expected": "DOWN",
           "actual": "UP"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BEARISH",
-          "actual": "BULLISH"
         }
       ],
       "boundary": {
@@ -3105,7 +3081,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_HTF_ALIGNMENT_CONTINUATION_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -3118,8 +3094,8 @@
       "score_not_probability": 46,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:h4_trend_state:eq"
+        "CLAUSE_FAILED:h4_trend_state:eq",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 3,
       "failed_clause_count": 2,
@@ -3128,32 +3104,32 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3165,20 +3141,6 @@
           "actual": "OK"
         },
         {
-          "field": "d1_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "UP"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -3186,13 +3148,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "expected": "UP",
+          "actual": "UP"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "h4_trend_state",
           "op": "eq",
           "expected": "UP",
           "actual": "DOWN"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -3215,7 +3191,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_HTF_ALIGNMENT_CONTINUATION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_HTF_ALIGNMENT_CONTINUATION",
@@ -3226,45 +3202,43 @@
       "candidate_contract_id": "SCU01_H1_HTF_ALIGNMENT_CONTINUATION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_HTF_ALIGNMENT_CONTINUATION",
       "score_not_probability": 46,
-      "evaluation_status": "NOT_TRIGGERED",
+      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:d1_trend_state:eq",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:d1_trend_state:eq"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 3,
+      "passed_clause_count": 4,
+      "failed_clause_count": 1,
       "missing_field_count": 0,
       "total_clause_count": 5,
       "is_shadow_active": false,
-      "is_near_miss": false,
+      "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3276,14 +3250,6 @@
           "actual": "OK"
         },
         {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "DOWN",
-          "actual": "DOWN"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
@@ -3291,19 +3257,27 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
         },
         {
-          "field": "d1_trend_state",
+          "field": "h4_trend_state",
           "op": "eq",
           "expected": "DOWN",
-          "actual": "UP"
+          "actual": "DOWN"
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
-          "actual": "BULLISH"
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "d1_trend_state",
+          "op": "eq",
+          "expected": "DOWN",
+          "actual": "UP"
         }
       ],
       "boundary": {
@@ -3326,7 +3300,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_RECLAIM",
@@ -3340,48 +3314,56 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 2,
+      "passed_clause_count": 3,
+      "failed_clause_count": 1,
       "missing_field_count": 0,
       "total_clause_count": 4,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
       "passed_clauses": [
+        {
+          "field": "session_bucket",
+          "op": "in",
+          "expected": [
+            "LONDON_NY_OVERLAP",
+            "NEW_YORK"
+          ],
+          "actual": "NEW_YORK"
+        },
         {
           "field": "h4_trend_state",
           "op": "eq",
@@ -3401,15 +3383,6 @@
           "op": "eq",
           "expected": "OK",
           "actual": "MISSING_REQUIRED_BARS"
-        },
-        {
-          "field": "session_bucket",
-          "op": "in",
-          "expected": [
-            "LONDON_NY_OVERLAP",
-            "NEW_YORK"
-          ],
-          "actual": "ASIA"
         }
       ],
       "boundary": {
@@ -3432,7 +3405,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_EURUSD_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_REJECTION",
@@ -3446,57 +3419,49 @@
       "evaluation_status": "DATA_OR_CONTEXT_NOT_READY",
       "reason_codes": [
         "CLAUSE_FAILED:data_sufficiency_status:eq",
-        "CLAUSE_FAILED:session_bucket:in",
         "CLAUSE_FAILED:h4_trend_state:eq",
         "CLAUSE_FAILED:h1_bar_direction:eq",
         "DATA_OR_CONTEXT_NOT_READY:MISSING_REQUIRED_BARS"
       ],
-      "passed_clause_count": 0,
-      "failed_clause_count": 4,
+      "passed_clause_count": 1,
+      "failed_clause_count": 3,
       "missing_field_count": 0,
       "total_clause_count": 4,
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 1.09988,
+      "observation_reference_price": 1.08902,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "EURUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
         "h1_bar_direction": "BULLISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "london_low_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
         "h1_failed_breakout_or_session_sweep_state": "UNKNOWN",
-        "h1_close": 1.09988,
+        "h1_close": 1.08902,
         "data_sufficiency_status": "MISSING_REQUIRED_BARS",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
-      "passed_clauses": [],
-      "failed_clauses": [
-        {
-          "field": "data_sufficiency_status",
-          "op": "eq",
-          "expected": "OK",
-          "actual": "MISSING_REQUIRED_BARS"
-        },
+      "passed_clauses": [
         {
           "field": "session_bucket",
           "op": "in",
@@ -3504,7 +3469,15 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "data_sufficiency_status",
+          "op": "eq",
+          "expected": "OK",
+          "actual": "MISSING_REQUIRED_BARS"
         },
         {
           "field": "h4_trend_state",
@@ -3539,7 +3512,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_RECLAIM",
@@ -3552,8 +3525,8 @@
       "score_not_probability": 43,
       "evaluation_status": "NOT_TRIGGERED",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:h4_trend_state:eq"
+        "CLAUSE_FAILED:h4_trend_state:eq",
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 2,
       "failed_clause_count": 2,
@@ -3562,23 +3535,23 @@
       "is_shadow_active": false,
       "is_near_miss": false,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -3587,7 +3560,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3599,27 +3572,27 @@
           "actual": "OK"
         },
         {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
-        },
+          "actual": "NEW_YORK"
+        }
+      ],
+      "failed_clauses": [
         {
           "field": "h4_trend_state",
           "op": "eq",
           "expected": "DOWN",
           "actual": "UP"
+        },
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -3642,7 +3615,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_USDJPY_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_REJECTION",
@@ -3653,35 +3626,32 @@
       "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
       "score_not_probability": 43,
-      "evaluation_status": "NOT_TRIGGERED",
-      "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
-      ],
-      "passed_clause_count": 2,
-      "failed_clause_count": 2,
+      "evaluation_status": "SHADOW_CANDIDATE_ACTIVE",
+      "reason_codes": [],
+      "passed_clause_count": 4,
+      "failed_clause_count": 0,
       "missing_field_count": 0,
       "total_clause_count": 4,
-      "is_shadow_active": false,
+      "is_shadow_active": true,
       "is_near_miss": false,
-      "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "active_event_id": "SCU_EVT_bbbd41fee7766346342a3734",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 158.978,
+      "observation_reference_price": 159.12108,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "USDJPY",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "FLAT",
         "h4_trend_state": "UP",
         "is_first_h1_bar_of_session": false,
@@ -3690,7 +3660,7 @@
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 158.978,
+        "h1_close": 159.12108,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3702,29 +3672,28 @@
           "actual": "OK"
         },
         {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "UP"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "expected": "UP",
+          "actual": "UP"
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
-          "actual": "BULLISH"
+          "actual": "BEARISH"
         }
       ],
+      "failed_clauses": [],
       "boundary": {
         "display_only": true,
         "research_shadow_only": true,
@@ -3745,7 +3714,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_COUNTER_H4_BULLISH_RECLAIM_LONG_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_RECLAIM",
@@ -3758,7 +3727,7 @@
       "score_not_probability": 43,
       "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in"
+        "CLAUSE_FAILED:h1_bar_direction:eq"
       ],
       "passed_clause_count": 3,
       "failed_clause_count": 1,
@@ -3767,32 +3736,32 @@
       "is_shadow_active": false,
       "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3804,27 +3773,27 @@
           "actual": "OK"
         },
         {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "DOWN",
-          "actual": "DOWN"
-        },
-        {
-          "field": "h1_bar_direction",
-          "op": "eq",
-          "expected": "BULLISH",
-          "actual": "BULLISH"
-        }
-      ],
-      "failed_clauses": [
-        {
           "field": "session_bucket",
           "op": "in",
           "expected": [
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
+          "actual": "NEW_YORK"
+        },
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "expected": "DOWN",
+          "actual": "DOWN"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "h1_bar_direction",
+          "op": "eq",
+          "expected": "BULLISH",
+          "actual": "BEARISH"
         }
       ],
       "boundary": {
@@ -3847,7 +3816,7 @@
     },
     {
       "evaluation_version": "SHADOW_CANDIDATE_UNIVERSE_01_v1_0",
-      "created_utc": "2026-11-23T07:18:58Z",
+      "created_utc": "2026-11-23T19:21:12Z",
       "candidate_id": "SCU01_XAUUSD_H1_COUNTER_H4_BEARISH_REJECTION_SHORT_v1_0",
       "candidate_spec_version": "SCU01_CANDIDATE_SPEC_v1_0",
       "candidate_family": "H1_COUNTER_HTF_REJECTION",
@@ -3858,45 +3827,43 @@
       "candidate_contract_id": "SCU01_H1_COUNTER_HTF_REJECTION_CONTRACT_v1_0",
       "setup_cluster_id": "SCU01_CLUSTER_H1_COUNTER_HTF_REJECTION",
       "score_not_probability": 43,
-      "evaluation_status": "NOT_TRIGGERED",
+      "evaluation_status": "SHADOW_CANDIDATE_NEAR_MISS",
       "reason_codes": [
-        "CLAUSE_FAILED:session_bucket:in",
-        "CLAUSE_FAILED:h4_trend_state:eq",
-        "CLAUSE_FAILED:h1_bar_direction:eq"
+        "CLAUSE_FAILED:h4_trend_state:eq"
       ],
-      "passed_clause_count": 1,
-      "failed_clause_count": 3,
+      "passed_clause_count": 3,
+      "failed_clause_count": 1,
       "missing_field_count": 0,
       "total_clause_count": 4,
       "is_shadow_active": false,
-      "is_near_miss": false,
+      "is_near_miss": true,
       "active_event_id": null,
-      "trigger_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-      "valid_until_utc": "2026-11-23T14:00:00Z",
+      "trigger_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+      "valid_until_utc": "2026-11-24T02:00:00Z",
       "shadow_horizons": [
         "H1+1",
         "H1+2",
         "H1+4",
         "H1+8"
       ],
-      "observation_reference_price": 3623.86192,
+      "observation_reference_price": 3649.30282,
       "observation_reference_price_policy": "closed H1 context h1_close; observation-only, not entry",
       "context_excerpt": {
         "instrument": "XAUUSD",
         "timeframe": "H1",
-        "latest_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "latest_h1_bar_open_ts_utc": "2026-11-23T06:00:00Z",
-        "session_bucket": "ASIA",
-        "h1_bar_direction": "BULLISH",
+        "latest_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "latest_h1_bar_open_ts_utc": "2026-11-23T18:00:00Z",
+        "session_bucket": "NEW_YORK",
+        "h1_bar_direction": "BEARISH",
         "d1_trend_state": "UP",
         "h4_trend_state": "DOWN",
         "is_first_h1_bar_of_session": false,
-        "last4_h1_contraction_flag": true,
+        "last4_h1_contraction_flag": false,
         "current_h1_expansion_flag": false,
         "asian_high_breakout_continuation_by_closed_h1": null,
         "asian_high_swept_and_reclaimed_by_closed_h1": null,
         "weekly_open_reclaim_short_state": "NONE",
-        "h1_close": 3623.86192,
+        "h1_close": 3649.30282,
         "data_sufficiency_status": "OK",
         "context_builder_status": "DERIVED_FROM_READ_ONLY_CLOSED_H1_H4_D1_BARS_OPS20"
       },
@@ -3906,9 +3873,7 @@
           "op": "eq",
           "expected": "OK",
           "actual": "OK"
-        }
-      ],
-      "failed_clauses": [
+        },
         {
           "field": "session_bucket",
           "op": "in",
@@ -3916,19 +3881,21 @@
             "LONDON_NY_OVERLAP",
             "NEW_YORK"
           ],
-          "actual": "ASIA"
-        },
-        {
-          "field": "h4_trend_state",
-          "op": "eq",
-          "expected": "UP",
-          "actual": "DOWN"
+          "actual": "NEW_YORK"
         },
         {
           "field": "h1_bar_direction",
           "op": "eq",
           "expected": "BEARISH",
-          "actual": "BULLISH"
+          "actual": "BEARISH"
+        }
+      ],
+      "failed_clauses": [
+        {
+          "field": "h4_trend_state",
+          "op": "eq",
+          "expected": "UP",
+          "actual": "DOWN"
         }
       ],
       "boundary": {
